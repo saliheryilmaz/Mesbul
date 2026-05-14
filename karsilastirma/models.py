@@ -1,0 +1,16 @@
+from django.db import models
+
+
+class AramaGecmisi(models.Model):
+    """Her aramayı kaydeder — zamanla hangi toptancı ucuz vermiş görebilirsin."""
+    ebat       = models.CharField(max_length=30)
+    marka      = models.CharField(max_length=50, blank=True)
+    mevsim     = models.CharField(max_length=20, blank=True)
+    arama_zamani = models.DateTimeField(auto_now_add=True)
+    sonuc_sayisi = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ["-arama_zamani"]
+
+    def __str__(self):
+        return f"{self.ebat} {self.marka} — {self.arama_zamani:%d.%m.%Y %H:%M}"

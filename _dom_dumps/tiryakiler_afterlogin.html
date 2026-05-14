@@ -1,0 +1,292 @@
+<!DOCTYPE html><html lang="tr"><head>
+    <meta data-n-head="ssr" charset="utf-8"><meta data-n-head="ssr" name="viewport" content="width=device-width, initial-scale=1"><meta data-n-head="ssr" name="format-detection" content="telephone=no"><title></title><link data-n-head="ssr" rel="stylesheet" href="/master.css"><link data-n-head="ssr" rel="stylesheet" href="/font-awesome-p.min.css"><link data-n-head="ssr" rel="stylesheet" href="/icon-line-pro-style.css"><link data-n-head="ssr" rel="stylesheet" type="text/css" href="/designs/customV22.css"><link data-n-head="ssr" data-hid="icon" rel="icon" type="image/x-icon" href="https://images.bayipro.com/bayi.tiryakilerotomotiv.com/Images/Banner/0e5aa792-05b2-410b-88ff-a3b385c68279.jpg"><link rel="preload" href="/_nuxt/cc13c58.js" as="script"><link rel="preload" href="/_nuxt/f74ee09.js" as="script"><link rel="preload" href="/_nuxt/css/ea86eef.css" as="style"><link rel="preload" href="/_nuxt/6fbe652.js" as="script"><link rel="preload" href="/_nuxt/css/2e925d4.css" as="style"><link rel="preload" href="/_nuxt/4f7f03b.js" as="script"><link rel="stylesheet" href="/_nuxt/css/ea86eef.css"><link rel="stylesheet" href="/_nuxt/css/2e925d4.css">
+  <style type="text/css">/**
+ * Owl Carousel v2.3.4
+ * Copyright 2013-2018 David Deutsch
+ * Licensed under: SEE LICENSE IN https://github.com/OwlCarousel2/OwlCarousel2/blob/master/LICENSE
+ */
+/*
+ *  Owl Carousel - Core
+ */
+.owl-carousel {
+  display: none;
+  width: 100%;
+  -webkit-tap-highlight-color: transparent;
+  /* position relative and z-index fix webkit rendering fonts issue */
+  position: relative;
+  z-index: 1; }
+  .owl-carousel .owl-stage {
+    position: relative;
+    -ms-touch-action: pan-Y;
+    touch-action: manipulation;
+    -moz-backface-visibility: hidden;
+    /* fix firefox animation glitch */ }
+  .owl-carousel .owl-stage:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0; }
+  .owl-carousel .owl-stage-outer {
+    position: relative;
+    overflow: hidden;
+    /* fix for flashing background */
+    -webkit-transform: translate3d(0px, 0px, 0px); }
+  .owl-carousel .owl-wrapper,
+  .owl-carousel .owl-item {
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -ms-backface-visibility: hidden;
+    -webkit-transform: translate3d(0, 0, 0);
+    -moz-transform: translate3d(0, 0, 0);
+    -ms-transform: translate3d(0, 0, 0); }
+  .owl-carousel .owl-item {
+    position: relative;
+    min-height: 1px;
+    float: left;
+    -webkit-backface-visibility: hidden;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none; }
+  .owl-carousel .owl-item img {
+    display: block;
+    width: 100%; }
+  .owl-carousel .owl-nav.disabled,
+  .owl-carousel .owl-dots.disabled {
+    display: none; }
+  .owl-carousel .owl-nav .owl-prev,
+  .owl-carousel .owl-nav .owl-next,
+  .owl-carousel .owl-dot {
+    cursor: pointer;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none; }
+  .owl-carousel .owl-nav button.owl-prev,
+  .owl-carousel .owl-nav button.owl-next,
+  .owl-carousel button.owl-dot {
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0 !important;
+    font: inherit; }
+  .owl-carousel.owl-loaded {
+    display: block; }
+  .owl-carousel.owl-loading {
+    opacity: 0;
+    display: block; }
+  .owl-carousel.owl-hidden {
+    opacity: 0; }
+  .owl-carousel.owl-refresh .owl-item {
+    visibility: hidden; }
+  .owl-carousel.owl-drag .owl-item {
+    -ms-touch-action: pan-y;
+        touch-action: pan-y;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none; }
+  .owl-carousel.owl-grab {
+    cursor: move;
+    cursor: grab; }
+  .owl-carousel.owl-rtl {
+    direction: rtl; }
+  .owl-carousel.owl-rtl .owl-item {
+    float: right; }
+
+/* No Js */
+.no-js .owl-carousel {
+  display: block; }
+
+/*
+ *  Owl Carousel - Animate Plugin
+ */
+.owl-carousel .animated {
+  animation-duration: 1000ms;
+  animation-fill-mode: both; }
+
+.owl-carousel .owl-animated-in {
+  z-index: 0; }
+
+.owl-carousel .owl-animated-out {
+  z-index: 1; }
+
+.owl-carousel .fadeOut {
+  animation-name: fadeOut; }
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1; }
+  100% {
+    opacity: 0; } }
+
+/*
+ * 	Owl Carousel - Auto Height Plugin
+ */
+.owl-height {
+  transition: height 500ms ease-in-out; }
+
+/*
+ * 	Owl Carousel - Lazy Load Plugin
+ */
+.owl-carousel .owl-item {
+  /**
+			This is introduced due to a bug in IE11 where lazy loading combined with autoheight plugin causes a wrong
+			calculation of the height of the owl-item that breaks page layouts
+		 */ }
+  .owl-carousel .owl-item .owl-lazy {
+    opacity: 0;
+    transition: opacity 400ms ease; }
+  .owl-carousel .owl-item .owl-lazy[src^=""], .owl-carousel .owl-item .owl-lazy:not([src]) {
+    max-height: 0; }
+  .owl-carousel .owl-item img.owl-lazy {
+    transform-style: preserve-3d; }
+
+/*
+ * 	Owl Carousel - Video Plugin
+ */
+.owl-carousel .owl-video-wrapper {
+  position: relative;
+  height: 100%;
+  background: #000; }
+
+.owl-carousel .owl-video-play-icon {
+  position: absolute;
+  height: 80px;
+  width: 80px;
+  left: 50%;
+  top: 50%;
+  margin-left: -40px;
+  margin-top: -40px;
+  background: url(4a37f8008959c75f619bf0a3a4e2d7a2.png) no-repeat;
+  cursor: pointer;
+  z-index: 1;
+  -webkit-backface-visibility: hidden;
+  transition: transform 100ms ease; }
+
+.owl-carousel .owl-video-play-icon:hover {
+  -ms-transform: scale(1.3, 1.3);
+      transform: scale(1.3, 1.3); }
+
+.owl-carousel .owl-video-playing .owl-video-tn,
+.owl-carousel .owl-video-playing .owl-video-play-icon {
+  display: none; }
+
+.owl-carousel .owl-video-tn {
+  opacity: 0;
+  height: 100%;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  transition: opacity 400ms ease; }
+
+.owl-carousel .owl-video-frame {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  width: 100%; }
+</style><style type="text/css">/**
+ * Owl Carousel v2.3.4
+ * Copyright 2013-2018 David Deutsch
+ * Licensed under: SEE LICENSE IN https://github.com/OwlCarousel2/OwlCarousel2/blob/master/LICENSE
+ */
+/*
+ * 	Default theme - Owl Carousel CSS File
+ */
+.owl-theme .owl-nav {
+  margin-top: 10px;
+  text-align: center;
+  -webkit-tap-highlight-color: transparent; }
+  .owl-theme .owl-nav [class*='owl-'] {
+    color: #FFF;
+    font-size: 14px;
+    margin: 5px;
+    padding: 4px 7px;
+    background: #D6D6D6;
+    display: inline-block;
+    cursor: pointer;
+    border-radius: 3px; }
+    .owl-theme .owl-nav [class*='owl-']:hover {
+      background: #869791;
+      color: #FFF;
+      text-decoration: none; }
+  .owl-theme .owl-nav .disabled {
+    opacity: 0.5;
+    cursor: default; }
+
+.owl-theme .owl-nav.disabled + .owl-dots {
+  margin-top: 10px; }
+
+.owl-theme .owl-dots {
+  text-align: center;
+  -webkit-tap-highlight-color: transparent; }
+  .owl-theme .owl-dots .owl-dot {
+    display: inline-block;
+    zoom: 1;
+    *display: inline; }
+    .owl-theme .owl-dots .owl-dot span {
+      width: 10px;
+      height: 10px;
+      margin: 5px 7px;
+      background: #D6D6D6;
+      display: block;
+      -webkit-backface-visibility: visible;
+      transition: opacity 200ms ease;
+      border-radius: 30px; }
+    .owl-theme .owl-dots .owl-dot.active span, .owl-theme .owl-dots .owl-dot:hover span {
+      background: #869791; }
+</style><meta data-n-head="ssr" name="keywords" content=""><meta data-n-head="ssr" name="description" content=""></head>
+  <body>
+    <div id="__nuxt"><!----><div id="__layout"><div class="bs-fullscreen-site "><!----> <!----> <div class="bs-mosttop-menu"><div class="container"><div class="row"><a href="/tr" aria-current="page" class="top-menu-title bs-home-title router-link-exact-active router-link-active">
+        Anasayfa
+      </a> <!----> <!----> <div class="top-menu-title bs-currency-outer">Güncel Kur:<b> TL1.000000 $45.339300 €53.311900</b></div> <div class="top-menu-title bs-news-slider"><a href="/tr/haberler" class="top-menu-title bs-news-title">
+          Haberler
+        </a> <div data-v-6dfbd391="" class="news_slide"><div data-v-6dfbd391="" class="news_item_con" style="inset-inline-start: 194.25px;"><a data-v-6dfbd391="" href="/tr/haberler-detay?q=1" class="news_item">
+        SİPARİŞLERİNİZ İÇİN HIZLI SEVKİYAT !.. Gün içi dahil sevkiyatlarda çözüm noktanız.Sevkiyat saatlerimiz hızlı hizmet verebilmek adına 10:00 - 15:00 olmak üzere gün içerisinde iki sefer olarak güncellenmiştir.Depodan teslim hizmetimiz devam etmektedir...
+
+        <b data-v-6dfbd391="">Detay</b></a></div></div></div> <div class="top-menu-title bs-price-cookie-outer">
+        Fiyat&nbsp;<button class="bs-price-cookie bs-link-v1 top-menu-value "></button></div> <a href="/tr/adresler" class="top-menu-title outer-popover bs-welcome-outer" title="ERHAN  ERYILMAZ MESLAS OTOMOTİV ERHAN ERYILMAZ"><div class="bs-welcome">Cari: <b>ERHAN 
+          ERYILMAZ
+          MESLAS OTOMOTİV ERHAN ERYILMAZ</b></div></a> <a href="/tr/adresler" class="top-menu-title outer-popover bs-customercode-outer">
+        Cari Kod: 
+        <b>120.02.01282</b></a> <!----> <!----> <button class="top-menu-title bs-exit-outer">
+        Çıkış
+      </button></div></div></div> <div class="bs-sm-outer"><div class="container"><div class="row"><div class="bs-mobile-menu-btn d-none-v1"><div class="bs-mobile-menu-line"></div></div> <div class="col-lg-2 col bs-logo-outer"><a href="/tr" aria-current="page" class="bs-logo-inner router-link-exact-active router-link-active"><img src="https://images.bayipro.com/bayi.tiryakilerotomotiv.com/Images/Banner/tiryakilerotomotiv-logo3.png" alt="Tiryakiler İthalat İhracat Otomotiv Yed.Par.San.Tic.Ltd.Şti." class="bs-logo"></a></div> <div class="col-lg col-12 bs-master-input"><div class="row"><div class="col"><div><!----> <div class="bs-zindex-100"><div class="bs-doublesearch-outer">
+      Çift Arama
+      <button class="bs-price-cookie bs-link-v1 top-menu-value this-pv-d-none"></button></div> <div class="bs-smartsearch-outer"><input id="inputsearchh-0" data-type="0" type="text" placeholder="Arama Alanı" autocomplete="on" maxlength="50" class="bs-master-input-inner"> <!----> <button title="Sese göre ara" class="bs-master-input-microphone-btn"></button> <button class="bs-master-input-search-btn">
+        
+        <i class="fa fa-search"></i></button></div></div> <!----></div></div></div></div> <div class="col-lg-auto col bs-user-and-cart"><div class="row"><div class="bs-user bs-user-accountarrears bs-accountarrears-outer bs-transform-table"><!----></div> <div class="bs-user bs-user-cr"><i data-title="Hesabım" class="bs-user-i icon-finance-218"></i> <div class="bs-user-value-outer"><div class="bs-user-value"><span>MT:&nbsp;</span>
+                İSMAİL  HATİPOĞLU - 0542 203 40 40
+              </div> <!----> <!----></div></div> <a class="bs-user bs-user-login"><i data-title="Hesabım" class="bs-user-i bs-account-icon"></i> <div class="bs-user-title">
+                Hesabım
+              </div></a> <!----> <a href="/tr/sepetim" class="bs-user bs-user-cart"><i class="bs-user-i bs-cart-icon"></i> <span class="bs-cart-count">
+  0
+</span> <div class="bs-user-title">Sepetim</div></a></div></div></div></div> <!----></div> <!----> <div class="bs-menu-outer menu-iconic menu-dark-iconic"><div id="bs-menu" class="menu-outer-arrow container"><a href="/tr/adresler" class="bs-mm-i bs-m-id-welcome"><i class="icon-finance-067"></i> <span>Hesabım</span> <label><b>Cari:</b> ERHAN  ERYILMAZ
+      </label></a> <a href="/tr/adresler" class="bs-mm-i bs-welcome-customer"><b>Cari Kod:</b> 120.02.01282
+      <br> <b>Cari:</b> MESLAS OTOMOTİV ERHAN ERYILMAZ
+      <br> <b>Müşteri Temsilcisi:</b> İSMAİL  HATİPOĞLU - 0542 203 40 40
+        <br> <!----> <!----></a> <div class="row"><a href="/tr/urunler" class="bs-m-id-productsearch"><i class="icon-finance-132"></i> <span>Ürünler</span> <label>Aradığınız Ürünü Kolayca Bulun</label></a> <!----> <!----> <!----> <!----> <!----> <a href="/tr/siparislerim" class="bs-m-id-ordertracking"><i class="icon-finance-178"></i> <span>Sipariş Takibi</span> <label>Siparişlerin Durumunu Takip Edin</label></a> <!----> <a href="/tr/bekleyen-siparislerim" class="bs-m-id-balanceorder"><i class="icon-finance-146"></i> <span>Bakiye Sipariş</span> <label>Siparişleri Takip Edin</label></a> <a href="/tr/cari-hesap" class="bs-m-id-currentaccountactivity"><i class="icon-finance-012"></i> <span>Cari Hesap</span> <label>Tüm Hesap Bakiyenizi Takip Edin</label></a> <a class="bs-m-id-accountarrears"><i class="icon-finance-034"></i> <span>Hesap Bakiyesi</span> <label>Anlık Hesap Bakiyenizi Görün</label></a> <a href="/tr/vadesi-gecen" class="bs-m-id-lastdateofpayment"><i class="icon-finance-248"></i> <span>Vadesi Geçen</span> <label>Valör Listenizi Takip Edin</label></a> <a href="/tr/hesap-numaralari" class="bs-m-id-accountnumbers"><i class="icon-finance-179"></i> <span>Hesap Numaraları</span> <label>Banka Hesap Numaralarınıza Ulaşın</label></a> <!----> <a class="bs-m-id-onlinepayment"><i class="icon-finance-171"></i> <span>Online Ödeme</span> <label>Kredi Kartı İle Ödeme Yapın</label></a> <a href="/tr/kredi-karti-odemeleri" class="bs-m-id-creditcardpaymentinformation"><i class="icon-finance-085"></i> <span>Kredi Kartı Ödemeleri</span> <label>Kredi Kartı Ödemelerinizi Takip Edin</label></a> <!----> <!----> <a class="bs-mm-i bs-m-id-currency"><i class="icon-finance-053"></i> <span>Güncel Kur:<b> TL1.000000 $45.339300 €53.311900</b></span> <label>Döviz</label></a> <!----> <a class="bs-mm-i bs-m-id-priceswitch bs-price-cookie-outer"><i class="icon-finance-014"></i> <span><button class="bs-price-cookie bs-link-v1 top-menu-value "></button></span> <label>İskonto</label></a> <!----> <a class="bs-mm-i bs-m-id-exit"><i class="icon-communication-014"></i> <span>Çıkış</span> <label>Çıkış</label></a></div></div></div> <div class="bs-headermenu-outer"><div class="container"><div class="bs-main-menu-outer bs-headermenu"><!----> <div class="bs-main-menu bs-menu-left bs-sub-menu-narrow 
+      "><a id="bs-menu_144" target="self" title="Lastik" class="bs-main-menu-title "><!----> <!----> <!----> <!----> <span>Lastik</span></a> <!----> <!----></div><div class="bs-main-menu bs-menu-left bs-sub-menu-narrow 
+      "><a id="bs-menu_145" target="self" title="Jant" class="bs-main-menu-title "><!----> <!----> <!----> <!----> <span>Jant</span></a> <!----> <!----></div><div class="bs-main-menu bs-menu-left bs-sub-menu-narrow 
+      "><a id="bs-menu_146" target="self" title="Aksesuar" class="bs-main-menu-title "><!----> <!----> <!----> <!----> <span>Aksesuar</span></a> <!----> <!----></div> <div class="bs-tm-center-space"></div> <!----> <!----></div></div></div> <!----> <!----> <!----> <div class="bs-contentplaceholder1"><div class="bs-home-outer bs-home-screen-full"><div class="row"><!----> <div class="col-bs-home-second"><div class="row"><!----> <div class="bs-banner-home bs-banner-theme-vNULL   bs-banner-container" style="order: 1;"><div class="bs-banner-inner"><!----> <!----> <div class="bs-banner-model-v1 bs-banner-quantity-1 bs-banner-mobile-quantity-1  container"><div lazyload="true" class="bs-banner-features "><span id="carousel_prev_bdp2bsu9gi6u7wctx316pe"></span> <div id="carousel_2u3fc4ey78xljyx4njm1ys" class="owl-carousel owl-theme owl-loaded"><!----> <!----> <div class="owl-stage-outer"><div class="owl-stage" style="transform: translate3d(0px, 0px, 0px); transition: all; width: 1280px;"><div class="owl-item active" style="width: 1264px; margin-right: 16px;"><div data-title="" class="bs-banner-item"><img src="https://images.bayipro.com/bayi.tiryakilerotomotiv.com/Images/Banner/Big/banner23.jpg" data-index="0" alt="" title="" class="bs-banner-img bs-banner-img-loaded"> <!----></div></div></div></div><div class="owl-nav disabled"><button type="button" role="presentation" class="owl-prev"><span aria-label="Previous">‹</span></button><button type="button" role="presentation" class="owl-next"><span aria-label="Next">›</span></button></div><div class="owl-dots disabled"><button role="button" class="owl-dot active"><span></span></button></div></div> <span id="carousel_next_m0orifhz8a9boeu0jmavmv"></span></div></div></div> <!----></div><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----> <!----><!----><!----> <!----> <!----> <!----> <!----> <!----> <!----></div></div></div></div></div> <footer><!----> <div class="bs-footer-main-outer bs-footermenu0-outer"><div class="container"><div class="row"><div class="bs-fm-outer col-lg"><div class="bs-fm-innner"><div class="row"><div class="col-lg col-12"><div class="bs-main-menu-outer row bs-footermenu-outer"><!----> <div class="bs-main-menu bs-menu-left bs-sub-menu-narrow 
+      "><a id="bs-menu_140" target="self" title="Hizmet Sözleşmesi" class="bs-main-menu-title "><!----> <!----> <!----> <!----> <span>Hizmet Sözleşmesi</span></a> <!----> <!----></div><div class="bs-main-menu bs-menu-left bs-sub-menu-narrow 
+      "><a id="bs-menu_141" target="self" title="İptal-İade Koşulları" class="bs-main-menu-title "><!----> <!----> <!----> <!----> <span>İptal-İade Koşulları</span></a> <!----> <!----></div><div class="bs-main-menu bs-menu-left bs-sub-menu-narrow 
+      "><a id="bs-menu_142" target="self" title="KVKK - Gizlilik" class="bs-main-menu-title "><!----> <!----> <!----> <!----> <span>KVKK - Gizlilik</span></a> <!----> <!----></div><div class="bs-main-menu bs-menu-left bs-sub-menu-narrow 
+      "><a id="bs-menu_143" target="self" title="İletişim" class="bs-main-menu-title "><!----> <!----> <!----> <!----> <span>İletişim</span></a> <!----> <!----></div> <div class="bs-tm-center-space"></div> <!----> <!----></div></div></div></div></div></div></div></div><div class="bs-footer-main-outer bs-footermenu1-outer"><div class="container"><div class="row"><div class="bs-fm-outer col-lg"><div class="bs-fm-innner"><div class="row"><div class="col-lg col-12"><div class="bs-main-menu-outer row bs-footermenu-outer"><!---->  <!----> <!----> <!----></div></div></div></div></div></div></div></div> <div class="bs-def-footer-outer"><div class="bs-def-footer-menu"><div class="container"><div class="row"><div class="col-lg-auto def-footer-left-clm"><span class="bs-def-footer-link">
+              © Telif Hakkı 2026
+              Tüm Hakları Saklıdır
+            </span></div> <div class="col-lg-auto def-footer-left-clm"><span class="bs-def-footer-link"><a>Çerez Ayarları</a></span></div> <div class="col-lg def-footer-right-clm"><img data-src="" src="https://images.bayipro.com/_common/img/logo/payment_cards.svg?v=2" class="bs-banner-img-loaded"></div></div></div></div> <a href="https://tr.b2bstore.com" target="_blank" class="bs-adv-v1"><div class="bs-adv-prepared">Bu site B2B Store E-ticaret paketleri ile hazırlanmıştır.</div> <img data-env="production" data-src="https://images.bayipro.com/_common/img/logo/b2bstore-logo-dark.svg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" class="bs-logo-corporate"></a></div></footer> <div class="bs-fixed-item-outer"><!----> <!----> <!----> <!----> <button title="Başa Dön" class="bs-arrowtotop d-none bs-fixed-item"><i class="fa fa-arrow-up"></i></button></div> <div class="bs-notice-outer bs-notice-false bs-notice-0"><i></i> 
+  <!----></div> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <div name="modal-fade" class="bs-modal-show-when-img-load bs-modal-transparent bs-modal "><div class="bs-modal-overlay"><div class="bs-modal-content m-medium m-popup"><div class="bs-modal-close">×</div> <!----> <div class="bs-modal-body"><div class="bs-banner-popup bs-banner-theme-vNULL bs-banner-screen-full  bs-banner-container" style="order: 1;"><div class="bs-banner-inner"><!----> <!----> <div class="bs-banner-model-v2 bs-banner-quantity-1 bs-banner-mobile-quantity-1  "><div lazyload="true" nav="true" dots="true" autoplay="autoplay" autoplaytimeout="3000" autoplayhoverpause="true" autoplayspeed="1000" touchdrag="true" stagepadding="0" margin="16" responsive="[object Object]" class="bs-banner-features "><!----> <!----> <div data-title="" class="bs-banner-item"><img src="https://images.bayipro.com/bayi.tiryakilerotomotiv.com/Images/Banner/Big/aksesuar5.png" data-index="0" alt="" title="" class="bs-banner-img bs-banner-img-loaded"> <!----></div></div></div></div> <!----></div> <!----></div></div></div></div> <!----> <!----> <!----> <!----> <!----> <!----> <div class="bs-zoom-popover" style="display: none; left: 32px; top: 0px; max-width: unset;"><!----> <!----></div> <style>
+    :root {
+      --layoutcolor: #005598;
+      --layoutcolor2: #005598;
+      --LayoutCssClass: 1;
+      --borderstyle: 6px;
+      --screen: 100%;
+      --aspectratio: 1/1;
+    }
+  </style></div></div></div><script>window.__NUXT__=(function(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q){H[0]=h;return {layout:"BaseHomeDef",data:[{}],fetch:{"0":{settingsData:[],bodytypeclass:c,showModal:a,firstLoad:b}},error:d,state:{lang:m,st_langpath:m,isCookie:a,rememberLoginDays:90,preToken:c,hostName:q,stt_modalVisible:a,stt_loading:a,st_mobilemenu:b,st_leftmobilemenu:a,st_leftmobilemenudata:d,st_renderpd:a,settings:{$id:r,settings:{$id:s,NoImageImage:c,GoogleAdWordsReMarketingCode:c,GoogleAnalysticProfileID:c,GoogleAnalysticScript:c,PaymentLink:c,ProductImageAspectRatio:c,LayoutColor:t,LayoutColor2:t,ExportProductList:g,HomeStyle:g,MaximumOrderQuantity:g,ProductServiceUrl:g,VariationShow:g,VariationVisible:g,PhoneNumber:"0212 425 55 55 ",HasStockVisible:i,Layout:i,SiteStatus:i,UseDesktopApi:i,ParameterProductDetail:"1122678799728",ParameterMenu:"1125908420362432",ParameterStock:"128",ParameterDesign:"1690155530453657",ParameterTheme:"22",ParameterProductDetail2:"2306",ParameterOrder:"27394062",ParameterAccount:"32",ProductTableStockType:n,MainProducts:"4032",ParameterProductSearch:"640",ParameterAdmin:"87961199231072",ParameterLogin:"8916991",Favicon:"https:\u002F\u002Fimages.bayipro.com\u002Fbayi.tiryakilerotomotiv.com\u002FImages\u002FBanner\u002F0e5aa792-05b2-410b-88ff-a3b385c68279.jpg",Logo:o,Logo2:o,LogoLogin:o,Address:"Merkez: M.Kemal Paşa Mah.Firuzköy Bulvarı No:201\u002FA 34320 Avcılar - İstanbul",StoreName:j,Corporate:"Tiryakiler Otomotiv",FrontLanguageCode:h,LanguageCode:m},DesignParameter:{$id:n,ShowProductImageDirectly:b,ProductDefaultViewBlockView:a,ProductDefaultViewLongBlockView:a,IconicMenuDisplaying:b,ColoredIconMenuDisplaying:b,NormalMenuDisplaying:a,ShowPictureInCategoryMenu:a,OvalView:"6px",ShowLeftCategoryMenuOnProducts:a,NarrowView:b,DealsOfTheDaySingleBanner:a,BrandMenuShowTop:a,ProductImageClickLarge:a,SpecialDesignOnMobile:a,ShowTopMenu:a,FixedB2BMenu:a,ShowLeftCategoryMenuV2:a,ShowHeaderMenu:b,ShowHomeProductsAsBanner:a,CategoryMenuShowLeft:a,CategoryMenuShowOnTop:a,DontShowB2BMenu:a,ShowB2BLogin:a,DontShowDealerMenu:a,NewMembershipPopUp:a,ShowHeaderMenuInLogin:a,ShowFooterMenuInLogin:a,HiddenMobileMenu:a,DarkHeaderMenu:a,HomeCategoryBannerVisible:a,HomeBrandBannerVisible:a,ShowDynamicSearch:a,DisplayNormalMenuDarkBackground:a,DesktopMenuDesignonMobile:a,CategoryMenuShowTopV2:a,DontShowSecondMenu:a,ShowDetailSearch:b,ShowFilter:b,EnergeticLogin:b,ProductDefaultViewPolyView:a,NoLineLimit:a,DontShowMainProductsTitle:a,SubcategoriesVisibleTogetherInCategoryMenu:a,ProductDefaultViewTableView:a,ShowDynamicSearchTop:a,DontShowB2BMenuWhenClickMyAccount:a,AccordionCategory:a,ShowDiscountCloseButton:b,ShowSearchBySound:b,DarkCategoryMenu:a,SingleProductViewOnMobile:a},ProductDetailParameter:{$id:u,ShowWeight:a,ShowVolume:a,DontShowBrand:a,DontShowRate:a,DontShowNormalPrice:b,DontShowPopUpPrice:b,DontShowActualPrice:b,DontShowPrice:a,DontShowUnit:b,DontShowImage:a,DontShowExpectedStock:b,DontShowNumberOfOrdersStartingToShip:b,DontShowRetailPrice:b,DontShowPackingType:b,DontShowOEM:b,DontShowEquivalentCode:b,DontShowProductCode:a,DontShowProductShortCode:b,DontShowProductShortDescriprion:b,DontShowVariation:b,DontShowVATRatio:b,DontShowCommissionRate:a,DontShowDiscount:b,DontShowManufacturerCode:b,ShowMinimumOrder:a,DontShowProductSmallImage:a,DontShowProductStockPage:b,DontUsingPagination:a,DontShowCompatibleTools:b,ShowProductionDate:b,ShowPrevNextProduct:a,DontShowVATExcludedIncludingPrice:b,DontShowSeason:a,ShowTireTag:b,ShowInstallmentInformation:a,ShowAlternativeProducts:a,ShowRelatedProducts:a,ShowOrderHistory:a,ShowComments:a,Icon1:b,Icon2:a,Icon3:a,Icon4:a,Icon5:a,Icon6:a,SmartSearchOption:a,ShowProductRequest:a,DontShowStock:a,ShowProductsOfTheSameBrand:a,ShowAddToCartByUnit:a,ShowOrigin:a,ShowBuyNowButton:a,ShowPurchasePrice:a,AdditionalField1:a,AdditionalField2:a,AdditionalField3:a,AdditionalField4:a,AdditionalField5:a,AdditionalField6:a,ShowStockNote:a,SalesmanDiscountAuthorization:a,DontShowAddCart:a},MenuParameter:{$id:v,DontShowOrders:a,DontShowMessages:a,DontShowBalanceOrders:a,DontShowPaymentSystems:a,DontShowCartMenu:a,DontShowProduct:a,DontShowMostViewed:b,DontShowNewProducts:b,DontShowStockDescriptions:a,DontShowSorting:a,DontShowOutOfStockMenu:a,DontShowProductsMenu:a,DontShowAccountActivityMenu:a,DontShowBalanceMenu:a,DontShowValueTrackingMenu:a,DontShowAccountNumbersMenu:a,DontShowNewsMenu:a,DontShowFastOrderMenu:b,DontShowOnlinePaymentMenu:a,DontShowCreditCardPaymentMenu:a,DontShowSubDealerMenu:b,DontShowOfferMenu:b,DontShowOfferListMenu:b,DontShowCurrencyMenu:a,DontShowRequestsMenu:b,DontShowCategorySelection:b,DontShowBrandSelection:a,DontShowSeasonSelection:b,DontShowTodaysDealsSearch:b,DontShowBestsellersSearch:b,DontShowCampaignSearch:b,DontShowNewProductsSearch:b,DontShowTheMostViewedSearch:b,ShowPromotionButton:a,ShowInvoiceAddressOptionInAddAddress:a,DontShowLoginMenu:a,SaveSearchedWord:a,ShowIdentityNumberWhenAddingAddress:a,ShowCampaignButton:a,ShowNewProductsButton:a,ShowCountrySelectionAddingAddress:a,ShowGlobalSearch:a,ShowFuturePriceSelection:a,ShowOEMSearch:a,RequestPrivacyAgreementConfirmationInLogin:a,ShowWhatsAppSupport:a,ShowRunFlatFilter:a,DontShowCommentsMenu:a,DontShowCompanyCode:a,ProductSearchWithBarcode:a,SelectedStock:b,ShowBrandsMenu:a,ShowCompanyContent:a,ShowDeleteAccountMenu:a,ShowNotificationMenu:a,AddCartWithBarcode:a,ShowConsumerPriceSelection:a,ShowWeekProductsSearch:a,DontShowAddressUpdateButton:a,DontShowSmartSearch:a},ParameterAccount:{$id:w,DontShowLimit:a,DontShowTotalBalanceOrder:a,DontShowTotalDebt:a,DontShowTotalReceivable:a,DontShowLimitRemainingBalance:a,DontShowOtherBalance:b,DontShowTotalOrderInAccountBalance:a,DontShowBalanceLastMonth:a,DontShowBalanceOnMasterPage:a},ParameterAdmin:{$id:x,AddToCartForDepot:a,ShowField2ForOnlyCustomerRepresentative:a,AllCompaniesProductOrderHistoryShowsCustomerRepresentative:b,Return:a,SeperateLoginDealerAndMember:a,ShowEInvoice:a,ShowDBS:a,ShowBalanceMenuOnPayment:a,UsePreOrder:a,CompleteOrderDisable:a,ShowProductSearchAtCart:a,BannerRegionBased:a,UseSeoTag:a,HideCustomerRepresentativeLogin:a,ShowOnlinePaymentForCustomerRepresentative:a,ShowCategoryAtCart:a,BannerCompanyBased:a,DepotPartition:a},ExportProductList:{$id:y,ProductsExcelExport:a,CartPDFExport:a,AccountActivityExcelExport:a,CartExcelExport:a,OrderExcelExport:a,OrderPendingExcelExport:a,AccountActivityPdfExport:a},ParameterProductSearch:{$id:z,ShowQuickSearch:a,ShowPurchasePriceForOnlyCR:a,ShowDoubleSearch:b,ShowVINSearch:a,DontShowProductsInFirstListing:a},StockParameter:{$id:A,ShowDepots:a,ShowDepotsWithTheMouseOverTheStockValue:a,DontLetCustomersSeeTheDepotLetOnlyCustomerRepresentativesSee:a,CustomersCanSeeAllStocks:a,ShowDepotsEvenWithoutStock:a,IfStockIs0ShowAskForStock:a,DontShowStockWithoutLogin:b,ShowDepotsWhenClickAddCart:a},ProductDetailParameter2:{$id:B,ShowFixedPrice:a,DontShowDetailButton:b,HideCustomIcons:a,DontShowQuantityEntry:a,CompareShow:a,ShowPriceInVariation:a,IfThereIsNoStock:a,DontUseZoom:a,ShowCreditCardPrice:b,ProductDetailImagesFlatView:a,ShowPriceCode:a,ShowRemittancePrice:b,GetProductDetailImagesOpen:a,ShowBarcodeNumber:a,ShowVideo:a,RetailPricePopupShow:a,PricePopupShow:a,ExportPdfProductShow:a,DontShowBrandImage:a,ShowRelatedProductsByFilter:a,DontShowFilterOnProductDetail:a,ShowVariationImagesOnProductSearch:a,ShowOrderWithWhatsapp:a,TransposeVariationTable:a,ShowVariationField1:a,ShowVariationField2:a,ShowVariationPrice:a,ShowStockLogout:a,CloseSpecialPriceToCR:a,ShowPaymentMethodsPricesOnPopup:a,RelatedProductsByFilterBulkAddToCart:a,ShowCompatibleVehicles:a,ShowOpenInNewTab:a,DontShowProductSortSelection:a,DontGoProductDetailWhenClickProduct:a,ShowCampaignProductsInProductDetail:a,ShowShareOnSocialMediaInProductDetail:a,ShowPallet:a,ShowVariationImage:a,ShowProductNote:a,ClickAddCartGoToProductDetail:a},ParameterLogin:{$id:C,FirstName:b,LastName:b,Company:b,Phone:b,TaxOffice:b,TaxNo:b,City:b,County:b,Address:b,Email:b,DealerWebsite:b,TCCitizenNo:b,ContractApprovalOnApplication:a,HideMembershipButton:a,ShowNonMembershipShopping:a,DontShowSubDealerMenuSettings:a,PostCode:a,Description:a,RegisterText:a,Password:b,Personal:a,ShowShippingAndBillingAddressInAddingAddress:a,ShowUploadTaxPlateImage:a,MobilePhone:b},ParameterOrder:{$id:"14",RequestContractApproval:a,RequestDeliveryAddressSelection:b,RequestCargoSelection:b,RequestInvoiceAddressSelection:b,BalanceOrderCheckAddToCart:a,DontShowExpiryDate:a,DontShowDeliveryDateOnPendingOrders:a,ShowCurrencyTotal:a,TotalQuantityByProductVarietyInCart:a,DontShowAccountActivityDescription:a,DontShowAddNewAddress:a,ShowNameWhoAddCart:a,DiscountByBrandAndPayment:a,ShowOrderSent:a,ShowMarketPlaceCode:a,ShowGiroOnAccountActivity:a,ShowMainProductsInCart:a,RequestReturnContractApproval:a,ShowCancelRequestInPendingOrders:a,ShowRemaining:a},ParameterPayment:{$id:"15",ConfirmContract:a,CurrencySelectionForPayment:a,ShowOverdueInOnlinePayment:a,ActiveBankBinV2:a},TableSettings:{$id:"16",Price:D,RetailPrice:"Piyasa fiyatı",Discount:"İndirim",ActualPrice:"Bayi Fiyatı",UnitPrice:p,Product:"Ürün",ProductCode:"Ürün Kodu",ProductShortCode:"D.O.T",Units:"Birim",Stock:"Stok",AddtoCart:"Sepete Ekle",Currency:"Dz",ProductPartCode:"OEM",OfTheDayProducts:"Günün Ürünleri",OfTheWeekProducts:"Haftanın Ürünleri",OfTheMonthProducts:"Ayın Ürünleri",Description:"Açıklama",Field1:E,Field2:"Ek Alan-2",Field3:"Ek Alan-3",Field4:"Ek Alan-4",Field5:"Ek Alan-5",Field6:"Ek Alan-6",SearchName:"Arama Alanı",Brand:"Marka",RelatedProducts:"İlgili Ürünler",AlternativeProducts:"Alternatif Ürünler",HomeProducts:"Anasayfa Ürünleri",NewProducts:"Yeni Ürünler",MostSaled:"Çok Satanlar",MostViewed:"Çok Görüntülenenler",SaleProduct:E,OpportunityProducts:"Fırsat Ürünleri",BrandProducts:"Markanın Diğer Ürünleri",ProductsInfo:"Ürünler Bilgi",DealerMenu:"Menü",VehicleBrands:"Araç Markaları",VehicleModel:"Araç Model",VehicleYear:"Araç Yil",VehicleEngin:"Araç Motor",GeneralSearch:F,Compare:"Karşılaştırmak",Image:"Görsel",ProductionDate:"Dot",Origin:"Menşei",Season:"Mevsim",Tag:"Etiket",ManufacturerPartNumber:"Üretici Kodu",Icon1:"Özellik",Icon2:"Icon-2",Icon3:"Icon-3",Icon4:"Icon-4",Icon5:"Icon-5",Icon6:"Icon-6",Purchase:"Alış",Tax:"KDV",ComingStock:"Yolda",ComingStockNote:"Yolda Not",MinQuantity:"Min. Adet",ProductEquivalent:"Ürün Eşdeğeri",Detail:"Detay",StockDescription:"Bu ürün stoğumuzda bulunmamaktadır",BalanceDescription:"Geçen aydan kalan bakiye",CreditPrice:"K.Kartı Fiyatı",DynamicSearchName:"Dinamik Arama Başlığı",Category:"Kategoriler",Proposal:"Teklif",TransferPrice:"Havale Fiyatı",ProposalList:"Teklif Listesi",Runflat:"Runflat",PackageType:"Ambalaj",NormalPrice:"Normal Fiyat",BarcodeNo:"Barkod No",Cargo:"Kargo",GeneralSearch1:F,CompanyContent:"Firma Sayfası",PriceWithTax:p,PriceWithoutTax:G,PaymentMethodDiscount:"Ödeme İskontosu",TotalProductDiscount:"Toplam Ürün İskontosu",QuantityLowerThanStockDescription:"Stok aşıldı ama sipariş verebilirsiniz.",Promotion:"Promosyon",Total:"Toplam",PriceCart:D,PriceWithOrWithoutTax:G,CartPriceWithOrWithoutTax:p},LanguageCodes:{$id:"17",$values:H},PlatformID:i,Version:"\"0,6210498402256944\"",ProductDetailNotLoginParameter:{$id:"18",ShowWeight:a,ShowVolume:a,DontShowBrand:a,DontShowRate:a,DontShowNormalPrice:a,DontShowPopUpPrice:a,DontShowActualPrice:a,DontShowPrice:a,DontShowUnit:a,DontShowImage:a,DontShowExpectedStock:a,DontShowNumberOfOrdersStartingToShip:a,DontShowRetailPrice:a,DontShowPackingType:a,DontShowOEM:a,DontShowEquivalentCode:a,DontShowProductCode:a,DontShowProductShortCode:a,DontShowProductShortDescriprion:a,DontShowVariation:a,DontShowVATRatio:a,DontShowCommissionRate:a,DontShowDiscount:a,DontShowManufacturerCode:a,ShowMinimumOrder:a,DontShowProductSmallImage:a,DontShowProductStockPage:a,DontUsingPagination:a,DontShowCompatibleTools:a,ShowProductionDate:a,ShowPrevNextProduct:a,DontShowVATExcludedIncludingPrice:a,DontShowSeason:a,ShowTireTag:a,ShowInstallmentInformation:a,ShowAlternativeProducts:a,ShowRelatedProducts:a,ShowOrderHistory:a,ShowComments:a,Icon1:a,Icon2:a,Icon3:a,Icon4:a,Icon5:a,Icon6:a,SmartSearchOption:a,ShowProductRequest:a,DontShowStock:a,ShowProductsOfTheSameBrand:a,ShowAddToCartByUnit:a,ShowOrigin:a,ShowBuyNowButton:a,ShowPurchasePrice:a,AdditionalField1:a,AdditionalField2:a,AdditionalField3:a,AdditionalField4:a,AdditionalField5:a,AdditionalField6:a,ShowStockNote:a,SalesmanDiscountAuthorization:a,DontShowAddCart:a}},st_loginanimation:a,st_selectanimation:c,st_c_showonlystocks:b,st_c_productview:I,st_paymentlink:c,st_languages:H,st_ismultiplelanguages:a,st_noticevisible:a,st_noticetype:e,st_noticemessage:c,st_noticeforever:a,st_languagemodal:a,st_isdesktop:b,st_accountarrearsmodal:a,st_notificationmodal:a,st_isversionchangedonserver:a,st_clientip:"78.171.136.125",st_useragent:"Mozilla\u002F5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\u002F537.36",st_serversideloaded:b,st_device:d,st_nolanguage:b,st_productserviceurl:g,accountactivity:{st_accountactivity:d,st_valormonthly:[],st_accountactivitymonthly:[],st_currency:[],st_year:d,st_showresult:a,st_shownorecord:a,st_showskeleton:b,st_totalpage:e,st_accountactivityalldatas:d,st_pdfisready:a,st_rendercustomerchange:a,st_accountarrearslist:[],st_accountarrearsdetaillist:[],st_showresultaccountarrears:a,st_shownorecordaccountarrears:a,st_balancelastmonthmodal:a},authorization:{HostAddress:q,st_isb2bplatform:b,st_isb2cplatform:a,st_isb2bb2cplatform:a,st_iscorporateplatform:a,st_tempcustomerid:"1bb8f6cf-fb1f-42ee-859e-4cc878deb4bc",st_clienttokenerror:a,st_indexlink:"\u002Ftr"},banner:{st_banner:{$id:r,BannerList:{$id:s,$values:[{$id:n,SortNo:f,Name:c,Width:f,Height:f,kWidth:f,kHeight:a,SliderType:k,Resize:a,BannerPosition:J,Text:c,ShowTitle:a,BannerScreen:f,LanguageCode:h},{$id:u,SortNo:f,Name:c,Width:f,Height:f,kWidth:f,kHeight:a,SliderType:k,Resize:b,BannerPosition:K,Text:c,ShowTitle:a,BannerScreen:e,LanguageCode:h},{$id:v,SortNo:e,Name:L,Width:f,Height:f,kWidth:f,kHeight:a,SliderType:g,Resize:b,BannerPosition:M,Text:c,ShowTitle:a,BannerScreen:f,LanguageCode:h},{$id:w,SortNo:f,Name:N,Width:f,Height:f,kWidth:f,kHeight:a,SliderType:g,Resize:b,BannerPosition:O,Text:c,ShowTitle:a,BannerScreen:f,LanguageCode:h},{$id:x,SortNo:f,Name:"Süper Banner",Width:f,Height:f,kWidth:f,kHeight:a,SliderType:i,Resize:b,BannerPosition:"Super",Text:c,ShowTitle:a,BannerScreen:f,LanguageCode:h}]},BannerImageList:{$id:y,$values:[{$id:z,Name:L,ImageUrl:"https:\u002F\u002Fimages.bayipro.com\u002Fbayi.tiryakilerotomotiv.com\u002FImages\u002FBanner\u002FBig\u002Fcar-tyres-63928_960_720-630x390.jpg",AlternateText:c,HeaderText:c,Url:c,ProductID:e,OpenInNewTab:l,ID:e,BannerPosition:M,LanguageCode:h,SliderType:g,Resize:b,Width:f,SortNo:e,Text:c,CompanyID:c,UsePopup:g,ShowOnlyCompaigners:g},{$id:A,Name:c,ImageUrl:"https:\u002F\u002Fimages.bayipro.com\u002Fbayi.tiryakilerotomotiv.com\u002FImages\u002FBanner\u002FBig\u002Fbanner23.jpg",AlternateText:c,HeaderText:c,Url:c,ProductID:e,OpenInNewTab:l,ID:e,BannerPosition:K,LanguageCode:h,SliderType:k,Resize:b,Width:f,SortNo:e,Text:c,CompanyID:c,UsePopup:g,ShowOnlyCompaigners:g},{$id:B,Name:N,ImageUrl:"https:\u002F\u002Fimages.bayipro.com\u002Fbayi.tiryakilerotomotiv.com\u002FImages\u002FBanner\u002FBig\u002FBanner 1200x150.jpg",AlternateText:c,HeaderText:c,Url:c,ProductID:e,OpenInNewTab:l,ID:e,BannerPosition:O,LanguageCode:h,SliderType:g,Resize:b,Width:f,SortNo:f,Text:c,CompanyID:c,UsePopup:g,ShowOnlyCompaigners:c},{$id:C,Name:c,ImageUrl:"https:\u002F\u002Fimages.bayipro.com\u002Fbayi.tiryakilerotomotiv.com\u002FImages\u002FBanner\u002FBig\u002Faksesuar5.png",AlternateText:c,HeaderText:c,Url:c,ProductID:e,OpenInNewTab:l,ID:e,BannerPosition:J,LanguageCode:h,SliderType:k,Resize:a,Width:f,SortNo:f,Text:c,CompanyID:c,UsePopup:g,ShowOnlyCompaigners:g}]}},st_bannerexistspopup:a,st_bannerexistslogin:b,st_bannerexistshomeleft:a},cart:{st_cart:d,st_cartcount:c,st_cartcount1:c,st_cargoid:g,st_confirmaddcartshow:a,st_confirmaddcartitem:d,st_confirmaddcarttitle:d,st_hasstockchanged:a,st_addressid:g,st_billingaddressid:g,st_renderaddcart:a,st_addcartanimation:a,st_addcartpriceid:e,st_addcartproductid:e,st_addcartcartid:e,st_totalpage:e,st_cartexport:d,st_showresult:a,st_shownorecord:a,st_showskeleton:b,st_addcartresult:e,st_carttotal:d,st_showresulttotal:a,st_shownorecordtotal:a,st_showskeletontotal:b,st_processing:a,st_addcarttype:e,st_deliveryaddress:[],st_billingaddress:[],st_pricetitle:c},content:{st_content:{},st_pagedesigncontent:{},st_error:a},contract:{st_logincontract:e,st_ordercontract:e,st_paymentcontract:e,st_registercontract:e,st_returncontract:e,st_contracttitle:d,st_contractdetail:d},cookie:{st_cookie:a},cookiesettings:{st_cookiesettings:a},currency:{st_currencystr:c,st_currency:c},customer:{st_editcustomer:d,st_subdealer:d},home:{productList:d,result128:[],result256:[],result512:[],result1024:[],result2048:[],result4096:[]},location:{},menu:{loading:a,menuList:{},allMenu:{},categoriesMenu:{},allCategoriesMenu:{},categoriesSubMenu:{},st_isleftmobilemenuexists:a,brandsMenu:{},contentMenu:{},menu_version:f},news:{newsData:[]},notice:{st_notice:c,st_noticecount:c},notification:{st_notification:c,st_notificationcount:e},order:{st_order:d,st_showresult:a,st_shownorecord:a,st_showskeleton:b,st_totalpage:e,st_issubdealerorder:a,st_allorderstotal:d,st_giro:{}},orderpending:{st_orderpending:d,st_orderpendingalldatas:d,st_showresult:a,st_shownorecord:a,st_showskeleton:b,st_totalpage:e,st_orderpendingtotals:{}},payment:{popup:a,status:c,code:c,data:c,errorCode:c,referenceTransactionId:c,paymentReferenceNo:c,st_selectedposbordercolor:c,st_selectedposlogo:c,st_selectedposmonth:c,st_extramonth:c,st_selectedlasttotalprice:c,st_selectedcurrencytoken:c,st_choosedposinfoshow:a,st_selecteddiscount:e,st_paymentlist:d,st_showresult:a,st_shownorecord:a,st_showskeleton:b,st_totalpage:e,st_issubdealerpayment:a,st_stripemodal:a,st_selectedprice:c},paymentmethod:{st_paymentmethod:{},st_paymentmethoddiscount:c,st_selectedpaymentmethodid:i,st_selectedpaymentmethodrecordtype:f,st_selectedpaymentmethodnote:c},popover:{st_display:P,st_positionx:e,st_positiony:e,st_img:c,st_text:c,st_timeout:d},priceswitch:{st_switchpriceclass:b},products:{products:[],exportedProducts:[],exportedProductsID:[],stt_loading:a,total:e,pageCount:e,filters:[],breadcrumb:[],productFilter:[],st_closeheadermenu:c,st_productquicksearchshow:a,st_productquicksearchtype:d,st_detailsearchmodal:a,st_relatedproducts:d,st_compatibleproducts:d,st_compatibleproductsdetail:d,st_variationonproducts:d,st_variationdetailsonproducts:d,st_variationonproductsmodal:a,st_selectedproduct:d,st_stockmodal:a,st_stockmodaldata:d,st_error:a,st_productsearchmodal:a,st_productfiltermodal:a,st_productorderhistory:{},st_showresultproductorderhistory:a,st_shownorecordproductorderhistory:a,st_showskeletonproductorderhistory:b,st_productscroll:e,st_productsearchpath:c,st_currentscrollpage:f,st_compatiblevehicles:[],st_clickimagemodal:a,st_addtocartfordepotmodal:a,st_depot:[]},promotion:{st_promotionmodal:a,st_promotionproduct:[],st_showresultpromotionproduct:a,st_shownorecordpromotionproduct:a,st_showskeletonpromotionproduct:b,st_promotion:[],st_promotiontitle:d,st_promotiondescription:d},reports:{st_purchasereport:d,st_filterpurchasereport:d,st_categorypurchasereport:d,st_brandpurchasereport:d,st_topproductreport:d},seo:{st_title:d,st_keyword:"b4b, store, b2b, b4b store, b2b store, b4b yazilimi, b4b software, b2b yazilimi, b2b software, yazilim, software, eryaz, nat yazilim, business, for, b4b e ticaret, b2b e ticaret",st_description:j,st_hone:j,st_seotitle:j},service:{st_unauthorized:a},support:{st_return:d,st_showresult:a,st_shownorecord:a,st_showskeleton:b},switch:{st_switchpriceclass:b,st_switchdoublesearchclass:a,st_switchcookiesettings1:a,st_switchcookiesettings2:a,st_switchcookiesettings3:a},tab:{st_tab_productdetail_0:b,st_tab_productdetail_1:a,st_tab_productdetail_2:a,st_tab_productdetail_3:a,st_tab_productdetail_4:a,st_tab_productdetail_5:a,st_tab_productdetail_6:a,st_tab_paymentmethod:e},user:{st_islogin:a,st_user:[],st_maxage:31104000,st_clienttoken:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjFiYjhmNmNmZmIxZjQyZWU4NTllNGNjODc4ZGViNGJjIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiY2xpZW50IiwiVGVtcEN1c3RvbWVySUQiOiIxYmI4ZjZjZi1mYjFmLTQyZWUtODU5ZS00Y2M4NzhkZWI0YmMiLCJqdGkiOiI0NzBiYzY3Zi0zY2VhLTRmYzktYTY0NS03Njk2Y2ZlNmNmMDkiLCJuYmYiOjE3NzgzMzA4OTMsImV4cCI6MTc3ODYzMDg5MywiaXNzIjoiQjJCIiwiYXVkIjoiQjJCIn0.SqPssweJZVlh5Q9R1waO5IwJ3M83389dSNJOBHcbruQ",st_usertoken:I},validation:{},valor:{st_valormodal:a},zoom:{st_display:P,st_positionx:e,st_positiony:e,st_img:c,st_imgwidth:e,st_imgheight:e,st_zoomratio:3,st_lenswidth:150,st_lensheight:200,st_timeout:d},i18n:{routeParams:{}},auth:{user:d,loggedIn:a,strategy:c}},serverRendered:b,routePath:"\u002Ftr\u002Fgiris",config:{siteEnv:"production",servicecon:"https:\u002F\u002Fb2bstore.com.tr",serviceurl:"https:\u002F\u002Fb2bstore.com.tr:14500\u002Fservices\u002F",gatewayurl:"https:\u002F\u002Fb2bstore.com.tr:14500\u002F",universalurl:"https:\u002F\u002Fb2bstore.com.tr:14600\u002F",authurl:Q,localurl:"http:\u002F\u002Flocalhost:",axios:{baseURL:Q},_app:{basePath:"\u002F",assetsPath:"\u002F_nuxt\u002F",cdnURL:d}}}}(false,true,"",null,0,1,"0","TR","1","Tiryakiler İthalat İhracat Otomotiv Yed.Par.San.Tic.Ltd.Şti.","NULL","_self","tr","4","https:\u002F\u002Fimages.bayipro.com\u002Fbayi.tiryakilerotomotiv.com\u002FImages\u002FBanner\u002Ftiryakilerotomotiv-logo3.png","KDV Dahil Fiyat","bayi.tiryakilerotomotiv.com","2","3","#005598","5","6","7","8","9","10","11","12","13","Fiyat","Kampanya","Genel Arama","KDV Hariç Fiyat",Array(1),void 0,"Popup","Home","LoginBanner","Login","Ana Sayfa Banner","Top","none","https:\u002F\u002Fb2bstore.com.tr:14501\u002Fapi\u002F"));</script><script src="/_nuxt/cc13c58.js" defer=""></script><script src="/_nuxt/f74ee09.js" defer=""></script><script src="/_nuxt/6fbe652.js" defer=""></script><script src="/_nuxt/4f7f03b.js" defer=""></script>
+  
+
+<noscript data-n-head="ssr" data-body="true"></noscript></body></html>

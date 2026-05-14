@@ -1,0 +1,222 @@
+<!DOCTYPE html><html lang="tr"><head>
+  <style>
+    #loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #fff; /* İsteğe bağlı: Yükleyici arkaplan rengini değiştirebilirsiniz */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      opacity: 1;
+      transition: opacity 1s ease; /* Geçiş efekti */
+    }
+    
+    #loader.hide {
+      opacity: 0;
+      pointer-events: none; /* Gizlendikten sonra tıklamaları devre dışı bırakır */
+    }
+  </style>
+</head>
+<body class="noHeader active">
+  <div id="loader" class="hide">
+    <img src="login-new/loader.gif" alt="Loading...">
+  </div>
+
+  <!-- Sayfa içeriği buraya gelecek -->
+
+  <script>
+    // Yükleyiciyi gizlemek için belirli bir süre bekleyin (örnekte 3 saniye olarak ayarlandı)
+    setTimeout(function() {
+      var loader = document.getElementById('loader');
+      loader.classList.add('hide');
+    }, 2000); // 2000 milisaniye = 2 saniye
+  </script>
+
+
+
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ÇAKIROĞLU LASTİK | Türkiye'de Lastik Sektörünün Buluşma Platformu</title>
+    <meta name="robots" content="index,noarchive,follow">
+    <meta name="description" content="Çakıroğlu | Türkiye'de Lastik Sektörünün Buluşma Platformu">
+    <link rel="stylesheet" href="login-new/fontawesome-5.10.1.min.css">
+    <link rel="stylesheet" href="login-new/bootstrap-new.min.css">
+    <link rel="stylesheet" href="login-new/icon-styles.css">
+    <link rel="stylesheet" href="login-new/owl.carousel.min.css">
+    <link rel="stylesheet" href="login-new/app-new.min.css">
+    <script src="login-new/scripts.min.js"></script>
+    <script src="login-new/app.min.js"></script>
+	<link rel="apple-touch-icon" sizes="57x57" href="themes/apple-icon-57x57.png">
+	<link rel="apple-touch-icon" sizes="60x60" href="themes/apple-icon-60x60.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="themes/apple-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="76x76" href="themes/apple-icon-76x76.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="themes/apple-icon-114x114.png">
+	<link rel="apple-touch-icon" sizes="120x120" href="themes/apple-icon-120x120.png">
+	<link rel="apple-touch-icon" sizes="144x144" href="themes/apple-icon-144x144.png">
+	<link rel="apple-touch-icon" sizes="152x152" href="themes/apple-icon-152x152.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="themes/apple-icon-180x180.png">
+	<link rel="icon" type="image/png" sizes="192x192" href="themes/android-icon-192x192.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="themes/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="96x96" href="themes/favicon-96x96.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="themes/favicon-16x16.png">
+	<link rel="manifest" href="themes/manifest.json">
+	<meta name="msapplication-TileColor" content="#ffffff">
+	<meta name="msapplication-TileImage" content="themes/ms-icon-144x144.png">
+	<meta name="theme-color" content="#ffffff">    
+    
+    
+
+
+<style>.errorBox {margin-top: 32px;}.errorBox div {margin-bottom: 0;}</style>
+<div id="login">
+    <div>
+        <div class="left">
+            <div class="header rw">
+                <a href="https://b2b.cakirogluotomotiv.com/index.asp"><img src="login-new/logo.png" alt="logo"></a>
+                <ul>
+                    <li><a href="tel:903122155517"><i class="ri-phone-line"></i><span>+90 534 699 96 99</span></a></li>
+                    <li><a href="https://api.whatsapp.com/send?phone=905346999699&amp;text=Çakıroğlu B2B Canlı Destek Bilgi"><i class="ri-customer-service-2-fill"></i><span>Canlı Destek</span><u></u></a></li>
+                </ul>
+            </div>
+            <div class="content login">
+                <h1>Çakıroğlu B2B'ye hoş geldiniz!</h1>
+                <p>Yeni bir iş ortağı mısınız? <a href="register.asp">Hesap Oluşturun</a></p>
+                
+                
+                          
+                <form method="post" action="index.asp" role="form">
+                    <div class="formControl">
+                        <div>
+                            <input type="text" name="USER" autofocus="">
+                            <label>Kullanıcı Kodu</label>
+                        </div>
+                    </div>
+                    <div class="formControl">
+                        <div class="password">
+                            <i class="ri-eye-line"></i>
+                            <input type="password" name="SIFRE" autocomplete="off">
+                            <label>Şifre</label>
+                        </div>
+                    </div>
+                    
+                    <div class="foot rw">
+                        <div class="cl">
+                            <div class="checkbox">
+                                <input type="checkbox" value="1" id="chckHistory" name="rememberme">
+                                <label for="chckHistory"><i class="ri-check-line"></i><strong>Beni hatırla</strong></label>
+                            </div>
+                        </div>
+                        <div class="cl-auto"><a href="#/password/reset/begin">Şifremi Unuttum?</a></div>
+                    </div>
+                    <button class="btn btn-linear btn-md LoginForm"><span>Giriş</span></button>
+                </form>
+            </div>
+            
+            
+            
+            <div style="margin-top:50px;">
+            	<a target="_blank" href="https://www.paflima.com"><img src="login-new/powered.jpg" alt="Paflima"></a>
+            </div>
+            
+            
+        </div>
+        <div class="right">
+            <section class="owl-carousel owl-loaded owl-drag">
+                
+                
+                
+                
+                
+                 
+           <div class="owl-stage-outer"><div class="owl-stage" style="transform: translate3d(-1779px, 0px, 0px); transition: all; width: 7116px;"><div class="owl-item cloned" style="width: 593px;"><div class="item">
+                    <a target="_blank" href="https://cakiroglusigorta.com/"><img src="login-new/banner4.jpg" alt="loginSlide"></a>
+                    <strong>ÇAKIROĞLU SİGORTA</strong>
+                    <p>Geleceğe Umutla ve Güvenle Bakıyoruz. Çakıroğlu Sigorta, 10 binlerce güvence sağladığımız müşterimizle büyümeye devam ediyoruz. Sizde Hemen Güvencenizi Oluşturun.</p>
+                </div></div><div class="owl-item cloned" style="width: 593px;"><div class="item">
+                    <a target="_blank" href="https://globalcakir.com/"><img src="login-new/banner5.jpg" alt="loginSlide"></a>
+                    <strong>ÇAKIROĞLU GLOBAL</strong>
+                    <p>Çakır Global, Türkiye’de kurulmuş ve küresel çapta faaliyet gösteren, dış ticaret danışmanlığı, talep edilen ürünlerin araştırılması, üretici ve tedarikçi tespiti ile gümrükleme alanlarına odaklanmış alanında öncü ve yenilikçi şirketler arasında yer almıştır.</p>
+                </div></div><div class="owl-item cloned" style="width: 593px;"><div class="item">
+                   <a target="_blank" href="https://cakirogluikinciel.com/"><img src="login-new/banner3.jpg" alt="loginSlide"></a>
+                    <strong>ÇAKIROĞLU İKİNCİ EL</strong>
+                    <p>Çakıroğlu İkinci El 13 yıldır Sultanbeyli adresinde hizmet vermeye devam etmektedir.</p>
+                  </div></div><div class="owl-item active" style="width: 593px;"><div class="item">
+                    <a target="_blank" href="https://cakirgaraj.com/"><img src="login-new/banner1.jpg" alt="loginSlide"></a>
+                    <strong>ÇAKIR GARAJ</strong>
+                    <p>Üstün Hizmet Kalitesi İle Tüm İhtiyaçlarınızı Karşılamak İçin Çakır Garaj’a Bekliyoruz.</p>
+                </div></div><div class="owl-item" style="width: 593px;"><div class="item">
+                    <a target="_blank" href="https://cakirgaraj.com/"><img src="login-new/banner2.jpg" alt="loginSlide"></a>
+                    <strong>ÇAKIR GARAJ</strong>
+                    <p>Seyahatiniz esnasında karşılaşabileceğiniz her türlü olumsuzlukta 7 gün, 24 saat yanınızdayız.</p>
+                </div></div><div class="owl-item" style="width: 593px;"><div class="item">
+                    <a target="_blank" href="https://cakirogluikinciel.com/"><img src="login-new/markalar.png" alt="loginSlide"></a>
+                    <strong>TÜM LASTİK MARKALARI</strong>
+                    <p>Çakıroğlu İkinci El 13 yıldır Sultanbeyli adresinde hizmet vermeye devam etmektedir.</p>
+                </div></div><div class="owl-item" style="width: 593px;"><div class="item">
+                    <a target="_blank" href="https://cakiroglusigorta.com/"><img src="login-new/banner4.jpg" alt="loginSlide"></a>
+                    <strong>ÇAKIROĞLU SİGORTA</strong>
+                    <p>Geleceğe Umutla ve Güvenle Bakıyoruz. Çakıroğlu Sigorta, 10 binlerce güvence sağladığımız müşterimizle büyümeye devam ediyoruz. Sizde Hemen Güvencenizi Oluşturun.</p>
+                </div></div><div class="owl-item" style="width: 593px;"><div class="item">
+                    <a target="_blank" href="https://globalcakir.com/"><img src="login-new/banner5.jpg" alt="loginSlide"></a>
+                    <strong>ÇAKIROĞLU GLOBAL</strong>
+                    <p>Çakır Global, Türkiye’de kurulmuş ve küresel çapta faaliyet gösteren, dış ticaret danışmanlığı, talep edilen ürünlerin araştırılması, üretici ve tedarikçi tespiti ile gümrükleme alanlarına odaklanmış alanında öncü ve yenilikçi şirketler arasında yer almıştır.</p>
+                </div></div><div class="owl-item" style="width: 593px;"><div class="item">
+                   <a target="_blank" href="https://cakirogluikinciel.com/"><img src="login-new/banner3.jpg" alt="loginSlide"></a>
+                    <strong>ÇAKIROĞLU İKİNCİ EL</strong>
+                    <p>Çakıroğlu İkinci El 13 yıldır Sultanbeyli adresinde hizmet vermeye devam etmektedir.</p>
+                  </div></div><div class="owl-item cloned" style="width: 593px;"><div class="item">
+                    <a target="_blank" href="https://cakirgaraj.com/"><img src="login-new/banner1.jpg" alt="loginSlide"></a>
+                    <strong>ÇAKIR GARAJ</strong>
+                    <p>Üstün Hizmet Kalitesi İle Tüm İhtiyaçlarınızı Karşılamak İçin Çakır Garaj’a Bekliyoruz.</p>
+                </div></div><div class="owl-item cloned" style="width: 593px;"><div class="item">
+                    <a target="_blank" href="https://cakirgaraj.com/"><img src="login-new/banner2.jpg" alt="loginSlide"></a>
+                    <strong>ÇAKIR GARAJ</strong>
+                    <p>Seyahatiniz esnasında karşılaşabileceğiniz her türlü olumsuzlukta 7 gün, 24 saat yanınızdayız.</p>
+                </div></div><div class="owl-item cloned" style="width: 593px;"><div class="item">
+                    <a target="_blank" href="https://cakirogluikinciel.com/"><img src="login-new/markalar.png" alt="loginSlide"></a>
+                    <strong>TÜM LASTİK MARKALARI</strong>
+                    <p>Çakıroğlu İkinci El 13 yıldır Sultanbeyli adresinde hizmet vermeye devam etmektedir.</p>
+                </div></div></div></div><div class="owl-nav"><button type="button" role="presentation" class="owl-prev"><i class="ri-arrow-left-s-line"></i></button><button type="button" role="presentation" class="owl-next"><i class="ri-arrow-right-s-line"></i></button></div><div class="owl-dots disabled"></div></section>
+        </div>
+    </div>
+</div>
+
+<script>
+    $("input:not([type='checkbox'])").change(function(){
+        if($(this).val() === ""){
+            $(this).parent().removeClass("filled")
+        }else{
+            $(this).parent().addClass("filled")
+        }
+    });
+
+    $(".formControl .password i").click(function(){
+        if($(this).hasClass("ri-eye-line")){
+            $(this).removeClass("ri-eye-line");
+            $(this).addClass("ri-eye-off-line");
+            $(".formControl .password input").attr("type","text");
+        }else{
+            $(this).addClass("ri-eye-line");
+            $(this).removeClass("ri-eye-off-line");
+            $(".formControl .password input").attr("type","password");
+        }
+    });
+    $(".right .owl-carousel").owlCarousel({
+        loop: true,
+        nav: true,
+        dots:false,
+        navText:['<i class="ri-arrow-left-s-line"></i>','<i class="ri-arrow-right-s-line"></i>'],
+        items: 1,
+        autoplay: true
+    });
+
+</script>
+
+
+</body></html>

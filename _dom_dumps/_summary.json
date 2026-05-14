@@ -1,0 +1,158 @@
+[
+  {
+    "name": "tiryakiler",
+    "login_ok": false,
+    "login_url_after": "https://bayi.tiryakilerotomotiv.com/tr/giris",
+    "search_ok": false,
+    "login_inputs": [
+      {
+        "type": "text",
+        "name": "E-posta veya Kullanıcı Adı",
+        "id": "userName",
+        "placeholder": ""
+      },
+      {
+        "type": "password",
+        "name": "Şifre",
+        "id": "password",
+        "placeholder": ""
+      }
+    ],
+    "login_error": "Giriş Yap\nTemsilci Girişi\nYeni Üyelik\nE-posta veya Kullanıcı Adı\nŞifre\nŞifremi unuttum\nGiriş Yap\nMasaüstü uygulama indir\nBu site B2B Store altyapısını kullanmaktadır."
+  },
+  {
+    "name": "mollaoglu",
+    "login_ok": false,
+    "login_url_after": "https://bayi.mollaoglu.com.tr/tr/giris",
+    "search_ok": false,
+    "login_inputs": [
+      {
+        "type": "text",
+        "name": "E-posta veya Kullanıcı Adı",
+        "id": "userName",
+        "placeholder": ""
+      },
+      {
+        "type": "password",
+        "name": "Şifre",
+        "id": "password",
+        "placeholder": ""
+      }
+    ],
+    "login_error": "Giriş Yap\nTemsilci Girişi\nYeni Üyelik\nE-posta veya Kullanıcı Adı\nŞifre\nŞifremi unuttum\nGiriş Yap\nBu site B2B Store altyapısını kullanmaktadır."
+  },
+  {
+    "name": "uspa",
+    "login_ok": false,
+    "login_url_after": "",
+    "search_ok": false,
+    "login_inputs": []
+  },
+  {
+    "name": "lastsis",
+    "login_ok": false,
+    "login_url_after": "",
+    "search_ok": false,
+    "login_inputs": []
+  },
+  {
+    "name": "cakiroglu",
+    "login_ok": false,
+    "login_url_after": "http://b2b.cakirogluotomotiv.com/B2B_Stoklar.asp",
+    "search_ok": false,
+    "login_inputs": [
+      {
+        "type": "text",
+        "name": "USER",
+        "id": "",
+        "placeholder": ""
+      },
+      {
+        "type": "password",
+        "name": "SIFRE",
+        "id": "",
+        "placeholder": ""
+      },
+      {
+        "type": "checkbox",
+        "name": "rememberme",
+        "id": "chckHistory",
+        "placeholder": ""
+      }
+    ],
+    "login_error": "ERHAN ERYILMAZ- MESLAS OTOMOTİV \nAnasayfa\n Ürünler / Siparişler\n Ürünler / Stoklar\n Sipariş Sepeti\n  Sipariş Takip\nÖDEME\n Sanal Pos\n Fırsat Ürünler\n Kaçan Satışlar\n Araç Satış Rakamları\n Lastik Arama "
+  },
+  {
+    "name": "netlastik",
+    "login_ok": true,
+    "login_url_after": "https://netlastik.com/login",
+    "search_ok": false,
+    "login_inputs": [
+      {
+        "type": "email",
+        "name": "email",
+        "id": "email",
+        "placeholder": "ornek@email.com"
+      },
+      {
+        "type": "password",
+        "name": "password",
+        "id": "password",
+        "placeholder": "••••••••"
+      },
+      {
+        "type": "checkbox",
+        "name": "rememberMe",
+        "id": "rememberMe",
+        "placeholder": ""
+      }
+    ],
+    "page_info": {
+      "url": "https://netlastik.com/",
+      "tables": 1,
+      "tr_rows": 21,
+      "div_tr": 0,
+      "product_elements": {
+        ".product": 0,
+        ".urun": 0,
+        ".item": 0,
+        "[class*=product]": 0,
+        "[class*=urun]": 0,
+        ".card": 0
+      }
+    }
+  },
+  {
+    "name": "otosemih",
+    "login_ok": false,
+    "login_url_after": "https://portal.otosemih.com/giris",
+    "search_ok": false,
+    "login_inputs": [
+      {
+        "type": "text",
+        "name": "username",
+        "id": "username",
+        "placeholder": "Kullanici Adi"
+      },
+      {
+        "type": "password",
+        "name": "password",
+        "id": "password-input",
+        "placeholder": "Sifre"
+      },
+      {
+        "type": "checkbox",
+        "name": "",
+        "id": "remember-check",
+        "placeholder": ""
+      },
+      {
+        "type": "hidden",
+        "name": "command",
+        "id": "",
+        "placeholder": ""
+      }
+    ],
+    "login_error": "0\nE\nERHAN ERYILMAZ\n120.026070\nAnasayfa\nLastik\nAkü\nJant\nFırsat Ürünleri\nÖdeme & Rapor\nDuyurular\nTaleplerim\nHOSGELDİNİZ.\nPrevious\nNext\n\nHesap Bakiyem\n\n0 TL\nHesap Ekstresini Goruntule\n\nSiparislerim\n\n1\nGo"
+  }
+]

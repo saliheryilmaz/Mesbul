@@ -53,8 +53,9 @@ GLOBAL_TIMEOUT_SECONDS = int(os.getenv("SCRAPER_GLOBAL_TIMEOUT_SECONDS", "360"))
 
 
 def _scraper_calistir(scraper_cls, kullanici, sifre, ebat, marka, ekstra="") -> list[LastikSonuc]:
-    """Tek bir scraper'ı Playwright ile çalıştırır."""
-    # LastikPark gibi ekstra parametre alan scraper'lar için
+    """Tek bir scraper'ı çalıştırır.
+    xml_only=True olan scraper'lar Playwright açmadan doğrudan ara() çağırır.
+    """
     try:
         import inspect
         sig = inspect.signature(scraper_cls.__init__)
@@ -66,10 +67,21 @@ def _scraper_calistir(scraper_cls, kullanici, sifre, ebat, marka, ekstra="") -> 
             scraper = scraper_cls(kullanici, sifre)
     except Exception:
         scraper = scraper_cls(kullanici, sifre)
-    sonuclar = []
 
+    sonuclar = []
     logger.info(f"[{scraper.TOPTANCI_ADI}] Başlatılıyor...")
 
+    # XML tabanlı scraper'lar Playwright gerektirmez
+    if getattr(scraper_cls, "xml_only", False):
+        try:
+            sonuclar = scraper.ara(None, ebat, "")
+            logger.info(f"[{scraper.TOPTANCI_ADI}] ✅ {len(sonuclar)} ürün bulundu (XML)")
+        except Exception as e:
+            logger.error(f"[{scraper.TOPTANCI_ADI}] ❌ XML scraper hatası: {e}")
+            traceback.print_exc()
+        return sonuclar
+
+    # Playwright tabanlı scraper'lar
     try:
         with sync_playwright() as p:
             browser = p.chromium.launch(
@@ -86,7 +98,6 @@ def _scraper_calistir(scraper_cls, kullanici, sifre, ebat, marka, ekstra="") -> 
                 locale='tr-TR',
                 timezone_id='Europe/Istanbul'
             )
-            # Anti-bot bypass
             context.add_init_script("""
                 Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
             """)
@@ -97,10 +108,8 @@ def _scraper_calistir(scraper_cls, kullanici, sifre, ebat, marka, ekstra="") -> 
                 login_success = scraper.login(page)
                 if login_success:
                     logger.info(f"[{scraper.TOPTANCI_ADI}] ✅ Login başarılı, arama yapılıyor...")
-                    sonuclar = scraper.ara(page, ebat, "")  # Marka filtresi view'da uygulanacak
+                    sonuclar = scraper.ara(page, ebat, "")
                     logger.info(f"[{scraper.TOPTANCI_ADI}] ✅ {len(sonuclar)} ürün bulundu")
-                    
-                    # Sonuç yoksa debug screenshot al
                     if not sonuclar:
                         logger.warning(f"[{scraper.TOPTANCI_ADI}] ⚠️ Login başarılı ama sonuç yok")
                         _save_screenshot(page, scraper.TOPTANCI_ADI, "arama_bos")
@@ -140,14 +149,14 @@ def fiyat_topla(ebat: str, marka: str = "") -> list[LastikSonuc]:
     # .env'den bilgileri al
     SCRAPERLAR = [
         {"cls": KeskinLastikScraper,
-         "kullanici": _cred("KESKIN_MUSTERI_KOD"),
-         "sifre": _cred("KESKIN_SIFRE")},
+         "kullanici": "",   # XML API — credential gerektirmez
+         "sifre": ""},
         {"cls": KocOtomotivScraper,
          "kullanici": _cred("KOC_KULLANICI"),
          "sifre": _cred("KOC_SIFRE")},
         {"cls": OtoSemihScraper,
-         "kullanici": _cred("OTOSEMIH_KULLANICI"),
-         "sifre": _cred("OTOSEMIH_SIFRE")},
+         "kullanici": "",   # XML API — credential gerektirmez
+         "sifre": ""},
         {"cls": CakirogluScraper,
          "kullanici": _cred("CAKIROGLU_KULLANICI"),
          "sifre": _cred("CAKIROGLU_SIFRE")},
@@ -161,8 +170,8 @@ def fiyat_topla(ebat: str, marka: str = "") -> list[LastikSonuc]:
          "kullanici": _cred("NETLASTIK_KULLANICI"),
          "sifre": _cred("NETLASTIK_SIFRE")},
         {"cls": UspaScraper,
-         "kullanici": _cred("USPA_KULLANICI"),
-         "sifre": _cred("USPA_SIFRE")},
+         "kullanici": "",   # XML API — credential gerektirmez
+         "sifre": ""},
         {"cls": LastSisScraper,
          "kullanici": "",   # Site 404 — devre dışı
          "sifre": ""},
@@ -198,11 +207,13 @@ def fiyat_topla(ebat: str, marka: str = "") -> list[LastikSonuc]:
          "sifre": _cred("MEDLASTIK_SIFRE")},
     ]
 
-    # Eksik credential'ları filtrele
+    # Eksik credential'ları filtrele (xml_only scraper'lar muaf)
     aktif_scraperlar = []
     atlananlar: list[str] = []
     for s in SCRAPERLAR:
-        if not s["kullanici"] or not s["sifre"]:
+        if getattr(s["cls"], "xml_only", False):
+            aktif_scraperlar.append(s)  # XML scraper'lar credential gerektirmez
+        elif not s["kullanici"] or not s["sifre"]:
             msg = f"[{s['cls'].TOPTANCI_ADI}] Kullanıcı bilgileri eksik, atlanıyor"
             logger.warning(msg)
             atlananlar.append(s["cls"].TOPTANCI_ADI)

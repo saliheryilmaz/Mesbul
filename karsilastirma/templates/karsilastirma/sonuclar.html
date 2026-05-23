@@ -3,570 +3,426 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{ ebat }} Sonuçları — Lastik Fiyat</title>
+<title>{{ ebat }} — Lastik Fiyat</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+:root {
+  --bg:#f0f2f5; --surface:#ffffff; --surface2:#f8f9fb;
+  --border:#e2e6ea; --border2:#d0d5dd;
+  --header:#1e2330; --header2:#252b3b;
+  --accent:#e85d26; --accent2:#c94d1a;
+  --text:#1a1d2e; --muted:#6b7280; --muted2:#9ca3af;
+  --green:#16a34a; --red:#dc2626; --orange:#ea580c;
+  --blue:#2563eb; --sidebar:220px;
+  --b2b:#1e40af;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;display:flex;flex-direction:column}
 
-  :root {
-    --bg-color: #f8fafc;
-    --card-bg: #ffffff;
-    --text-main: #0f172a;
-    --text-muted: #64748b;
-    --border: #e2e8f0;
-    --primary: #3b82f6;
-    --primary-hover: #2563eb;
-    --success: #10b981;
-    --success-bg: #d1fae5;
-    --success-text: #047857;
-    --warning: #f59e0b;
-    --danger: #ef4444;
-    --radius-xl: 24px;
-    --radius-lg: 16px;
-    --radius-md: 12px;
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05);
-    --shadow-lg: 0 20px 40px -10px rgba(0,0,0,0.08);
-  }
+/* TOPBAR */
+.topbar{background:var(--header);padding:.65rem 1.25rem;display:flex;align-items:center;gap:1rem;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.topbar-left{display:flex;align-items:center;gap:.75rem}
+.back-btn{display:inline-flex;align-items:center;gap:.35rem;color:#94a3b8;font-size:.82rem;text-decoration:none;padding:.35rem .7rem;border:1px solid #374151;border-radius:6px;transition:all .15s}
+.back-btn:hover{color:#fff;border-color:#6b7280}
+.topbar-center{flex:1;display:flex;justify-content:center}
+.topbar-search{display:flex;align-items:center;gap:0;max-width:360px;width:100%}
+.topbar-search input{flex:1;background:#1e293b;border:1px solid #374151;border-right:none;border-radius:6px 0 0 6px;padding:.4rem .75rem;color:#fff;font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:600;outline:none;transition:border-color .15s}
+.topbar-search input::placeholder{color:#6b7280}
+.topbar-search input:focus{border-color:var(--accent)}
+.topbar-search button{background:var(--accent);border:none;border-radius:0 6px 6px 0;padding:.4rem .75rem;color:#fff;font-size:.82rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:.3rem;transition:background .15s;white-space:nowrap}
+.topbar-search button:hover{background:var(--accent2)}
+.topbar-right{display:flex;align-items:center;gap:.6rem}
+.meta-pill{background:#2d3748;border-radius:20px;padding:.25rem .75rem;font-size:.75rem;color:#94a3b8}
+.meta-pill span{color:#fff;font-weight:600}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+/* LAYOUT */
+.layout{display:flex;flex:1;min-height:0}
 
-  body {
-    background-color: var(--bg-color);
-    color: var(--text-main);
-    font-family: 'Inter', sans-serif;
-    min-height: 100vh;
-    padding: 2rem;
-  }
+/* SIDEBAR */
+.sidebar{width:var(--sidebar);min-width:var(--sidebar);background:var(--surface);border-right:1px solid var(--border);padding:.875rem;overflow-y:auto;position:sticky;top:49px;height:calc(100vh - 49px)}
+.filter-section{margin-bottom:1rem}
+.filter-title{font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.5rem;display:flex;align-items:center;justify-content:space-between}
+.filter-clear{font-size:.65rem;color:var(--accent);cursor:pointer;font-weight:500;text-transform:none;letter-spacing:0}
+.filter-clear:hover{text-decoration:underline}
+.filter-list{display:flex;flex-direction:column;gap:.2rem}
+.filter-item{display:flex;align-items:center;gap:.45rem;cursor:pointer;padding:.2rem .3rem;border-radius:5px;transition:background .1s}
+.filter-item:hover{background:#f3f4f6}
+.filter-item input[type=checkbox]{accent-color:var(--accent);width:13px;height:13px;cursor:pointer}
+.filter-item label{font-size:.8rem;cursor:pointer;flex:1;color:var(--text)}
+.filter-item .count{font-size:.67rem;color:var(--muted2);background:#f3f4f6;border-radius:4px;padding:.05rem .3rem}
+.filter-divider{border:none;border-top:1px solid var(--border);margin:.6rem 0}
+.filter-search{width:100%;background:#f9fafb;border:1px solid var(--border);border-radius:6px;padding:.4rem .65rem;color:var(--text);font-size:.8rem;outline:none;margin-bottom:.4rem}
+.filter-search:focus{border-color:var(--accent);background:#fff}
+.filter-search::placeholder{color:var(--muted2)}
+.dot-select{width:100%;background:#f9fafb;border:1px solid var(--border);border-radius:6px;padding:.4rem .65rem;color:var(--text);font-size:.8rem;outline:none}
+.dot-select:focus{border-color:var(--accent)}
 
-  .container { max-width: 1300px; margin: 0 auto; animation: fadeIn 0.5s ease; }
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+/* MAIN */
+.main{flex:1;padding:1rem;overflow-x:auto;min-width:0}
 
-  .navbar {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 2rem;
-  }
-  .btn-back {
-    display: flex; align-items: center; gap: 0.5rem;
-    color: var(--text-muted); text-decoration: none; font-weight: 600;
-    background: var(--card-bg); padding: 0.6rem 1.2rem; border-radius: 100px;
-    box-shadow: var(--shadow-sm); border: 1px solid var(--border); transition: all 0.2s;
-  }
-  .btn-back:hover { color: var(--text-main); border-color: var(--text-main); transform: translateX(-2px); }
-  .btn-new {
-    display: flex; align-items: center; gap: 0.5rem;
-    color: #fff; background: var(--text-main); text-decoration: none; font-weight: 600;
-    padding: 0.6rem 1.2rem; border-radius: 100px; box-shadow: var(--shadow-sm); transition: all 0.2s;
-  }
-  .btn-new:hover { background: var(--primary); transform: translateY(-2px); box-shadow: 0 10px 15px rgba(59,130,246,0.2); }
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-bottom:1rem}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.75rem 1rem}
+.stat .lbl{font-size:.65rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.25rem}
+.stat .val{font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700;color:var(--text)}
+.val.green{color:var(--green)} .val.blue{color:var(--blue)}
 
-  .page-header { margin-bottom: 2rem; }
-  .page-title {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 2.5rem; font-weight: 800; color: var(--text-main);
-    letter-spacing: -0.02em; margin-bottom: 0.5rem;
-  }
-  .page-title span { color: var(--primary); }
-  .badges-row { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-top: 1rem; }
-  .badge-item {
-    background: var(--card-bg); border: 1px solid var(--border);
-    padding: 0.4rem 1rem; border-radius: 100px;
-    font-size: 0.85rem; font-weight: 600; color: var(--text-muted);
-    display: flex; align-items: center; gap: 0.4rem; box-shadow: var(--shadow-sm);
-  }
+/* TABLE TOOLBAR */
+.table-toolbar{display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem}
+.model-search{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:.45rem .8rem;color:var(--text);font-size:.85rem;outline:none;transition:border-color .15s}
+.model-search:focus{border-color:var(--accent)}
+.model-search::placeholder{color:var(--muted2)}
+.sort-btn{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:.45rem .8rem;color:var(--muted);font-size:.78rem;cursor:pointer;white-space:nowrap;transition:all .15s}
+.sort-btn:hover,.sort-btn.active{border-color:var(--accent);color:var(--accent);background:#fff7f4}
 
-  /* Filter Panel */
-  .filter-panel {
-    background: var(--card-bg); border-radius: var(--radius-xl);
-    padding: 1rem 1.5rem; box-shadow: var(--shadow-md);
-    border: 1px solid var(--border); margin-bottom: 2rem;
-    display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
-  }
-  .filter-label {
-    font-size: 0.85rem; font-weight: 700; color: var(--text-muted);
-    text-transform: uppercase; letter-spacing: 0.05em;
-  }
-  .filter-select {
-    background: #f8fafc; border: 1.5px solid var(--border); border-radius: var(--radius-md);
-    padding: 0.6rem 2rem 0.6rem 1rem; font-size: 0.9rem; font-weight: 600;
-    color: var(--text-main); outline: none; cursor: pointer; transition: all 0.2s;
-    appearance: none; flex: 1; max-width: 300px;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-    background-repeat: no-repeat; background-position: right 0.8rem center; background-size: 1.2em;
-  }
-  .filter-select:focus { border-color: var(--primary); background-color: #fff; }
-  .btn-reset {
-    margin-left: auto; background: #fff; border: 1.5px solid var(--border);
-    padding: 0.6rem 1.2rem; border-radius: var(--radius-md); font-weight: 600;
-    color: var(--text-main); cursor: pointer; font-size: 0.85rem;
-    transition: all 0.2s; box-shadow: var(--shadow-sm);
-  }
-  .btn-reset:hover { border-color: var(--primary); color: var(--primary); }
-  .filter-count {
-    background: var(--primary); color: white; font-size: 0.7rem; font-weight: 700;
-    padding: 0.15rem 0.5rem; border-radius: 100px; margin-left: 0.3rem;
-  }
+/* TABLE */
+.tablo-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+table{width:100%;border-collapse:collapse}
+thead th{font-size:.65rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;padding:.65rem .875rem;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;background:var(--surface2)}
+tbody tr{border-bottom:1px solid var(--border);transition:background .1s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:#fafbfc}
+tbody tr.en-ucuz{background:#f0fdf4;border-left:3px solid var(--green)}
+td{padding:.6rem .875rem;font-size:.85rem;vertical-align:middle}
 
-  /* Toptancı Chips */
-  .toptanci-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
-  .toptanci-chip {
-    background: var(--card-bg); border: 1.5px solid var(--border);
-    padding: 0.5rem 1rem; border-radius: 100px; font-size: 0.85rem; font-weight: 600;
-    color: var(--text-muted); cursor: pointer; transition: all 0.2s;
-    display: flex; align-items: center; gap: 0.4rem;
-  }
-  .toptanci-chip:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-1px); }
-  .toptanci-chip.active { background: var(--primary); color: white; border-color: var(--primary); }
-  .toptanci-chip .chip-count {
-    background: rgba(0,0,0,0.1); padding: 0.1rem 0.45rem; border-radius: 100px;
-    font-size: 0.75rem; font-weight: 700;
-  }
-  .toptanci-chip.active .chip-count { background: rgba(255,255,255,0.25); }
+.sira{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted2);font-weight:500}
+.toptanci-name{font-weight:700;font-size:.78rem;color:var(--text);white-space:nowrap}
+.marka-name{font-weight:700;font-size:.8rem;color:var(--text)}
+.model-name{color:var(--muted);font-size:.76rem;margin-top:.1rem;max-width:300px;line-height:1.3}
+.mevsim-badge{display:inline-flex;align-items:center;gap:.2rem;border-radius:5px;padding:.15rem .45rem;font-size:.7rem;font-weight:600;white-space:nowrap}
+.mv-yaz{background:#fff7ed;color:#c2410c;border:1px solid #fed7aa}
+.mv-kis{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe}
+.mv-dort{background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0}
+.mv-dort svg{width:13px;height:13px;display:inline-block;vertical-align:middle}
+.dot-val{font-family:'JetBrains Mono',monospace;font-size:.76rem;color:var(--muted)}
+.dot-empty{color:var(--muted2)}
+.stok{font-size:.76rem;color:var(--muted);font-weight:500}
+.stok-yok{font-size:.76rem;color:var(--muted2)}
+.fiyat-cell{text-align:right;white-space:nowrap}
+.fiyat-ana{font-family:'JetBrains Mono',monospace;font-size:.95rem;font-weight:700;color:var(--text)}
+.fiyat-ana.cheapest{color:var(--green)}
 
-  /* Stats Grid */
-  .stats-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem; margin-bottom: 2rem;
-  }
-  .stat-card {
-    background: var(--card-bg); border-radius: var(--radius-xl);
-    padding: 1.25rem; box-shadow: var(--shadow-md); border: 1px solid var(--border);
-    position: relative; overflow: hidden;
-  }
-  .stat-card.highlight { background: var(--text-main); color: white; border: none; }
-  .stat-card.highlight .stat-label { color: rgba(255,255,255,0.7); }
-  .stat-card.highlight .stat-value { color: white; }
-  .stat-label {
-    font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
-    letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 0.4rem;
-  }
-  .stat-value {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 1.6rem; font-weight: 800; color: var(--text-main);
-  }
-  .stat-value.green { color: var(--success); }
+/* B2B butonu */
+.b2b-btn{display:inline-flex;align-items:center;justify-content:center;background:var(--b2b);color:#fff;font-size:.65rem;font-weight:700;border-radius:4px;padding:.2rem .45rem;text-decoration:none;letter-spacing:.03em;transition:background .15s;white-space:nowrap}
+.b2b-btn:hover{background:#1e3a8a}
 
-  /* Table */
-  .table-wrapper {
-    background: var(--card-bg); border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-lg); border: 1px solid var(--border);
-    overflow: hidden; margin-bottom: 3rem;
-  }
-  table { width: 100%; border-collapse: collapse; text-align: left; }
-  th {
-    background: #f8fafc; padding: 1rem 1.25rem;
-    font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.05em; color: var(--text-muted); border-bottom: 1px solid var(--border);
-  }
-  td { padding: 1.25rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
-  tr:last-child td { border-bottom: none; }
-  tbody tr { transition: background 0.15s; }
-  tbody tr:hover { background: #fdfefe; }
-  tr.best-price { background: #f0fdf4 !important; }
-  tr.best-price td:first-child { border-left: 4px solid var(--success); padding-left: calc(1.25rem - 4px); }
-  tr.hidden-row { display: none; }
+/* EMPTY */
+.empty{text-align:center;padding:4rem 2rem;color:var(--muted)}
+.empty .icon{font-size:2.5rem;margin-bottom:1rem}
 
-  .col-rank { font-weight: 700; color: var(--text-muted); font-size: 1.1rem; }
-  .col-rank.gold { color: var(--warning); font-size: 1.4rem; }
-  .provider { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 1rem; }
-  .product-brand { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 1rem; }
-  .product-model { color: var(--text-muted); font-size: 0.85rem; margin-top: 0.2rem; font-weight: 500; max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* HIDDEN */
+.hidden{display:none!important}
 
-  .pill {
-    display: inline-block; padding: 0.3rem 0.7rem; border-radius: 100px;
-    font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
-  }
-  .pill.yaz { background: #fff7ed; color: #ea580c; border: 1px solid #fed7aa; }
-  .pill.kis { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
-  .pill.dort { background: #f0fdf4; color: #059669; border: 1px solid #bbf7d0; }
-  .pill.stock-ok { background: var(--success-bg); color: var(--success-text); }
-  .pill.stock-no { background: #fee2e2; color: var(--danger); }
-  .pill.stock-un { background: #f1f5f9; color: var(--text-muted); }
-
-  .price-amount { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.2rem; font-weight: 800; }
-  .price-amount.success { color: var(--success); }
-  .price-diff { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem; }
-  .price-diff span { color: var(--danger); }
-
-  .btn-action {
-    display: inline-flex; justify-content: center; align-items: center;
-    background: #f1f5f9; color: var(--text-main); font-weight: 600;
-    padding: 0.5rem 1rem; border-radius: var(--radius-md); text-decoration: none;
-    transition: all 0.2s; white-space: nowrap; font-size: 0.85rem;
-  }
-  .btn-action:hover { background: var(--text-main); color: white; }
-
-  .empty-box {
-    text-align: center; padding: 6rem 2rem;
-    background: var(--card-bg); border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-md); border: 1px solid var(--border);
-  }
-  .empty-icon { font-size: 4rem; margin-bottom: 1rem; }
-  .empty-box h2 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.8rem; margin-bottom: 0.5rem; }
-  .empty-box p { color: var(--text-muted); margin-bottom: 2rem; font-size: 1.1rem; }
-
-  @media (max-width: 900px) {
-    body { padding: 1rem; }
-    .container { max-width: 100%; }
-    .navbar { gap: 0.75rem; }
-    .btn-back, .btn-new { padding: 0.7rem 0.95rem; min-height: 44px; }
-    .hide-mobile { display: none; }
-    .stats-grid { grid-template-columns: 1fr 1fr; }
-    td, th { padding: 0.8rem; }
-    .product-model { max-width: 220px; }
-    .filter-panel { padding: 1.1rem; border-radius: var(--radius-lg); }
-    .filter-select { max-width: none; min-height: 44px; }
-  }
-  @media (max-width: 600px) {
-    body { padding: 0.75rem; }
-    .navbar {
-      position: sticky;
-      top: 0.5rem;
-      z-index: 10;
-      background: rgba(248,250,252,0.9);
-      backdrop-filter: blur(10px);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 0.45rem;
-      margin-bottom: 1.25rem;
-    }
-    .btn-back, .btn-new {
-      flex: 1;
-      justify-content: center;
-      border-radius: var(--radius-md);
-      font-size: 0.85rem;
-      white-space: nowrap;
-    }
-    .page-header { margin-bottom: 1.25rem; }
-    .page-title {
-      font-size: 1.55rem;
-      line-height: 1.18;
-      letter-spacing: 0;
-    }
-    .badges-row { gap: 0.45rem; }
-    .badge-item {
-      width: 100%;
-      justify-content: center;
-      border-radius: var(--radius-md);
-      padding: 0.55rem 0.7rem;
-    }
-    .toptanci-chips {
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      padding-bottom: 0.35rem;
-      margin-left: -0.75rem;
-      margin-right: -0.75rem;
-      padding-left: 0.75rem;
-      scrollbar-width: thin;
-    }
-    .toptanci-chip {
-      flex: 0 0 auto;
-      min-height: 42px;
-      padding: 0.5rem 0.8rem;
-      font-size: 0.8rem;
-    }
-    .filter-panel {
-      padding: 1rem;
-      flex-direction: column;
-      align-items: stretch;
-      margin-bottom: 1.25rem;
-    }
-    .stats-grid { grid-template-columns: 1fr; }
-    .stat-card {
-      border-radius: var(--radius-lg);
-      padding: 1rem;
-    }
-    .stat-value { font-size: 1.35rem; }
-    .btn-reset { margin-left: 0; width: 100%; min-height: 44px; text-align: center; }
-    .table-wrapper {
-      background: transparent;
-      border: none;
-      box-shadow: none;
-      overflow: visible;
-      margin-bottom: 2rem;
-    }
-    table, thead, tbody, tr, td { display: block; width: 100%; }
-    thead { display: none; }
-    tbody { display: grid; gap: 0.85rem; }
-    tr.sonuc-row {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-md);
-      overflow: hidden;
-    }
-    tr.best-price {
-      background: #f0fdf4 !important;
-      border-color: #bbf7d0;
-    }
-    tr.best-price td:first-child {
-      border-left: none;
-      padding-left: 1rem;
-    }
-    td {
-      display: grid;
-      grid-template-columns: 96px minmax(0, 1fr);
-      gap: 0.75rem;
-      align-items: center;
-      padding: 0.85rem 1rem;
-      border-bottom: 1px solid var(--border);
-      text-align: left !important;
-    }
-    td:last-child { border-bottom: none; }
-    td::before {
-      color: var(--text-muted);
-      font-size: 0.72rem;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
-    td:nth-child(1)::before { content: "Sira"; }
-    td:nth-child(2)::before { content: "Toptanci"; }
-    td:nth-child(3)::before { content: "Urun"; }
-    td:nth-child(6)::before { content: "Fiyat"; }
-    td:nth-child(7)::before { content: "Islem"; }
-    .col-rank { font-size: 1rem; }
-    .provider, .product-brand { font-size: 0.95rem; }
-    .product-model {
-      max-width: none;
-      white-space: normal;
-      overflow: visible;
-      text-overflow: clip;
-      line-height: 1.35;
-    }
-    .price-amount { font-size: 1.05rem; }
-    .btn-action {
-      width: 100%;
-      min-height: 42px;
-    }
-    .empty-box {
-      padding: 3rem 1.25rem;
-      border-radius: var(--radius-lg);
-    }
-  }
+@media(max-width:768px){
+  .sidebar{display:none}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .gizle{display:none}
+}
 </style>
 </head>
 <body>
 
-<div class="container">
-
-  <div class="navbar">
-    <a href="{% url 'arama' %}" class="btn-back">
-      <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-      Geri Dön
-    </a>
-    <a href="{% url 'arama' %}" class="btn-new">
-      Yeni Sorgu
-      <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-    </a>
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="{% url 'arama' %}" class="back-btn">← Geri</a>
   </div>
+  <div class="topbar-center">
+    <form method="POST" action="{% url 'sonuclar' %}" class="topbar-search">
+      {% csrf_token %}
+      <input type="text" name="ebat" value="{{ ebat }}" placeholder="205/55R16" required>
+      <button type="submit">🔍 Ara</button>
+    </form>
+  </div>
+  <div class="topbar-right">
+    <div class="meta-pill"><span id="visible-count">{{ sonuc_sayisi }}</span> ürün</div>
+  </div>
+</div>
 
-  <div class="page-header">
-    <h1 class="page-title"><span>{{ ebat }}</span> Arama Sonuçları</h1>
-    <div class="badges-row">
-      <div class="badge-item">🎯 {{ sonuc_sayisi }} Ürün Bulundu</div>
-      {% if toplam_urun and toplam_urun != sonuc_sayisi %}
-        <div class="badge-item">📦 Toplam {{ toplam_urun }} Ürün</div>
-      {% endif %}
-      {% if marka %}<div class="badge-item">🏷️ {{ marka }}</div>{% endif %}
-      {% if mevsim and mevsim != "Tümü" %}<div class="badge-item">🌤️ {{ mevsim }}</div>{% endif %}
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+
+  <div class="filter-section">
+    <div class="filter-title">
+      Toptancı
+      <span class="filter-clear" onclick="clearFilter('toptanci')">Temizle</span>
+    </div>
+    <div class="filter-list" id="filter-toptanci">
+      {% for t, n in toptanci_sayilari.items %}
+      <div class="filter-item">
+        <input type="checkbox" id="t-{{ forloop.counter }}" class="filter-cb" data-filter="toptanci" data-value="{{ t }}" checked onchange="applyFilters()">
+        <label for="t-{{ forloop.counter }}">{{ t }}</label>
+        <span class="count">{{ n }}</span>
+      </div>
+      {% endfor %}
     </div>
   </div>
 
-  {% if hata_mesaji %}
-  <div style="background:#fff3cd; border:1px solid #ffc107; color:#856404; padding:1rem 1.5rem; border-radius:12px; margin-bottom:2rem; font-weight:500;">
-    ⚠️ {{ hata_mesaji }}
+  <hr class="filter-divider">
+
+  <div class="filter-section">
+    <div class="filter-title">
+      Marka
+      <span class="filter-clear" onclick="clearFilter('marka')">Temizle</span>
+    </div>
+    <input type="text" class="filter-search" placeholder="Marka ara..." oninput="filterMarkalar(this.value)">
+    <div class="filter-list" id="filter-marka">
+      {% for m in marka_listesi %}
+      <div class="filter-item marka-filter-item">
+        <input type="checkbox" id="m-{{ forloop.counter }}" class="filter-cb" data-filter="marka" data-value="{{ m }}" checked onchange="applyFilters()">
+        <label for="m-{{ forloop.counter }}">{{ m }}</label>
+      </div>
+      {% endfor %}
+    </div>
   </div>
-  {% endif %}
+
+  <hr class="filter-divider">
+
+  <div class="filter-section">
+    <div class="filter-title">Mevsim</div>
+    <div class="filter-list" id="filter-mevsim">
+      <div class="filter-item">
+        <input type="checkbox" id="mv-yaz" class="filter-cb" data-filter="mevsim" data-value="Yaz" checked onchange="applyFilters()">
+        <label for="mv-yaz">☀️ Yaz</label>
+      </div>
+      <div class="filter-item">
+        <input type="checkbox" id="mv-kis" class="filter-cb" data-filter="mevsim" data-value="Kış" checked onchange="applyFilters()">
+        <label for="mv-kis">❄️ Kış</label>
+      </div>
+      <div class="filter-item">
+        <input type="checkbox" id="mv-dort" class="filter-cb" data-filter="mevsim" data-value="4 Mevsim" checked onchange="applyFilters()">
+        <label for="mv-dort" style="display:flex;align-items:center;gap:.3rem">
+          <svg viewBox="-465 266.7 28.4 28.3" xmlns="http://www.w3.org/2000/svg" width="13" height="13"><style>.s0{fill:#3FA6EE}.s1{fill:#FDDE0A}</style><g><g><g><path class="s0" d="M-446.5,285.6c0-0.1,0-0.2,0.1-0.2s0.2,0,0.2,0.1c0.1,0.2,0.3,0.3,0.4,0.5c0.1,0.1,0.1,0.1,0.2,0.2s0.2,0.2,0.4,0.4c0.1,0.1,0.1,0.1,0.1,0.2c0,0.8,0,1.7,0,2.5c0,0.2,0.1,0.3,0.3,0.3c0.2,0,0.2-0.1,0.2-0.3c0-0.5,0-0.9,0-1.4c0-0.1,0-0.2,0.1-0.2s0.2,0,0.2,0.1l0.1,0.1c0.4,0.4,0.8,0.8,1.3,1.3c0.2,0,0.3-0.1,0.4-0.2c0.1-0.2,0-0.3-0.1-0.4c-0.4-0.4-0.9-0.9-1.3-1.3c-0.1-0.1-0.1-0.2-0.1-0.3c0.1-0.1,0.2-0.1,0.2-0.1c0.5,0,1.1,0,1.6,0c0.1,0,0.2-0.1,0.2-0.2c0-0.2-0.1-0.3-0.3-0.3c-0.8,0-1.6,0-2.4,0c-0.1,0-0.2,0-0.3-0.1c-0.2-0.2-0.5-0.5-0.7-0.7c-0.1-0.1-0.2-0.2-0.3-0.3c-0.1-0.1-0.1-0.2-0.1-0.2c0-0.1,0.1-0.1,0.2-0.1c0.3,0,0.6,0,0.9,0c0.7,0,1.4,0,2.1,0c0.1,0,0.2-0.1,0.2-0.2s0-0.3,0-0.4s-0.1-0.2-0.2-0.2c-0.4,0-0.8,0-1.2,0.1c-0.9,0.1-1.8,0.1-2.8,0.2c-0.4-0.4-0.7-0.7-1.1-1.1c-0.1-0.1-0.1-0.1,0-0.2c0-0.1,0.1-0.1,0.2-0.1h0.1c1.4,0,2.8,0,4.2,0c0.2,0,0.3-0.1,0.4-0.3c0.1-0.2,0.1-0.3,0-0.5s-0.2-0.2-0.4-0.2c-0.4,0-0.8,0.1-1.2,0.1c-0.7,0.1-1.5,0.1-2.2,0.2c-0.6,0-1.1,0.1-1.7,0.1c-0.2,0-0.3,0-0.4-0.1l-0.2-0.2c0-0.1,0.1-0.2,0.2-0.2c0.3,0,0.7,0,1,0c0.6,0,1.3-0.1,1.9-0.1c1.1-0.1,2.1-0.1,3.2-0.2c0.3,0.3,0.5,0.6,0.8,0.9c0.6,0.7,1.2,1.3,1.8,2c0.1,0.1,0.2,0.2,0.4,0c0.2-0.1,0.2-0.3,0.2-0.3c0.1-0.1,0-0.2-0.1-0.3c-0.4-0.4-0.8-0.8-1.3-1.3c-0.3-0.3-0.6-0.6-0.9-0.9c0-0.1,0.1-0.1,0.2-0.1c0.5,0,0.9,0,1.4,0c0.2,0.2,0.4,0.3,0.5,0.5c0.4,0.4,0.8,0.8,1.3,1.3c0.1,0.1,0.3,0.1,0.4,0s0.1-0.2,0-0.4c-0.4-0.4-0.7-0.7-1.1-1.1c0-0.1,0.1-0.1,0.3-0.1c0.6,0,1.3,0,1.9,0c0.2,0,0.4-0.1,0.4-0.4c0-0.2-0.1-0.4-0.4-0.4c-0.6,0-1.3,0-1.9,0c0-0.1,0-0.2,0.1-0.3c0.4-0.4,0.7-0.7,1.1-1.1c0.1-0.1,0.1-0.1,0.1-0.2c-0.1-0.2-0.3-0.3-0.5-0.1c-0.6,0.6-1.1,1.1-1.7,1.7c-0.5,0-0.9,0-1.4,0c0-0.1,0.1-0.2,0.1-0.3c0.2-0.2,0.4-0.3,0.5-0.5c0.5-0.5,1.1-1.1,1.6-1.6c0,0,0.1-0.1,0.1-0.2s-0.1-0.4-0.3-0.4c-0.2-0.1-0.2-0.1-0.3,0.1c-0.8,0.9-1.7,1.9-2.5,2.8c-0.9,0-1.8-0.1-2.7-0.1c-1.1-0.1-2.2-0.1-3.4-0.2c0-0.1,0-0.1,0.1-0.1l0.1-0.1c0.1-0.1,0.2-0.2,0.4-0.1c0.3,0,0.7,0.1,1,0.1c0.6,0.1,1.3,0.1,1.9,0.2c0.7,0.1,1.5,0.1,2.2,0.2c0.1,0,0.2,0,0.3-0.2c0.1-0.1,0.1-0.3,0.1-0.5c-0.1-0.3-0.2-0.3-0.4-0.3c-0.1,0-0.3,0-0.4,0c-1.3,0-2.5,0-3.8,0c0-0.1,0.1-0.2,0.1-0.3c0.3-0.3,0.6-0.6,1-1c0.7,0,1.4,0.1,2.1,0.1c0.6,0,1.1,0.1,1.7,0.1c0.1,0,0.2,0,0.2-0.1c0.1-0.2,0.1-0.3,0-0.5c-0.3,0-0.5,0-0.8,0c-0.5,0-1,0-1.5,0c-0.2,0-0.4,0-0.6,0c-0.1-0.1,0-0.2,0.1-0.3c0.3-0.3,0.6-0.6,0.9-0.9c0.8,0,1.6,0,2.4,0c0.2,0,0.3-0.1,0.3-0.3c0-0.2-0.1-0.3-0.3-0.3c-0.5,0-1,0-1.6,0c0-0.1,0.1-0.2,0.1-0.3c0.5-0.5,0.9-0.9,1.4-1.4c0.1-0.1,0.1-0.3,0-0.4c-0.1-0.2-0.3-0.2-0.4-0.2s-0.2,0.1-0.2,0.2c-0.4,0.4-0.8,0.8-1.3,1.3c-0.1-0.1-0.1-0.1-0.1-0.3c0-0.5,0-1.1,0-1.6c0-0.1,0-0.2-0.2-0.2c-0.2-0.1-0.3,0-0.3,0.3c0,0.8,0,1.7,0,2.5c-0.2,0.1-0.3,0.3-0.5,0.5s-0.4,0.4-0.6,0.6c-0.1,0-0.1-0.1-0.1-0.2v-0.1c0-1,0-1.9,0-2.9c0-0.2,0-0.2-0.2-0.3c-0.1,0-0.3,0-0.4,0s-0.1,0.1-0.1,0.2c0,0.5,0,0.9,0.1,1.4c0,0.9,0.1,1.7,0.1,2.6c-0.1,0.1-0.3,0.3-0.4,0.4c-0.2,0.2-0.4,0.4-0.6,0.6c-0.1-0.1-0.1-0.1-0.1-0.2c0-1.4,0-2.8,0-4.2c0-0.3-0.1-0.4-0.4-0.5c-0.4-0.1-0.6,0.1-0.6,0.5c0.1,0.6,0.1,1.3,0.2,1.9c0,0.5,0.1,0.9,0.1,1.4s0.1,1.1,0.2,1.6c0,0.2,0,0.4-0.2,0.6l-0.1,0.1c-0.1,0-0.2,0-0.2-0.2c0-0.7-0.1-1.4-0.1-2c0-0.7-0.1-1.3-0.1-2s-0.1-1.4-0.1-2.1c0.3-0.2,0.5-0.5,0.8-0.7c0.7-0.6,1.4-1.3,2.1-1.9c0.2-0.2,0.2-0.3,0-0.4c-0.1-0.1-0.2-0.1-0.3,0c-0.3,0.3-0.6,0.6-0.9,0.9c-0.4,0.4-0.9,0.9-1.3,1.3c0-0.5,0-1,0-1.5c0.2-0.2,0.5-0.5,0.7-0.7c0.4-0.4,0.7-0.7,1.1-1.1c0.1-0.1,0.1-0.2,0.1-0.3c-0.1-0.2-0.3-0.2-0.4-0.1c-0.4,0.4-0.8,0.8-1.1,1.1c0-0.6,0-1.3,0-1.9c0-0.1,0-0.2-0.1-0.3c-0.1,0-0.2-0.1-0.2-0.1s0,0.1,0,0.2c0,4.3,0,8.5,0,12.8c0.2,0,0.4,0.1,0.6,0.2c0.3,0.3,0.4,0.6,0.3,1s-0.4,0.7-0.8,0.7c-0.1,0-0.1,0.1-0.1,0.2c0,4.3,0,8.5,0,12.8v0.1c0.2,0,0.3-0.2,0.3-0.4c0-0.6,0-1.3,0-1.9c0.4,0.4,0.8,0.8,1.1,1.1c0.1,0.1,0.2,0.1,0.4,0c0.1-0.1,0.1-0.2,0-0.4c-0.6-0.6-1.2-1.2-1.8-1.8c0-0.5,0-1,0-1.5c0.2,0.2,0.5,0.5,0.7,0.7c0.5,0.5,1,1,1.4,1.4c0.1,0.1,0.2,0.1,0.3,0.1c0.1-0.1,0.2-0.2,0.3-0.3c-0.3-0.2-0.5-0.5-0.8-0.7c-0.7-0.6-1.4-1.3-2.2-1.9c0-0.9,0.1-1.7,0.1-2.6c0.1-1.2,0.1-2.3,0.2-3.5c0.1,0,0.2,0.1,0.2,0.1l0.1,0.1c0,0.3,0,0.4c-0.1,1-0.2,1.9-0.2,2.9c-0.1,0.6-0.1,1.3-0.2,1.9c0,0.3,0.1,0.4,0.3,0.5c0.4,0.1,0.6-0.1,0.6-0.5c0-1.1,0-2.1,0-3.2c0-0.4,0-0.7,0-1.1c0.3,0.3,0.7,0.7,1,1c0,0.7-0.1,1.4-0.1,2.1c0,0.6-0.1,1.2-0.1,1.9c0.2,0.1,0.5,0.1,0.6-0.1"/></g></g><g><path class="s1" d="M-458.7,280.1c0-4.7,3.1-8.4,7.3-8.4V269c-0.9,1-1.3,0.9-2.3-0.2c-0.6-0.7-1.2-1.5-1.6-2c0,0.8,0,1.7-0.1,2.7c-0.2,1.4-1.1,2.2-2.4,2c-0.8-0.1-1.6-0.4-2.4-0.7c-0.4-0.1-0.8-0.4-1.3-0.6c0.4,0.7,0.8,1.2,1.1,1.7c1.4,2.4,0.7,4.4-1.8,5c-0.7,0.1-1.3,0.3-2,0.4c0.7,0.2,1.5,0.4,2.2,0.7c1.9,0.8,2.2,2.1,0.8,3.8c-0.7,0.6-1.3,1.3-1.9,1.9c0.9,0.1,1.9,0.2,2.9,0.5c1.2,0.3,1.8,1.5,1.5,2.8c-0.2,0.8-0.4,1.5-0.8,2.2c-0.3,0.6-0.7,1.2-1,1.8c0.2,0,0.4-0.2,0.5-0.3c1-0.5,2-1,3-1.4c0.8-0.3,1.6,0.1,1.9,0.9c0.3,0.7,0.5,1.6,0.6,2.4s0,1.6,0,2.3c0.5-0.9,1.3-1.9,2-2.8c0.8-1.1,0.6-1.4,1.5-1.1v-2.5C-455.6,288.5-458.7,284.7-458.7,280.1z"/><path class="s1" d="M-451.3,287.2V273c-3.5,0-6.2,3.2-6.2,7.1C-457.5,284-454.9,287.2-451.3,287.2z"/></g></g></svg>
+          4 Mevsim
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <hr class="filter-divider">
+
+  <div class="filter-section">
+    <div class="filter-title">Min. Üretim Yılı</div>
+    <select id="dot-filter" class="dot-select" onchange="applyFilters()">
+      <option value="">Fark etmez</option>
+      <option value="2026">2026</option>
+      <option value="2025">2025 ve üzeri</option>
+      <option value="2024">2024 ve üzeri</option>
+      <option value="2023">2023 ve üzeri</option>
+      <option value="2022">2022 ve üzeri</option>
+    </select>
+  </div>
+
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <div class="stats">
+    <div class="stat">
+      <div class="lbl">En Ucuz</div>
+      <div class="val green" id="stat-min">{% if sonuclar %}{{ sonuclar.0.fiyat_str }}{% else %}—{% endif %}</div>
+    </div>
+    <div class="stat">
+      <div class="lbl">En Pahalı</div>
+      <div class="val" id="stat-max">{% if sonuclar %}{% with sonuclar|last as son %}{{ son.fiyat_str }}{% endwith %}{% else %}—{% endif %}</div>
+    </div>
+    <div class="stat">
+      <div class="lbl">Toplam Ürün</div>
+      <div class="val blue" id="stat-count">{{ sonuc_sayisi }}</div>
+    </div>
+  </div>
 
   {% if sonuclar %}
 
-  <!-- Toptancı Filtreleme Chip'leri -->
-  <div class="toptanci-chips" id="toptanciChips">
-    <div class="toptanci-chip active" data-toptanci="all" onclick="filterByToptanci('all')">
-      Tümü <span class="chip-count">{{ sonuc_sayisi }}</span>
-    </div>
-    {% for t_adi, t_sayi in toptanci_filtreli.items %}
-    <div class="toptanci-chip" data-toptanci="{{ t_adi }}" onclick="filterByToptanci('{{ t_adi }}')">
-      {{ t_adi }} <span class="chip-count">{{ t_sayi }}</span>
-    </div>
-    {% endfor %}
+  <div class="table-toolbar">
+    <input type="text" class="model-search" placeholder="Model içerisinde ara..." oninput="applyFilters()" id="model-search">
+    <button class="sort-btn active" id="sort-fiyat" onclick="sortBy('fiyat')">Fiyat ↕</button>
+    <button class="sort-btn" id="sort-marka" onclick="sortBy('marka')">Marka ↕</button>
   </div>
 
-  <!-- Marka Filtresi -->
-  <div class="filter-panel">
-    <span class="filter-label">Marka Seçimi</span>
-    <select class="filter-select" id="markaFilter" onchange="applyFilters()">
-      <option value="all">Tüm Markalar</option>
-      {% for m in marka_listesi %}
-      <option value="{{ m }}">{{ m }}</option>
-      {% endfor %}
-    </select>
-    <button class="btn-reset" onclick="resetFilters()">✕ Sıfırla</button>
-  </div>
-
-  <div class="stats-grid">
-    <div class="stat-card highlight">
-      <div class="stat-label">En Düşük Fiyat</div>
-      <div class="stat-value">{{ sonuclar.0.fiyat_str }}</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">En Yüksek Fiyat</div>
-      <div class="stat-value">{% with sonuclar|last as son %}{{ son.fiyat_str }}{% endwith %}</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Avantajlı Toptancı</div>
-      <div class="stat-value" style="color: var(--primary); font-size:1.2rem">{{ sonuclar.0.toptanci }}</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Toptancı Sayısı</div>
-      <div class="stat-value green">{{ toptanci_filtreli|length }}</div>
-    </div>
-  </div>
-
-  <div class="table-wrapper">
-    <table id="sonucTable">
+  <div class="tablo-wrap">
+    <table id="main-table">
       <thead>
         <tr>
-          <th style="width:50px; text-align:center;">Sıra</th>
+          <th>#</th>
           <th>Toptancı</th>
-          <th>Ürün Bilgisi</th>
-          <th class="hide-mobile">Mevsim</th>
-          <th class="hide-mobile">Stok / DOT</th>
+          <th>Marka</th>
+          <th>Model</th>
+          <th class="gizle">Mevsim</th>
+          <th class="gizle">DOT</th>
+          <th class="gizle">Stok</th>
           <th style="text-align:right">Fiyat</th>
-          <th style="width:100px; text-align:center;">İşlem</th>
+          <th class="gizle">B2B</th>
         </tr>
       </thead>
-      <tbody id="sonucBody">
-        {% for s in sonuclar %}
-        <tr class="sonuc-row {% if s.fiyat == en_ucuz_fiyat %}best-price{% endif %}"
-            data-toptanci="{{ s.toptanci }}"
-            data-marka="{{ s.marka }}"
-            data-mevsim="{{ s.mevsim }}"
-            data-fiyat="{{ s.fiyat }}">
-          <td style="text-align:center;">
-            <div class="col-rank {% if forloop.counter == 1 %}gold{% endif %}">
-              {% if forloop.counter == 1 %}🏆{% else %}#{{ forloop.counter }}{% endif %}
-            </div>
-          </td>
-          <td><div class="provider">{{ s.toptanci }}</div></td>
-          <td>
-            <div class="product-brand">{{ s.marka }}</div>
-            <div class="product-model" title="{{ s.model }}">{{ s.model }}</div>
-          </td>
-          <td class="hide-mobile">
-            {% if "kış" in s.mevsim|lower or "kis" in s.mevsim|lower or "winter" in s.mevsim|lower %}
-              <span class="pill kis">❄️ Kış</span>
-            {% elif "4" in s.mevsim or "all" in s.mevsim|lower %}
-              <span class="pill dort">🌀 4 Mevsim</span>
+      <tbody id="table-body">
+        {% for u in sonuclar %}
+        <tr class="data-row {% if u.fiyat == en_ucuz_fiyat %}en-ucuz{% endif %}"
+            data-toptanci="{{ u.toptanci }}"
+            data-marka="{{ u.marka }}"
+            data-mevsim="{{ u.mevsim }}"
+            data-model="{{ u.urun_adi|lower }}"
+            data-fiyat="{{ u.fiyat }}"
+            data-dot="{{ u.dot }}"
+            data-idx="{{ forloop.counter }}">
+
+          <td><span class="sira">{{ forloop.counter }}</span></td>
+          <td><div class="toptanci-name">{{ u.toptanci }}</div></td>
+          <td><div class="marka-name">{{ u.marka }}</div></td>
+          <td><div class="model-name">{{ u.urun_adi }}</div></td>
+
+          <td class="gizle">
+            {% if "kış" in u.mevsim|lower or "kis" in u.mevsim|lower %}
+              <span class="mevsim-badge mv-kis">❄️ Kış</span>
+            {% elif "4" in u.mevsim %}
+              <span class="mevsim-badge mv-dort">{% include "karsilastirma/4mevsimico.svg" %} 4 Mev.</span>
             {% else %}
-              <span class="pill yaz">☀️ Yaz</span>
+              <span class="mevsim-badge mv-yaz">☀️ Yaz</span>
             {% endif %}
           </td>
-          <td class="hide-mobile">
-            <div style="display:flex; flex-direction:column; gap:0.3rem; align-items:flex-start;">
-              {% if "var" in s.stok|lower or "ok" in s.stok|lower or "+" in s.stok %}
-                <span class="pill stock-ok">{{ s.stok }}</span>
-              {% elif "yok" in s.stok|lower %}
-                <span class="pill stock-no">Tükendi</span>
-              {% else %}
-                <span class="pill stock-un">{{ s.stok }}</span>
+
+          <td class="gizle">
+            <span class="dot-val {% if not u.dot or u.dot == '0' %}dot-empty{% endif %}">
+              {% if u.dot and u.dot != "0" %}{{ u.dot }}{% else %}—{% endif %}
+            </span>
+          </td>
+
+          <td class="gizle">
+            {% if u.miktar == 0 %}
+              <span class="stok-yok">Yok</span>
+            {% elif u.miktar <= 4 %}
+              <span class="stok">Son {{ u.miktar }}</span>
+            {% else %}
+              <span class="stok">{{ u.miktar }} adet</span>
+            {% endif %}
+          </td>
+
+          <td class="fiyat-cell">
+            <div class="fiyat-ana {% if u.fiyat == en_ucuz_fiyat %}cheapest{% endif %}">
+              {{ u.fiyat_str }}
+            </div>
+          </td>
+
+          <td class="gizle" style="text-align:right">
+            {% for toptanci_adi, url in b2b_linkler.items %}
+              {% if toptanci_adi == u.toptanci %}
+                <a href="{{ url }}" target="_blank" class="b2b-btn">B2B</a>
               {% endif %}
-              <span style="font-weight:600; font-size:0.8rem; color:var(--text-muted)">DOT: {{ s.dot|default:"-" }}</span>
-            </div>
+            {% endfor %}
           </td>
-          <td style="text-align:right;">
-            <div class="price-amount {% if s.fiyat == en_ucuz_fiyat %}success{% endif %}">
-              {{ s.fiyat|floatformat:2 }} <span style="font-size:0.8rem; font-weight:600">{{ s.para_birimi }}</span>
-            </div>
-          </td>
-          <td style="text-align:center;">
-            <a href="{{ s.site_url }}" target="_blank" class="btn-action">Satın Al</a>
-          </td>
+
         </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
 
-  <!-- Görünen sonuç sayacı -->
-  <div id="visibleCount" style="text-align:center; color:var(--text-muted); font-size:0.9rem; font-weight:500; margin-top:-2rem; margin-bottom:2rem;"></div>
-
-  {% else %}
-
-  <div class="empty-box">
-    <div class="empty-icon">🏜️</div>
-    <h2>Sonuç Bulunamadı</h2>
-    <p>Seçtiğiniz <strong>{{ ebat }}</strong> ebatı ve filtrelere uygun ürün bulunamadı.</p>
-    <p style="color:var(--text-muted); font-size:0.95rem; margin-bottom:1.5rem;">
-      Toptancı sitelerine bağlanılamıyor olabilir veya bu ebat stokta bulunmuyor.<br>
-      Lütfen birkaç dakika sonra tekrar deneyin.
-    </p>
-    <a href="{% url 'arama' %}" class="btn-new" style="display:inline-flex; width:fit-content; margin:0 auto;">Yeni Arama Yap</a>
+  <div class="empty hidden" id="empty-state">
+    <div class="icon">🔍</div>
+    <p>Filtrelere uyan ürün bulunamadı</p>
   </div>
 
+  {% else %}
+  <div class="empty">
+    <div class="icon">🔍</div>
+    <p>{{ ebat }} için sonuç bulunamadı</p>
+    <a href="{% url 'arama' %}" style="display:inline-block;margin-top:1.5rem;background:var(--accent);border-radius:8px;padding:.65rem 1.25rem;color:#fff;font-weight:600;text-decoration:none;font-size:.875rem">← Tekrar Ara</a>
+  </div>
   {% endif %}
 
+</main>
 </div>
 
 <script>
-  let activeToptanci = 'all';
+let sortField = 'fiyat', sortDir = 1;
 
-  function filterByToptanci(toptanci) {
-    activeToptanci = toptanci;
-    // Chip toggle
-    document.querySelectorAll('.toptanci-chip').forEach(c => {
-      c.classList.toggle('active', c.dataset.toptanci === toptanci);
-    });
-    applyFilters();
-  }
+function getActiveValues(filterName) {
+  return [...document.querySelectorAll(`.filter-cb[data-filter="${filterName}"]:checked`)]
+    .map(cb => cb.dataset.value);
+}
 
-  function applyFilters() {
-    const markaVal = document.getElementById('markaFilter').value;
-    const rows = document.querySelectorAll('.sonuc-row');
-    let visible = 0;
+function applyFilters() {
+  const activeToptanci = getActiveValues('toptanci');
+  const activeMarka    = getActiveValues('marka');
+  const activeMevsim   = getActiveValues('mevsim');
+  const modelQ = document.getElementById('model-search').value.toLowerCase().trim();
+  const minDot = parseInt(document.getElementById('dot-filter').value) || 0;
 
-    rows.forEach(row => {
-      let show = true;
-      if (activeToptanci !== 'all' && row.dataset.toptanci !== activeToptanci) show = false;
-      if (markaVal !== 'all' && row.dataset.marka !== markaVal) show = false;
+  const rows = document.querySelectorAll('.data-row');
+  let visible = 0;
 
-      row.style.display = show ? '' : 'none';
-      if (show) visible++;
-    });
-
-    updateVisibleCount(visible, rows.length);
-    updateRanks();
-  }
-
-  function resetFilters() {
-    activeToptanci = 'all';
-    document.getElementById('markaFilter').value = 'all';
-    document.querySelectorAll('.toptanci-chip').forEach(c => {
-      c.classList.toggle('active', c.dataset.toptanci === 'all');
-    });
-    applyFilters();
-  }
-
-  function updateVisibleCount(visible, total) {
-    const el = document.getElementById('visibleCount');
-    if (visible < total) {
-      el.textContent = `${visible} / ${total} ürün gösteriliyor`;
-    } else {
-      el.textContent = '';
+  rows.forEach(row => {
+    const dotRaw = row.dataset.dot || '';
+    let dotOk = true;
+    if (minDot > 0) {
+      const m = dotRaw.match(/20\d{2}/);
+      if (m) dotOk = parseInt(m[0]) >= minDot;
     }
-  }
+    const ok =
+      activeToptanci.includes(row.dataset.toptanci) &&
+      activeMarka.includes(row.dataset.marka) &&
+      activeMevsim.some(mv => row.dataset.mevsim.toLowerCase().includes(mv.toLowerCase())) &&
+      (modelQ === '' || row.dataset.model.includes(modelQ)) &&
+      dotOk;
 
-  function updateRanks() {
-    let rank = 1;
-    document.querySelectorAll('.sonuc-row').forEach(row => {
-      if (row.style.display === 'none') return;
-      const rankEl = row.querySelector('.col-rank');
-      rankEl.className = 'col-rank' + (rank === 1 ? ' gold' : '');
-      rankEl.textContent = rank === 1 ? '🏆' : '#' + rank;
-      rank++;
-    });
-  }
+    row.classList.toggle('hidden', !ok);
+    if (ok) visible++;
+  });
+
+  document.getElementById('visible-count').textContent = visible;
+  document.getElementById('stat-count').textContent = visible;
+  document.getElementById('empty-state').classList.toggle('hidden', visible > 0);
+  const tw = document.querySelector('.tablo-wrap');
+  if (tw) tw.classList.toggle('hidden', visible === 0);
+
+  let idx = 1;
+  rows.forEach(row => {
+    if (!row.classList.contains('hidden')) row.querySelector('.sira').textContent = idx++;
+  });
+}
+
+function clearFilter(name) {
+  document.querySelectorAll(`.filter-cb[data-filter="${name}"]`).forEach(cb => cb.checked = true);
+  applyFilters();
+}
+
+function filterMarkalar(q) {
+  const lower = q.toLowerCase();
+  document.querySelectorAll('.marka-filter-item').forEach(item => {
+    item.style.display = item.querySelector('label').textContent.toLowerCase().includes(lower) ? '' : 'none';
+  });
+}
+
+function sortBy(field) {
+  if (sortField === field) sortDir *= -1; else { sortField = field; sortDir = 1; }
+  document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sort-' + field)?.classList.add('active');
+  const tbody = document.getElementById('table-body');
+  const rows = [...tbody.querySelectorAll('.data-row')];
+  rows.sort((a, b) => {
+    if (field === 'fiyat') return (parseFloat(a.dataset.fiyat) - parseFloat(b.dataset.fiyat)) * sortDir;
+    return a.dataset[field].localeCompare(b.dataset[field], 'tr') * sortDir;
+  });
+  rows.forEach(r => tbody.appendChild(r));
+  applyFilters();
+}
+
+// Başlangıç filtreleri
+const initialMevsim = "{{ mevsim }}";
+if (initialMevsim) {
+  document.querySelectorAll('.filter-cb[data-filter="mevsim"]').forEach(cb => {
+    cb.checked = cb.dataset.value.toLowerCase() === initialMevsim.toLowerCase();
+  });
+  applyFilters();
+}
+const initialDot = "{{ min_dot }}";
+if (initialDot) {
+  const ds = document.getElementById('dot-filter');
+  if (ds) { ds.value = initialDot; applyFilters(); }
+}
 </script>
-
 </body>
 </html>

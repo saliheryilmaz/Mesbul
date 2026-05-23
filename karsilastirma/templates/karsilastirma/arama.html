@@ -3,378 +3,323 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lastik Fiyat Karşılaştırma</title>
+<title>Lastik Fiyat Ara</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
   :root {
-    --bg-color: #f8fafc;
-    --card-bg: #ffffff;
-    --text-main: #0f172a;
-    --text-muted: #64748b;
-    --border: #e2e8f0;
-    --primary: #3b82f6;
-    --primary-hover: #2563eb;
-    --primary-glow: rgba(59, 130, 246, 0.4);
-    --secondary: #8b5cf6;
-    --danger-bg: #fee2e2;
-    --danger-text: #ef4444;
-    --radius-xl: 24px;
-    --radius-lg: 16px;
-    --radius-md: 12px;
-    --shadow-soft: 0 20px 40px -15px rgba(15, 23, 42, 0.08);
+    --bg:       #f0f2f5;
+    --surface:  #ffffff;
+    --border:   #e2e6ea;
+    --accent:   #e85d26;
+    --accent-h: #c94d1a;
+    --text:     #1a1d2e;
+    --muted:    #6b7280;
+    --green:    #16a34a;
+    --orange:   #ea580c;
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    background-color: var(--bg-color);
-    color: var(--text-main);
+    background: var(--bg);
+    color: var(--text);
     font-family: 'Inter', sans-serif;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
-    overflow-x: hidden;
+    padding: 2rem 1rem;
   }
 
-  /* Soft light background effects */
-  body::before {
-    content: '';
-    position: fixed;
-    top: -10%; left: -10%;
-    width: 60vw; height: 60vw;
-    background: radial-gradient(circle, rgba(59,130,246,0.1) 0%, rgba(248,250,252,0) 70%);
-    z-index: -1;
-  }
-  body::after {
-    content: '';
-    position: fixed;
-    bottom: -10%; right: -10%;
-    width: 60vw; height: 60vw;
-    background: radial-gradient(circle, rgba(139,92,246,0.1) 0%, rgba(248,250,252,0) 70%);
-    z-index: -1;
-  }
+  .wrapper { width: 100%; max-width: 560px; }
 
-  .main-container {
-    width: 100%;
-    max-width: 600px;
-    animation: slideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  @keyframes slideUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .hero {
+  /* Logo */
+  .logo {
     text-align: center;
     margin-bottom: 2.5rem;
   }
-  .hero-icon {
-    width: 64px; height: 64px;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    color: white;
-    border-radius: 20px;
+  .logo-icon {
+    width: 56px; height: 56px;
+    background: linear-gradient(135deg, var(--accent), #c94d1a);
+    border-radius: 16px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 2rem;
-    margin: 0 auto 1.5rem auto;
-    box-shadow: 0 10px 25px var(--primary-glow);
-    transform: rotate(-5deg);
+    font-size: 1.6rem;
+    margin: 0 auto 1rem;
+    box-shadow: 0 4px 12px rgba(232,93,38,.3);
   }
-  .hero h1 {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 3rem;
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    color: var(--text-main);
-    margin-bottom: 0.5rem;
+  .logo h1 {
+    font-size: 1.8rem; font-weight: 700;
+    letter-spacing: -0.02em;
   }
-  .hero h1 span {
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  .hero p {
-    color: var(--text-muted);
-    font-size: 1.1rem;
-    font-weight: 500;
+  .logo p {
+    color: var(--muted);
+    font-size: 0.875rem;
+    margin-top: 0.3rem;
   }
 
-  .search-box {
-    background: var(--card-bg);
-    border-radius: var(--radius-xl);
-    padding: 2.5rem;
-    box-shadow: var(--shadow-soft);
-    border: 1px solid rgba(255, 255, 255, 0.8);
+  /* Aktif toptancı badge */
+  .toptanci-badges {
+    display: flex; justify-content: center; gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+  .badge {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    background: rgba(22,163,74,.08);
+    border: 1px solid rgba(22,163,74,.2);
+    border-radius: 20px;
+    padding: 0.3rem 0.8rem;
+    font-size: 0.75rem; font-weight: 500;
+    color: #15803d;
+  }
+  .badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: #16a34a;
+    border-radius: 50%;
+    display: inline-block;
   }
 
-  .form-group { margin-bottom: 1.5rem; }
-  .form-label {
+  /* Kart */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+  }
+
+  .field { margin-bottom: 1.25rem; }
+
+  label {
     display: block;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--text-main);
+    font-size: 0.8rem; font-weight: 500;
+    color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
     margin-bottom: 0.5rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
   }
-  .form-label span { color: var(--primary); }
 
-  .form-control {
+  input, select {
     width: 100%;
-    background: #f1f5f9;
-    border: 2px solid transparent;
-    border-radius: var(--radius-lg);
-    padding: 1rem 1.25rem;
-    font-size: 1.1rem;
-    color: var(--text-main);
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-weight: 600;
-    transition: all 0.2s ease;
+    background: #f9fafb;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
     outline: none;
+    transition: border-color .15s, box-shadow .15s;
   }
-  .form-control::placeholder {
-    color: #94a3b8;
-    font-weight: 500;
+  input:focus, select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(232,93,38,.12);
   }
-  .form-control:focus {
-    background: #ffffff;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
-  }
-  
-  select.form-control {
-    appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 1.25rem center;
-    background-size: 1em;
-    cursor: pointer;
+  input::placeholder { color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+  select option { background: #fff; }
+
+  .hint {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 0.4rem;
   }
 
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
-  .field-hint {
-    color: var(--text-muted);
-    font-size: 0.82rem;
-    line-height: 1.45;
-    margin-top: 0.45rem;
-  }
-  .helper-strip {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.55rem;
-    margin: -0.5rem 0 1.4rem;
-  }
-  .quick-size {
-    border: 1px solid var(--border);
-    background: #fff;
-    color: var(--text-muted);
-    border-radius: 999px;
-    padding: 0.45rem 0.8rem;
-    font-size: 0.8rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.18s ease;
-  }
-  .quick-size:hover {
-    border-color: var(--primary);
-    color: var(--primary);
-    transform: translateY(-1px);
-  }
-
-  .btn-submit {
+  /* Custom mevsim dropdown */
+  .custom-select { position: relative; }
+  .custom-select-trigger {
     width: 100%;
-    background: var(--text-main);
-    color: #ffffff;
-    border: none;
-    border-radius: var(--radius-lg);
-    padding: 1.2rem;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 1.1rem;
-    font-weight: 700;
+    background: #f9fafb;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
     cursor: pointer;
-    margin-top: 1rem;
-    transition: all 0.2s;
-    display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+    display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
+    transition: border-color .15s, box-shadow .15s;
+    user-select: none;
   }
-  .btn-submit:hover {
-    background: var(--primary);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px var(--primary-glow);
+  .custom-select-trigger:hover,
+  .custom-select.open .custom-select-trigger {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(232,93,38,.12);
   }
-  .btn-submit[disabled] {
-    opacity: 0.72;
-    cursor: wait;
-    transform: none;
+  .custom-select-trigger .arrow {
+    color: var(--muted); font-size: 0.7rem;
+    transition: transform .2s;
   }
+  .custom-select.open .arrow { transform: rotate(180deg); }
 
-  .loading-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 50;
+  .custom-select-dropdown {
     display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 1.5rem;
-    background: rgba(248,250,252,0.92);
-    backdrop-filter: blur(10px);
-  }
-  .loading-overlay.active { display: flex; }
-  .loading-panel {
-    width: min(460px, 100%);
-    background: #fff;
+    position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+    background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-soft);
-    padding: 2rem;
-    text-align: center;
+    border-radius: 10px;
+    overflow: hidden;
+    z-index: 50;
+    box-shadow: 0 8px 24px rgba(0,0,0,.12);
   }
-  .loader-ring {
-    width: 54px;
-    height: 54px;
-    border: 5px solid #dbeafe;
-    border-top-color: var(--primary);
-    border-radius: 50%;
-    margin: 0 auto 1.25rem;
-    animation: spin 0.9s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .loading-title {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 1.25rem;
-    font-weight: 800;
-    margin-bottom: 0.5rem;
-  }
-  .loading-text {
-    color: var(--text-muted);
-    line-height: 1.55;
-    font-weight: 500;
-  }
-  .loading-steps {
-    display: grid;
-    gap: 0.5rem;
-    margin-top: 1.25rem;
-    text-align: left;
-  }
-  .loading-step {
-    background: #f8fafc;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    color: var(--text-muted);
+  .custom-select.open .custom-select-dropdown { display: block; }
+
+  .custom-option {
+    display: flex; align-items: center; gap: 0.6rem;
+    padding: 0.7rem 1rem;
+    cursor: pointer;
     font-size: 0.9rem;
-    padding: 0.65rem 0.8rem;
+    color: var(--text);
+    transition: background .1s;
   }
+  .custom-option:hover { background: #f3f4f6; }
+  .custom-option.selected { background: #fff7f4; color: var(--accent); font-weight: 500; }
+  .custom-option .opt-icon { width: 20px; text-align: center; flex-shrink: 0; }
+  /* hidden real input */
+  .custom-select input[type=hidden] { display: none; }
 
+  /* Buton */
+  .btn {
+    width: 100%; margin-top: 0.5rem;
+    background: var(--accent);
+    border: none; border-radius: 10px;
+    padding: 0.85rem;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem; font-weight: 600;
+    cursor: pointer;
+    transition: background .15s, transform .1s;
+  }
+  .btn:hover  { background: var(--accent-h); }
+  .btn:active { transform: scale(.98); }
+
+  /* Hata */
   .hata {
-    background: var(--danger-bg);
-    color: var(--danger-text);
-    padding: 1rem 1.2rem;
-    border-radius: var(--radius-md);
-    margin-bottom: 1.5rem;
-    font-weight: 500;
-    display: flex; align-items: center; gap: 0.5rem;
+    background: #fef2f2; border: 1px solid #fecaca;
+    border-radius: 10px; padding: 0.75rem 1rem;
+    color: #dc2626; font-size: 0.875rem;
+    margin-bottom: 1.25rem;
   }
 
-  .recent-wrapper { margin-top: 2rem; text-align: center; }
-  .recent-title {
-    font-size: 0.8rem; font-weight: 600; color: var(--text-muted);
-    text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem;
+  /* Son aramalar */
+  .gecmis { margin-top: 1.5rem; }
+  .gecmis-baslik {
+    font-size: 0.75rem; font-weight: 500;
+    color: var(--muted); text-transform: uppercase;
+    letter-spacing: 0.06em; margin-bottom: 0.6rem;
   }
-  .recent-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
-  .tag {
-    background: #ffffff;
-    border: 1px solid var(--border);
-    padding: 0.5rem 1rem;
-    border-radius: 100px;
-    font-size: 0.85rem; font-weight: 500; color: var(--text-muted);
-    cursor: pointer; transition: all 0.2s;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+  .gecmis-liste { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .gecmis-chip {
+    background: #f3f4f6; border: 1px solid var(--border);
+    border-radius: 8px; padding: 0.3rem 0.65rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem; color: var(--muted);
+    cursor: pointer; transition: all .15s;
   }
-  .tag:hover {
-    border-color: var(--primary); color: var(--primary);
-    transform: translateY(-2px); box-shadow: 0 4px 10px rgba(59,130,246,0.1);
+  .gecmis-chip:hover {
+    border-color: var(--accent); color: var(--accent); background: #fff7f4;
   }
-
-  @media (max-width: 600px) {
-    body { padding: 1rem; justify-content: flex-start; }
-    .hero h1 { font-size: 2.25rem; }
-    .search-box { padding: 1.4rem; }
-    .grid-2 { grid-template-columns: 1fr; }
-  }
-
 </style>
 </head>
 <body>
 
-<div class="main-container">
-  
-  <div class="hero">
-    <div class="hero-icon">
-      <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-    </div>
-    <h1>Lastik<span>Fiyat</span></h1>
-    <p>B2B Sistemlerinde Akıllı Arama Motoru</p>
+<div class="wrapper">
+
+  <div class="logo">
+    <div class="logo-icon">🔍</div>
+    <h1>MesBul</h1>
+    <p>Toptancı fiyatlarını tek ekranda karşılaştır</p>
   </div>
 
-  <div class="search-box">
+  <div class="toptanci-badges">
+    <span class="badge">USPA Lastik</span>
+    <span class="badge">Keskin Lastik</span>
+    <span class="badge">OtoSemih</span>
+  </div>
+
+  <div class="card">
     {% if hata %}
-    <div class="hata">
-      <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-      {{ hata }}
-    </div>
+      <div class="hata">⚠️ {{ hata }}</div>
     {% endif %}
 
-    <form method="POST" action="{% url 'sonuclar' %}" id="searchForm">
+    <form method="POST" action="{% url 'sonuclar' %}">
       {% csrf_token %}
-      
-      <div class="form-group">
-        <label class="form-label">Lastik Ebatı <span>*</span></label>
-        <input type="text" name="ebat" class="form-control" placeholder="Örn: 205/55R16" required autocomplete="off" inputmode="numeric">
-        <div class="field-hint">2055516, 205/55/16 veya 205/55R16 yazabilirsiniz.</div>
-      </div>
 
-      <div class="helper-strip" aria-label="Hızlı ebat seçenekleri">
-        <button type="button" class="quick-size" data-size="205/55R16">205/55R16</button>
-        <button type="button" class="quick-size" data-size="195/65R15">195/65R15</button>
-        <button type="button" class="quick-size" data-size="225/45R17">225/45R17</button>
-        <button type="button" class="quick-size" data-size="215/55R17">215/55R17</button>
+      <div class="field">
+        <label>Lastik Ebatı *</label>
+        <input
+          type="text"
+          name="ebat"
+          placeholder="205/55R16"
+          autocomplete="off"
+          autofocus
+          required
+        >
+        <div class="hint">→ 205/55R16 &nbsp; 225/45R17 &nbsp; 195/65R15</div>
       </div>
 
       <div class="grid-2">
-        <div class="form-group">
-          <label class="form-label">Marka <span>(İsteğe Bağlı)</span></label>
-          <input type="text" name="marka" class="form-control" placeholder="Örn: Continental">
+        <div class="field">
+          <label>Marka</label>
+          <input type="text" name="marka" placeholder="Continental...">
         </div>
-        <div class="form-group">
-          <label class="form-label">Mevsim</label>
-          <select name="mevsim" class="form-control">
-            <option value="Tümü">Tüm Mevsimler</option>
-            <option value="Yaz">☀️ Yazlık</option>
-            <option value="Kış">❄️ Kışlık</option>
-            <option value="4 Mevsim">🌀 Dört Mevsim</option>
-          </select>
+        <div class="field">
+          <label>Mevsim</label>
+          <div class="custom-select" id="mevsim-select">
+            <input type="hidden" name="mevsim" id="mevsim-value" value="">
+            <div class="custom-select-trigger" onclick="toggleSelect()">
+              <span id="mevsim-label">Tümü</span>
+              <span class="arrow">▼</span>
+            </div>
+            <div class="custom-select-dropdown" id="mevsim-dropdown">
+              <div class="custom-option selected" data-value="" onclick="selectMevsim(this)">
+                <span class="opt-icon">🔍</span> Tümü
+              </div>
+              <div class="custom-option" data-value="Yaz" onclick="selectMevsim(this)">
+                <span class="opt-icon">☀️</span> Yaz
+              </div>
+              <div class="custom-option" data-value="Kış" onclick="selectMevsim(this)">
+                <span class="opt-icon">❄️</span> Kış
+              </div>
+              <div class="custom-option" data-value="4 Mevsim" onclick="selectMevsim(this)">
+                <span class="opt-icon opt-svg" id="dort-icon"></span> 4 Mevsim
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <button type="submit" class="btn-submit" id="submitBtn">
-        <span id="submitText">Sonuçları Getir</span>
-        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-      </button>
+      <div class="field">
+        <label>Min. Üretim Yılı (DOT)</label>
+        <select name="min_dot" style="background:#f9fafb">
+          <option value="">Fark etmez</option>
+          <option value="2026">2026</option>
+          <option value="2025">2025 ve üzeri</option>
+          <option value="2024">2024 ve üzeri</option>
+          <option value="2023">2023 ve üzeri</option>
+          <option value="2022">2022 ve üzeri</option>
+        </select>
+        <div class="hint">→ Seçilen yıldan eski DOT'lu ürünler filtrelenir</div>
+      </div>
+
+      <button type="submit" class="btn">Fiyatları Getir</button>
     </form>
   </div>
 
   {% if gecmis %}
-  <div class="recent-wrapper">
-    <div class="recent-title">Geçmiş Aramalar</div>
-    <div class="recent-tags">
+  <div class="gecmis">
+    <div class="gecmis-baslik">Son Aramalar</div>
+    <div class="gecmis-liste">
       {% for g in gecmis %}
-        <div class="tag" onclick="document.querySelector('[name=ebat]').value='{{ g.ebat }}'">
-          {{ g.ebat }}{% if g.marka %} - {{ g.marka }}{% endif %}
-        </div>
+        <span class="gecmis-chip"
+          data-ebat="{{ g.ebat }}"
+          data-marka="{{ g.marka }}"
+          onclick="gecmisSecim(this)">
+          {{ g.ebat }}{% if g.marka %} · {{ g.marka }}{% endif %}
+        </span>
       {% endfor %}
     </div>
   </div>
@@ -382,40 +327,35 @@
 
 </div>
 
-<div class="loading-overlay" id="loadingOverlay" role="status" aria-live="polite">
-  <div class="loading-panel">
-    <div class="loader-ring"></div>
-    <div class="loading-title">Toptancılar taranıyor</div>
-    <div class="loading-text">
-      Canlı stok ve fiyat bilgileri alınıyor. Bu işlem genelde 1-2 dakika sürer.
-    </div>
-    <div class="loading-steps">
-      <div class="loading-step">1. Bayi portallarına giriş yapılıyor</div>
-      <div class="loading-step">2. Seçtiğiniz ebat için stoklar okunuyor</div>
-      <div class="loading-step">3. Sonuçlar fiyat sıralamasına hazırlanıyor</div>
-    </div>
-  </div>
-</div>
-
 <script>
-  const form = document.getElementById('searchForm');
-  const submitBtn = document.getElementById('submitBtn');
-  const submitText = document.getElementById('submitText');
-  const overlay = document.getElementById('loadingOverlay');
-  const ebatInput = document.querySelector('[name="ebat"]');
+function gecmisSecim(el) {
+  document.querySelector('[name=ebat]').value = el.dataset.ebat || '';
+  const marka = el.dataset.marka || '';
+  if (marka) document.querySelector('[name=marka]').value = marka;
+}
 
-  document.querySelectorAll('.quick-size').forEach(btn => {
-    btn.addEventListener('click', () => {
-      ebatInput.value = btn.dataset.size;
-      ebatInput.focus();
-    });
-  });
+// SVG ikonunu JS ile ekle (inline SVG'yi template'e gömmek yerine)
+document.getElementById('dort-icon').innerHTML = '<svg viewBox="-465 266.7 28.4 28.3" xmlns="http://www.w3.org/2000/svg" width="18" height="18"><style>.s0{fill:#3FA6EE}.s1{fill:#FDDE0A}</style><g><g><g><path class="s0" d="M-446.5,285.6c0-0.1,0-0.2,0.1-0.2s0.2,0,0.2,0.1c0.1,0.2,0.3,0.3,0.4,0.5c0.1,0.1,0.1,0.1,0.2,0.2s0.2,0.2,0.4,0.4c0.1,0.1,0.1,0.1,0.1,0.2c0,0.8,0,1.7,0,2.5c0,0.2,0.1,0.3,0.3,0.3c0.2,0,0.2-0.1,0.2-0.3c0-0.1,0-0.2,0-0.2c0-0.5,0-0.9,0-1.4c0-0.1,0-0.2,0.1-0.2s0.2,0,0.2,0.1l0.1,0.1c0.4,0.4,0.8,0.8,1.3,1.3c0.2,0,0.3-0.1,0.4-0.2c0.1-0.2,0-0.3-0.1-0.4c-0.4-0.4-0.9-0.9-1.3-1.3c-0.1-0.1-0.1-0.2-0.1-0.3c0.1-0.1,0.2-0.1,0.2-0.1c0.5,0,1.1,0,1.6,0c0.1,0,0.2-0.1,0.2-0.2c0-0.2-0.1-0.3-0.3-0.3c-0.8,0-1.6,0-2.4,0c-0.1,0-0.2,0-0.3-0.1c-0.2-0.2-0.5-0.5-0.7-0.7c-0.1-0.1-0.2-0.2-0.3-0.3c-0.1-0.1-0.1-0.2-0.1-0.2c0-0.1,0.1-0.1,0.2-0.1c0.3,0,0.6,0,0.9,0c0.7,0,1.4,0,2.1,0c0.1,0,0.2-0.1,0.2-0.2s0-0.3,0-0.4s-0.1-0.2-0.2-0.2c-0.4,0-0.8,0-1.2,0.1c-0.9,0.1-1.8,0.1-2.8,0.2c-0.1,0-0.1,0-0.2-0.1c-0.4-0.4-0.7-0.7-1.1-1.1c-0.1-0.1-0.1-0.1,0-0.2c0-0.1,0.1-0.1,0.2-0.1h0.1c1.4,0,2.8,0,4.2,0c0.2,0,0.3-0.1,0.4-0.3c0.1-0.2,0.1-0.3,0-0.5s-0.2-0.2-0.4-0.2c-0.4,0-0.8,0.1-1.2,0.1c-0.7,0.1-1.5,0.1-2.2,0.2c-0.6,0-1.1,0.1-1.7,0.1c-0.2,0-0.3,0-0.4-0.1l-0.1-0.1l-0.1-0.1c0-0.1,0.1-0.2,0.2-0.2c0.3,0,0.7,0,1,0c0.6,0,1.3-0.1,1.9-0.1c1.1-0.1,2.1-0.1,3.2-0.2c0.1,0,0.1,0,0.1,0.1c0.3,0.3,0.5,0.6,0.8,0.9c0.6,0.7,1.2,1.3,1.8,2c0.1,0.1,0.2,0.2,0.4,0c0.1-0.1,0.2-0.1,0.2-0.3c0.1-0.1,0-0.2-0.1-0.3c-0.4-0.4-0.8-0.8-1.3-1.3c-0.3-0.3-0.6-0.6-0.9-0.9c-0.1-0.1-0.1-0.2-0.1-0.3c0-0.1,0.1-0.1,0.2-0.1c0.5,0,0.9,0,1.4,0c0.1,0,0.2,0,0.2,0.1c0.2,0.2,0.4,0.3,0.5,0.5c0.4,0.4,0.8,0.8,1.3,1.3c0.1,0.1,0.3,0.1,0.4,0s0.1-0.2,0-0.4c-0.4-0.4-0.7-0.7-1.1-1.1c-0.1-0.1-0.1-0.2-0.1-0.3c0-0.1,0.1-0.1,0.3-0.1c0.6,0,1.3,0,1.9,0c0.2,0,0.4-0.1,0.4-0.4c0-0.2-0.1-0.4-0.4-0.4c-0.6,0-1.3,0-1.9,0c-0.1,0-0.2,0-0.3-0.1c0-0.1,0-0.2,0.1-0.3c0.4-0.4,0.7-0.7,1.1-1.1c0.1-0.1,0.1-0.1,0.1-0.2c-0.1-0.2-0.3-0.3-0.5-0.1c-0.6,0.6-1.1,1.1-1.7,1.7c-0.1,0.1-0.1,0.1-0.2,0.1c-0.5,0-0.9,0-1.4,0c-0.1,0-0.2,0-0.2-0.1s0-0.2,0.1-0.3c0.2-0.2,0.4-0.3,0.5-0.5c0.5-0.5,1.1-1.1,1.6-1.6c0,0,0.1-0.1,0.1-0.2s-0.1-0.4-0.3-0.4c-0.2-0.1-0.2-0.1-0.3,0.1c-0.8,0.9-1.7,1.9-2.5,2.8c-0.1,0.1-0.1,0.1-0.2,0.1c-0.9,0-1.8-0.1-2.7-0.1c-1.1-0.1-2.2-0.1-3.4-0.2c-0.1,0-0.1-0.1-0.2-0.2c0-0.1,0-0.1,0.1-0.1l0.1-0.1c0.1-0.1,0.2-0.2,0.4-0.1c0.3,0,0.7,0.1,1,0.1c0.6,0.1,1.3,0.1,1.9,0.2c0.7,0.1,1.5,0.1,2.2,0.2c0.1,0,0.2,0,0.3-0.2c0.1-0.1,0.1-0.3,0.1-0.5c-0.1-0.3-0.2-0.3-0.4-0.3c-0.1,0-0.3,0-0.4,0c-1.3,0-2.5,0-3.8,0c-0.1,0-0.2,0-0.2-0.1s0-0.2,0.1-0.3c0.3-0.3,0.6-0.6,1-1c0.1-0.1,0.2-0.1,0.3-0.1c0.7,0,1.4,0.1,2.1,0.1c0.6,0,1.1,0.1,1.7,0.1c0.1,0,0.2,0,0.2-0.1c0.1-0.2,0.1-0.3,0-0.5c0-0.1-0.1-0.1-0.2-0.1c-0.3,0-0.5,0-0.8,0c-0.5,0-1,0-1.5,0c-0.2,0-0.4,0-0.6,0c-0.2,0-0.3-0.1-0.3-0.1c-0.1-0.1,0-0.2,0.1-0.3c0.3-0.3,0.6-0.6,0.9-0.9c0.1-0.1,0.3-0.2,0.4-0.2c0.8,0,1.6,0,2.4,0c0.2,0,0.3-0.1,0.3-0.3c0-0.2-0.1-0.3-0.3-0.3c-0.5,0-1,0-1.6,0c-0.1,0-0.2,0-0.2-0.1s0-0.2,0.1-0.3c0.5-0.5,0.9-0.9,1.4-1.4c0.1-0.1,0.1-0.3,0-0.4c-0.1-0.2-0.3-0.2-0.4-0.2s-0.2,0.1-0.2,0.2c-0.4,0.4-0.8,0.8-1.3,1.3c-0.1,0.1-0.1,0.1-0.3,0.1c-0.1-0.1-0.1-0.1-0.1-0.3c0-0.5,0-1.1,0-1.6c0-0.1,0-0.2-0.2-0.2c-0.2-0.1-0.3,0-0.3,0.3c0,0.8,0,1.7,0,2.5c0,0.1,0,0.2-0.1,0.2c-0.2,0.1-0.3,0.3-0.5,0.5s-0.4,0.4-0.6,0.6c-0.1,0.1-0.2,0.1-0.3,0.1c-0.1,0-0.1-0.1-0.1-0.2v-0.1c0-1,0-1.9,0-2.9c0-0.2,0-0.2-0.2-0.3c-0.1,0-0.3,0-0.4,0s-0.1,0.1-0.1,0.2c0,0.5,0,0.9,0.1,1.4c0,0.9,0.1,1.7,0.1,2.6c0,0.1,0,0.2-0.1,0.2c-0.1,0.1-0.3,0.3-0.4,0.4c-0.2,0.2-0.4,0.4-0.6,0.6c-0.1,0.1-0.2,0.1-0.3,0.1c-0.1-0.1-0.1-0.1-0.1-0.2c0-1.4,0-2.8,0-4.2c0-0.3-0.1-0.4-0.4-0.5c-0.4-0.1-0.6,0.1-0.6,0.5c0.1,0.6,0.1,1.3,0.2,1.9c0,0.5,0.1,0.9,0.1,1.4s0.1,1.1,0.2,1.6c0,0.2,0,0.4-0.2,0.6l-0.1,0.1c-0.1,0-0.2,0-0.2-0.2c0-0.7-0.1-1.4-0.1-2c0-0.7-0.1-1.3-0.1-2s-0.1-1.4-0.1-2.1c0-0.1,0-0.1,0.1-0.1c0.3-0.2,0.5-0.5,0.8-0.7c0.7-0.6,1.4-1.3,2.1-1.9c0.2-0.2,0.2-0.3,0-0.4c0-0.1-0.1-0.1-0.2-0.1c-0.1-0.1-0.2-0.1-0.3,0c-0.3,0.3-0.6,0.6-0.9,0.9c-0.4,0.4-0.9,0.9-1.3,1.3c-0.1,0.1-0.1,0.1-0.2,0.1s-0.1-0.1-0.1-0.2c0-0.5,0-1,0-1.5c0-0.1,0-0.1,0.1-0.2c0.2-0.2,0.5-0.5,0.7-0.7c0.4-0.4,0.7-0.7,1.1-1.1c0.1-0.1,0.1-0.2,0.1-0.3c-0.1-0.2-0.3-0.2-0.4-0.1c-0.4,0.4-0.8,0.8-1.1,1.1c-0.1,0.1-0.2,0.1-0.3,0c-0.1,0-0.1-0.1-0.1-0.2c0-0.6,0-1.3,0-1.9c0-0.1,0-0.2-0.1-0.3c-0.1,0-0.2-0.1-0.2-0.1s0,0.1,0,0.2c0,4.3,0,8.5,0,12.8c0,0.1,0,0.1,0.1,0.1c0.2,0,0.4,0.1,0.6,0.2c0.3,0.3,0.4,0.6,0.3,1s-0.4,0.7-0.8,0.7c-0.1,0-0.1,0.1-0.1,0.2c0,4.3,0,8.5,0,12.8v0.1c0,0.1,0,0.1,0.1,0.1c0.2,0,0.3-0.2,0.3-0.4c0-0.6,0-1.3,0-1.9c0-0.1,0-0.2,0.1-0.2s0.2,0,0.2,0.1c0.4,0.4,0.8,0.8,1.1,1.1c0.1,0.1,0.2,0.1,0.4,0c0.1-0.1,0.1-0.2,0-0.4c-0.6-0.6-1.2-1.2-1.8-1.8c-0.1-0.1-0.1-0.1-0.1-0.2c0-0.5,0-1,0-1.5c0-0.1,0-0.2,0.1-0.2s0.2,0,0.2,0.1c0.2,0.2,0.5,0.5,0.7,0.7c0.5,0.5,1,1,1.4,1.4c0.1,0.1,0.2,0.1,0.3,0.1c0.1-0.1,0.2-0.2,0.3-0.3c0-0.1,0-0.2-0.1-0.3c-0.3-0.2-0.5-0.5-0.8-0.7c-0.7-0.6-1.4-1.3-2.2-1.9c-0.1-0.1-0.1-0.1-0.1-0.2c0-0.9,0.1-1.7,0.1-2.6c0.1-1.2,0.1-2.3,0.2-3.5c0-0.1,0.1-0.2,0.2-0.2s0.1,0,0.2,0.1l0.1,0.1c0.1,0,0.1,0.1,0.1,0.2s0,0.3,0,0.4c-0.1,1-0.2,1.9-0.2,2.9c-0.1,0.6-0.1,1.3-0.2,1.9c0,0.3,0.1,0.4,0.3,0.5c0.4,0.1,0.6-0.1,0.6-0.5c0-1.1,0-2.1,0-3.2c0-0.4,0-0.7,0-1.1c0-0.1,0-0.2,0.1-0.2s0.2,0,0.3,0.1c0.3,0.3,0.7,0.7,1,1c0.1,0.1,0.1,0.1,0.1,0.2c0,0.7-0.1,1.4-0.1,2.1c0,0.6-0.1,1.2-0.1,1.9c0,0.1,0,0.1,0.1,0.2c0.2,0.1,0.5,0.1,0.6-0.1"/></g></g><g><path class="s1" d="M-458.7,280.1c0-4.7,3.1-8.4,7.3-8.4V269c-0.9,1-1.3,0.9-2.3-0.2c-0.6-0.7-1.2-1.5-1.6-2c0,0.8,0,1.7-0.1,2.7c-0.2,1.4-1.1,2.2-2.4,2c-0.8-0.1-1.6-0.4-2.4-0.7c-0.4-0.1-0.8-0.4-1.3-0.6c0.4,0.7,0.8,1.2,1.1,1.7c1.4,2.4,0.7,4.4-1.8,5c-0.7,0.1-1.3,0.3-2,0.4c0.7,0.2,1.5,0.4,2.2,0.7c1.9,0.8,2.2,2.1,0.8,3.8c-0.7,0.6-1.3,1.3-1.9,1.9c0.9,0.1,1.9,0.2,2.9,0.5c1.2,0.3,1.8,1.5,1.5,2.8c-0.2,0.8-0.4,1.5-0.8,2.2c-0.3,0.6-0.7,1.2-1,1.8c0.2,0,0.4-0.2,0.5-0.3c1-0.5,2-1,3-1.4c0.8-0.3,1.6,0.1,1.9,0.9c0.3,0.7,0.5,1.6,0.6,2.4s0,1.6,0,2.3c0.5-0.9,1.3-1.9,2-2.8c0.8-1.1,0.6-1.4,1.5-1.1v-2.5C-455.6,288.5-458.7,284.7-458.7,280.1z"/><path class="s1" d="M-451.3,287.2V273c-3.5,0-6.2,3.2-6.2,7.1C-457.5,284-454.9,287.2-451.3,287.2z"/></g></g></svg>';
 
-  form.addEventListener('submit', () => {
-    submitBtn.disabled = true;
-    submitText.textContent = 'Aranıyor...';
-    overlay.classList.add('active');
-  });
+function toggleSelect() {
+  document.getElementById('mevsim-select').classList.toggle('open');
+}
+
+function selectMevsim(el) {
+  const value = el.dataset.value;
+  const label = el.textContent.trim();
+  document.getElementById('mevsim-value').value = value;
+  document.getElementById('mevsim-label').textContent = label;
+  document.querySelectorAll('#mevsim-dropdown .custom-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('mevsim-select').classList.remove('open');
+}
+
+// Dışarı tıklayınca kapat
+document.addEventListener('click', function(e) {
+  const sel = document.getElementById('mevsim-select');
+  if (!sel.contains(e.target)) sel.classList.remove('open');
+});
 </script>
 
 </body>

@@ -1,258 +1,243 @@
 """
-OtoSemih B2B scraper.
+OtoSemih XML Scraper
+Site: https://www.otosemih.com.tr
+Yöntem: XML API (login gerektirmez)
 
-The site uses a GridJS table. Its search box can return a broad result set
-for sizes such as 205/55R16, so this scraper visits every GridJS page and
-then applies our exact tyre-size matcher locally.
+XML URL: https://www.otosemih.com.tr/outputxml/index.php?xml_service_id=4
+XML yapısı:
+  <urun>
+    <ureticistokkodu><![CDATA[ DAYTON 11015 ]]></ureticistokkodu>
+    <urunismi><![CDATA[ DAYTON 185/65R15 88H TOURING2 YAZLIK ]]></urunismi>
+    <stokadedi><![CDATA[ 16 ]]></stokadedi>
+    <kdvdahilfiyati><![CDATA[ 2664.00 ]]></kdvdahilfiyati>
+    <urunaciklamasi><![CDATA[ ...Mevsim: Yaz... ]]></urunaciklamasi>
+    <urununbulundugudepobilgisi>SAKARYA</urununbulundugudepobilgisi>
+    <dottarihi><![CDATA[ ]]></dottarihi>
+    <ureticikodu><![CDATA[ D11015 ]]></ureticikodu>
+  </urun>
+
+NOTLAR:
+  - Marka ayrı alan yok → urunismi'nin ilk kelimesi marka
+  - Mevsim ayrı alan yok → urunismi'nde YAZLIK/KISLIK veya urunaciklamasi'nda
+  - Fiyat KDV dahil (kdvdahilfiyati)
 """
-import logging
 import re
+import html
 import time
-
-from playwright.sync_api import Page
+import logging
+import requests
+import xml.etree.ElementTree as ET
 
 from .base import BaseScraper, LastikSonuc, _ebat_eslesir
 
 logger = logging.getLogger(__name__)
 
-LOGIN_URL = "https://portal.otosemih.com/giris"
-HOME_URL = "https://portal.otosemih.com"
-LASTIK_URL = "https://portal.otosemih.com/urunler/lastik/"
+OTOSEMIH_XML_URL  = "https://www.otosemih.com.tr/outputxml/index.php?xml_service_id=4"
+OTOSEMIH_SITE_URL = "https://www.otosemih.com.tr"
+
+# Bellek cache — 55 dk geçerliliği
+_cache_data: list = []
+_cache_time: float = 0.0
+_CACHE_TTL = 55 * 60
+
+
+def _cdata_temizle(metin: str) -> str:
+    """CDATA ve HTML entity'lerini temizler."""
+    if not metin:
+        return ""
+    temiz = html.unescape(metin)
+    temiz = re.sub(r'<[^>]+>', ' ', temiz)
+    return temiz.strip()
+
+
+def _marka_cikar(urun_adi: str) -> str:
+    """
+    Marka tespiti — iki format desteklenir:
+      'DAYTON 185/65R15 88H TOURING2 YAZLIK' → ebat öncesi → 'Dayton'
+      '195/75R16C 107/105R DAYTON VAN'       → ebat sonrası → 'Dayton'
+    """
+    # Önce bilinen markalar listesinde ara (en güvenilir yöntem)
+    markalar = [
+        "Continental", "Michelin", "Pirelli", "Bridgestone", "Goodyear",
+        "Lassa", "Petlas", "Hankook", "Dunlop", "Yokohama", "Nokian",
+        "Starmaxx", "Nexen", "Kumho", "Falken", "Firestone", "Maxxis",
+        "Linglong", "Triangle", "Kormoran", "BFGoodrich", "Debica", "Tigar",
+        "Accelera", "Nankang", "Toyo", "Sailun", "Uniroyal", "Barum",
+        "Sava", "Matador", "Semperit", "Riken", "Giti", "Leao",
+        "Westlake", "Goodride", "Gripmax", "Milestone", "Minerva", "Apollo",
+        "Dayton", "Fulda", "Kleber", "Vredestein", "General", "Cooper",
+        "Windforce", "Wintech", "Leao", "Doublestar", "Comforser",
+    ]
+    low = urun_adi.lower()
+    found = next((m for m in markalar if m.lower() in low), None)
+    if found:
+        return found
+
+    # Fallback: ebat öncesi kelimeler
+    kelimeler = urun_adi.split()
+    marka_kelimeleri = []
+    for kelime in kelimeler:
+        if re.match(r'^\d', kelime):
+            break
+        marka_kelimeleri.append(kelime)
+    if marka_kelimeleri:
+        return " ".join(marka_kelimeleri).title()
+
+    return "Diğer"
+
+
+def _mevsim_cikar(urun_adi: str, aciklama: str) -> str:
+    birlestir = (urun_adi + " " + aciklama).upper()
+    if "4 MEVS" in birlestir or "ALL SEASON" in birlestir or "ALL-SEASON" in birlestir:
+        return "4 Mevsim"
+    if "KISLIK" in birlestir or "WINTER" in birlestir or "MEVSIM: KI" in birlestir:
+        return "Kış"
+    return "Yaz"
 
 
 class OtoSemihScraper(BaseScraper):
+    """
+    OtoSemih XML tabanlı scraper.
+    xml_only = True → motor.py Playwright açmadan ara() metodunu çağırır.
+    """
     TOPTANCI_ADI = "OtoSemih"
+    xml_only = True
 
-    def login(self, page: Page) -> bool:
-        try:
-            page.goto(LOGIN_URL, timeout=30_000)
-            page.wait_for_load_state("domcontentloaded")
-            time.sleep(2)
+    def login(self, page) -> bool:
+        logger.info(f"[{self.TOPTANCI_ADI}] XML modu — login atlandı")
+        return True
 
-            user_el = page.query_selector('#username, input[name="username"]')
-            pass_el = page.query_selector('#password-input, input[name="password"]')
-
-            if not (user_el and pass_el):
-                inputs = page.query_selector_all("input")
-                user_el = next((el for el in inputs if el.get_attribute("type") in ("text", "email")), None)
-                pass_el = next((el for el in inputs if el.get_attribute("type") == "password"), None)
-
-            if not (user_el and pass_el):
-                logger.error(f"[{self.TOPTANCI_ADI}] Login inputlari bulunamadi")
-                return False
-
-            user_el.fill(self.kullanici)
-            pass_el.fill(self.sifre)
-
-            btn = page.query_selector('button[type="submit"], input[type="submit"]')
-            if btn:
-                btn.click()
-            else:
-                page.keyboard.press("Enter")
-
-            page.wait_for_load_state("domcontentloaded", timeout=20_000)
-            time.sleep(3)
-
-            body = page.inner_text("body")[:800].lower()
-            url = page.url.lower()
-
-            if "giris" not in url:
-                logger.info(f"[{self.TOPTANCI_ADI}] Login basarili (URL)")
-                return True
-            if any(w in body for w in ["anasayfa", "lastik", "bakiyem", "siparis"]):
-                logger.info(f"[{self.TOPTANCI_ADI}] Login basarili")
-                return True
-
-            logger.warning(f"[{self.TOPTANCI_ADI}] Login basarisiz - URL: {page.url}")
-            return False
-        except Exception as e:
-            logger.error(f"[{self.TOPTANCI_ADI}] Login hatasi: {e}")
-            return False
-
-    def ara(self, page: Page, ebat: str, marka: str = "") -> list[LastikSonuc]:
-        try:
-            page.goto(LASTIK_URL, timeout=30_000)
-            page.wait_for_load_state("domcontentloaded")
-            time.sleep(5)
-
-            search = page.query_selector(
-                '#searchProductList, input[placeholder*="Urun Arama"], '
-                'input[placeholder*="Ürün Arama"], input[placeholder*="Ara"]'
-            )
-            if search:
-                search.fill(ebat)
-                time.sleep(3)
-                logger.info(f"[{self.TOPTANCI_ADI}] Arama yapildi: {ebat}")
-            else:
-                logger.warning(f"[{self.TOPTANCI_ADI}] Arama inputu bulunamadi")
-
-            rows = self._collect_all_row_texts(page)
-            logger.info(f"[{self.TOPTANCI_ADI}] {len(rows)} satir toplandi")
-
-            sonuclar: list[LastikSonuc] = []
-            seen = set()
-            for row_texts in rows:
-                sonuc = self._parse_texts(row_texts, ebat, marka)
-                if not sonuc:
-                    continue
-                key = (
-                    sonuc.marka.strip().lower(),
-                    sonuc.model.strip().lower(),
-                    sonuc.ebat.strip().lower(),
-                    round(sonuc.fiyat, 2),
-                    sonuc.dot.strip().lower(),
-                )
-                if key in seen:
-                    continue
-                seen.add(key)
-                sonuclar.append(sonuc)
-
-            return sonuclar
-        except Exception as e:
-            logger.error(f"[{self.TOPTANCI_ADI}] Arama hatasi: {e}")
+    def ara(self, page, ebat: str, marka: str = "") -> list[LastikSonuc]:
+        tum_urunler = self._xml_getir()
+        if not tum_urunler:
             return []
 
-    def _collect_all_row_texts(self, page: Page) -> list[list[str]]:
-        rows: list[list[str]] = []
-        seen_rows = set()
-        seen_pages = set()
+        ebat_upper  = ebat.strip().upper().replace(" ", "")
+        marka_upper = marka.strip().upper()
 
-        for page_no in range(1, 100):
-            for _ in range(2):
-                page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
-                time.sleep(0.5)
+        sonuclar = []
+        for u in tum_urunler:
+            # Ebat filtresi — _ebat_eslesir ile kontrol
+            if ebat_upper and not _ebat_eslesir(ebat_upper, u["urun_adi"]):
+                continue
 
-            row_handles = page.query_selector_all(".gridjs-tbody .gridjs-tr")
-            if not row_handles:
-                row_handles = page.query_selector_all("table tbody tr")
+            # Marka filtresi
+            if marka_upper and marka_upper not in u["marka"].upper():
+                continue
 
-            page_signature = ""
-            if row_handles:
-                first = row_handles[0].inner_text().strip()
-                last = row_handles[-1].inner_text().strip()
-                page_signature = f"{first}||{last}"
+            s = self._sonuc_olustur(u, ebat)
+            if s:
+                sonuclar.append(s)
 
-            if page_signature and page_signature in seen_pages:
-                break
-            if page_signature:
-                seen_pages.add(page_signature)
+        sonuclar.sort(key=lambda x: x.fiyat)
+        logger.info(f"[{self.TOPTANCI_ADI}] {len(sonuclar)} ürün döndürüldü (ebat={ebat})")
+        return sonuclar
 
-            for row in row_handles:
-                cells = row.query_selector_all("td")
-                if len(cells) < 6:
-                    continue
-                texts = [c.inner_text().strip() for c in cells]
-                row_key = "||".join(texts)
-                if row_key in seen_rows:
-                    continue
-                seen_rows.add(row_key)
-                rows.append(texts)
+    # ------------------------------------------------------------------
+    # İç yardımcılar
+    # ------------------------------------------------------------------
 
-            logger.info(f"[{self.TOPTANCI_ADI}] Sayfa {page_no}: {len(row_handles)} satir")
+    def _xml_getir(self) -> list[dict]:
+        global _cache_data, _cache_time
 
-            next_btn = page.locator(
-                'button[aria-label="Sonraki"]:not([disabled]), '
-                'button:has-text("Sonraki"):not([disabled])'
-            ).first
+        # Bellek cache geçerliyse direkt döndür
+        if _cache_data and (time.time() - _cache_time) < _CACHE_TTL:
+            logger.info(f"[{self.TOPTANCI_ADI}] Bellek cache'den {len(_cache_data)} ürün döndürüldü")
+            return _cache_data
+
+        # Dosya cache'ini dene
+        from .xml_cache import otosemih_xml_oku
+        content = otosemih_xml_oku()
+
+        # Dosya cache yoksa canlı çek
+        if content is None:
+            logger.info(f"[{self.TOPTANCI_ADI}] Dosya cache yok, canlı çekiliyor...")
             try:
-                if next_btn.count() == 0 or not next_btn.is_visible(timeout=1000):
-                    break
-                next_btn.scroll_into_view_if_needed(timeout=3000)
-                next_btn.click(timeout=5000)
-                time.sleep(3.5)
-            except Exception:
-                break
+                resp = requests.get(OTOSEMIH_XML_URL, timeout=30)
+                resp.raise_for_status()
+                content = resp.content
+            except requests.RequestException as e:
+                logger.error(f"[{self.TOPTANCI_ADI}] Bağlantı hatası: {e}")
+                return _cache_data
 
+        try:
+            root = ET.fromstring(content)
+        except ET.ParseError as e:
+            logger.error(f"[{self.TOPTANCI_ADI}] XML parse hatası: {e}")
+            return _cache_data
 
-        return rows
+        urunler = []
+        for urun in root.findall("urun"):
+            try:
+                fiyat_str = _cdata_temizle(urun.findtext("kdvdahilfiyati", "0"))
+                fiyat     = float(fiyat_str or "0")
+                if fiyat == 0:
+                    continue
 
-    def _parse_row(self, row, ebat_f: str, marka_f: str) -> LastikSonuc | None:
-        cells = row.query_selector_all("td")
-        if len(cells) < 6:
-            return None
-        return self._parse_texts([c.inner_text().strip() for c in cells], ebat_f, marka_f)
+                miktar_str = _cdata_temizle(urun.findtext("stokadedi", "0"))
+                miktar     = int(float(miktar_str or "0"))
 
-    def _parse_texts(self, texts: list[str], ebat_f: str, marka_f: str) -> LastikSonuc | None:
-        if len(texts) < 6:
-            return None
+                urun_adi  = _cdata_temizle(urun.findtext("urunismi",          ""))
+                aciklama  = _cdata_temizle(urun.findtext("urunaciklamasi",     ""))
+                dot       = _cdata_temizle(urun.findtext("dottarihi",          ""))
+                stok_kodu = _cdata_temizle(urun.findtext("ureticistokkodu",    ""))
+                depo      = (urun.findtext("urununbulundugudepobilgisi") or "").strip()
 
-        product_blob = texts[1] if len(texts) > 1 else ""
-        product_lines = [line.strip() for line in product_blob.splitlines() if line.strip()]
-        urun_adi = product_lines[0] if product_lines else product_blob.strip()
-        if not urun_adi:
-            return None
+                urunler.append({
+                    "stok_kodu": stok_kodu,
+                    "marka":     _marka_cikar(urun_adi),
+                    "urun_adi":  urun_adi,
+                    "fiyat":     fiyat,
+                    "miktar":    miktar,
+                    "dot":       dot,
+                    "mevsim":    _mevsim_cikar(urun_adi, aciklama),
+                    "depo":      depo,
+                })
+            except (ValueError, TypeError):
+                continue
 
-        full = " ".join(texts)
-        full_lower = full.lower()
+        _cache_data = urunler
+        _cache_time = time.time()
+        logger.info(f"[{self.TOPTANCI_ADI}] XML'den {len(urunler)} ürün okundu")
+        return urunler
 
-        # Ebat eşleşmesi: GridJS'te ebat bazen ilk satırda olmayabiliyor.
-        # Bu yüzden tüm satır metninde kontrol ediyoruz.
-        if ebat_f and not _ebat_eslesir(ebat_f, full):
-            return None
-
-
-        marka_text = texts[4].strip() if len(texts) > 4 else ""
-        if marka_f and marka_f.lower() not in full_lower:
-            return None
-
-        ebat_match = re.search(
-            r"(\d{3}/\d{2}\s*(?:Z?R)?\s*\d{2,3}\s*C?)",
-            urun_adi,
-            re.IGNORECASE,
-        )
-        ebat = ebat_f
-        if ebat_match:
-            ebat = re.sub(r"\s+", "", ebat_match.group(1))
-            ebat = re.sub(r"(?i)ZR", "R", ebat)
-
-        stok = texts[2].strip() if len(texts) > 2 and texts[2].strip() else "Var"
-        dot = self._dot_temizle(texts[3] if len(texts) > 3 else "")
-
-        fiyat = 0.0
-        for fiyat_str in texts[5:8]:
-            fiyat = self._fiyat_parse(fiyat_str)
-            if fiyat >= 100:
-                break
+    def _sonuc_olustur(self, u: dict, ebat_f: str) -> LastikSonuc | None:
+        fiyat = u["fiyat"]
         if fiyat < 100:
             return None
 
-        mevsim = "Yaz"
-        if any(w in full_lower for w in ["kis", "winter", "polar", "arcterrain", "snow"]):
-            mevsim = "Kis"
-        elif any(w in full_lower for w in ["4 mevsim", "dortmevsim", "mevsim", "all season", "allseason"]):
-            mevsim = "4 Mevsim"
+        urun_adi = u["urun_adi"]
+        marka    = u["marka"] or "Diğer"
+
+        # Ebatı urunismi'nden çıkar
+        ebat_match = re.search(r"(\d{3}/\d{2}\s*(?:Z?R)?\s*\d{2,3}\s*C?)", urun_adi, re.IGNORECASE)
+        if ebat_match:
+            ebat = re.sub(r"\s+", "", ebat_match.group(1))
+            ebat = re.sub(r"(?i)ZR", "R", ebat)
+        else:
+            ebat = ebat_f
+
+        miktar = u["miktar"]
+        if miktar <= 0:
+            stok = "Yok"
+        elif miktar <= 4:
+            stok = f"Son {miktar} adet"
+        else:
+            stok = f"{miktar} adet"
+
+        # Depo bilgisini model'e ekle
+        model = urun_adi
+        if u["depo"]:
+            model = f"{urun_adi} [{u['depo']}]"
 
         return self.sonuc_olustur(
-            marka=marka_text or "-",
-            model=urun_adi,
+            marka=marka,
+            model=model,
             ebat=ebat,
-            mevsim=mevsim,
-            dot=dot,
+            mevsim=u["mevsim"],
+            dot=u["dot"],
             fiyat=fiyat,
             para_birimi="TL",
             stok=stok,
-            site_url=LASTIK_URL,
+            site_url=OTOSEMIH_SITE_URL,
         )
-
-    @staticmethod
-    def _dot_temizle(dot_raw: str) -> str:
-        years = re.findall(r"20\d{2}", dot_raw or "")
-        if not years:
-            return (dot_raw or "").strip()
-        return "/".join(dict.fromkeys(years))
-
-    @staticmethod
-    def _fiyat_parse(s: str) -> float:
-        try:
-            t = (
-                (s or "")
-                .replace("\u20ba", "")
-                .replace("TL", "")
-                .replace(".", "")
-                .replace(",", ".")
-                .strip()
-            )
-            m = re.search(r"[\d]+\.?\d*", t)
-            return float(m.group()) if m else 0.0
-        except Exception:
-            return 0.0

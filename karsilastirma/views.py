@@ -8,6 +8,7 @@ from django.views import View
 from .uspa_servis      import uspa_ara
 from .keskin_servis    import keskin_ara
 from .otosemih_servis  import otosemih_ara
+from .netlastik_servis import netlastik_ara
 from .models import AramaGecmisi
 
 # Toptancı B2B portal linkleri
@@ -15,6 +16,7 @@ B2B_LINKLER = {
     "USPA Lastik":    "https://www.uspalastik.com",
     "Keskin Lastik":  "https://keskinlastik.com",
     "OtoSemih":       "https://www.otosemih.com.tr",
+    "NetLastik":      "https://www.netlastik.com",
 }
 
 
@@ -27,6 +29,7 @@ def _tum_toptancilarda_ara(ebat: str, marka: str, mevsim: str) -> list:
         uspa_ara,
         keskin_ara,
         otosemih_ara,
+        netlastik_ara,
     ]
 
     tum_sonuclar = []

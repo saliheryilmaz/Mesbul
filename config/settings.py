@@ -69,3 +69,16 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LANGUAGE_CODE = 'tr'
 TIME_ZONE = 'Europe/Istanbul'
+
+# Auth ayarları
+LOGIN_URL = '/giris/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/giris/'
+
+# Cache — DB backend (tüm worker'lar aynı tabloyu okur, process restart'tan etkilenmez)
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'django_cache',
+    }
+}

@@ -2,8 +2,10 @@ import re
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .uspa_servis      import uspa_ara
 from .keskin_servis    import keskin_ara
@@ -49,7 +51,7 @@ def _tum_toptancilarda_ara(ebat: str, marka: str, mevsim: str) -> list:
     return tum_sonuclar
 
 
-class AramaView(View):
+class AramaView(LoginRequiredMixin, View):
     template_name = "karsilastirma/arama.html"
 
     def get(self, request):
@@ -57,7 +59,7 @@ class AramaView(View):
         return render(request, self.template_name, {"gecmis": gecmis})
 
 
-class SonuclarView(View):
+class SonuclarView(LoginRequiredMixin, View):
     template_name = "karsilastirma/sonuclar.html"
 
     def post(self, request):
@@ -71,6 +73,11 @@ class SonuclarView(View):
                           {"hata": "Lütfen lastik ebatını girin."})
 
         sonuclar = _tum_toptancilarda_ara(ebat, marka, mevsim)
+
+        # Marka filtresi (case-insensitive)
+        if marka:
+            marka_lower = marka.lower()
+            sonuclar = [u for u in sonuclar if marka_lower in u.marka.lower()]
 
         # DOT filtresi
         if min_dot:
@@ -115,3 +122,32 @@ class SonuclarView(View):
             "marka_listesi":     marka_listesi,
             "b2b_linkler":       B2B_LINKLER,
         })
+
+
+class GirisView(View):
+    template_name = "karsilastirma/giris.html"
+
+    def get(self, request):
+        if request.user.is_authenticated:
+            return redirect('arama')
+        return render(request, self.template_name)
+
+    def post(self, request):
+        kullanici_adi = request.POST.get("kullanici_adi", "").strip()
+        sifre         = request.POST.get("sifre", "").strip()
+
+        kullanici = authenticate(request, username=kullanici_adi, password=sifre)
+        if kullanici is not None:
+            login(request, kullanici)
+            next_url = request.GET.get('next', '/')
+            return redirect(next_url)
+        else:
+            return render(request, self.template_name, {
+                "hata": "Kullanıcı adı veya şifre hatalı."
+            })
+
+
+class CikisView(View):
+    def get(self, request):
+        logout(request)
+        return redirect('giris')

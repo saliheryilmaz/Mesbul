@@ -2,25 +2,20 @@
 USPA Lastik XML Servisi
 URL: https://www.uspalastik.com/index.php?url=xml_export/uspa4
 
-XML yapısı:
-    <Urun>
-        <StokKodu>CON-3523990000-18</StokKodu>
-        <Marka>Continental</Marka>
-        <Miktar>1</Miktar>
-        <UrunAdi>275/45R18 103W FR SportContact 5 MO</UrunAdi>
-        <Fiyat>2900.0000</Fiyat>
-        <Dot>2018</Dot>
-        <Mevsim>Yaz</Mevsim>
-    </Urun>
-
-Ebat UrunAdi içinde geçiyor → "205/55R16" aratınca UrunAdi'nde arar.
+Django DB cache kullanılır — tüm worker'lar aynı cache'i paylaşır.
 """
 
 import requests
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 
-USPA_XML_URL = "https://www.uspalastik.com/index.php?url=xml_export/uspa4"
+from django.core.cache import cache
+
+USPA_XML_URL    = "https://www.uspalastik.com/index.php?url=xml_export/uspa4"
+CACHE_KEY       = "uspa_tum_urunler"
+CACHE_KEY_STALE = "uspa_tum_urunler_stale"
+CACHE_TTL       = 55 * 60       # 55 dakika
+CACHE_TTL_STALE = 24 * 60 * 60  # 24 saat fallback
 
 
 @dataclass
@@ -50,27 +45,28 @@ class LastikUrun:
 def uspa_verileri_getir() -> list[LastikUrun]:
     """
     USPA XML'ini çekip tüm ürün listesini döner.
-    Hata durumunda boş liste döner.
+    Django DB cache'e yazar — tüm worker'lar aynı cache'i paylaşır.
     """
+    cached = cache.get(CACHE_KEY)
+    if cached is not None:
+        return cached
+
     try:
         resp = requests.get(USPA_XML_URL, timeout=20)
         resp.raise_for_status()
-        # XML encoding bazen sorun çıkarır, content ile parse et
         root = ET.fromstring(resp.content)
     except requests.RequestException as e:
         print(f"[USPA] Bağlantı hatası: {e}")
-        return []
+        return cache.get(CACHE_KEY_STALE) or []
     except ET.ParseError as e:
         print(f"[USPA] XML parse hatası: {e}")
-        return []
+        return cache.get(CACHE_KEY_STALE) or []
 
     urunler = []
     for urun in root.findall("Urun"):
         try:
-            fiyat_str = urun.findtext("Fiyat", "0")
-            fiyat     = float(fiyat_str)
-            miktar    = int(urun.findtext("Miktar", "0"))
-
+            fiyat  = float(urun.findtext("Fiyat", "0"))
+            miktar = int(urun.findtext("Miktar", "0"))
             urunler.append(LastikUrun(
                 toptanci  = "USPA Lastik",
                 stok_kodu = urun.findtext("StokKodu", ""),
@@ -82,8 +78,11 @@ def uspa_verileri_getir() -> list[LastikUrun]:
                 mevsim    = urun.findtext("Mevsim", "Yaz"),
             ))
         except (ValueError, TypeError):
-            continue  # bozuk satırı atla
+            continue
 
+    cache.set(CACHE_KEY, urunler, CACHE_TTL)
+    cache.set(CACHE_KEY_STALE, urunler, CACHE_TTL_STALE)
+    print(f"[USPA] {len(urunler)} ürün DB cache'e yazıldı ({CACHE_TTL // 60} dk)")
     return urunler
 
 

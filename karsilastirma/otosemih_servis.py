@@ -21,17 +21,17 @@ NOTLAR:
 
 import re
 import html
-import time
 import requests
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 
-OTOSEMIH_XML_URL = "https://www.otosemih.com.tr/outputxml/index.php?xml_service_id=4"
+from django.core.cache import cache
 
-# Bellek cache — 55 dk geçerliliği
-_cache_data: list = []
-_cache_time: float = 0.0
-_CACHE_TTL = 55 * 60
+OTOSEMIH_XML_URL = "https://www.otosemih.com.tr/outputxml/index.php?xml_service_id=4"
+CACHE_KEY        = "otosemih_tum_urunler"
+CACHE_KEY_STALE  = "otosemih_tum_urunler_stale"
+CACHE_TTL        = 55 * 60
+CACHE_TTL_STALE  = 24 * 60 * 60
 
 
 @dataclass
@@ -113,11 +113,10 @@ def _mevsim_cikar(urun_adi: str, aciklama: str) -> str:
 # ── Ana servis fonksiyonları ───────────────────────────────────────────────
 
 def otosemih_verileri_getir() -> list[LastikUrun]:
-    """OtoSemih XML'ini çekip tüm ürün listesini döner. 55 dk cache'ler."""
-    global _cache_data, _cache_time
-
-    if _cache_data and (time.time() - _cache_time) < _CACHE_TTL:
-        return _cache_data
+    """OtoSemih XML'ini çekip tüm ürün listesini döner. Django DB cache kullanır."""
+    cached = cache.get(CACHE_KEY)
+    if cached is not None:
+        return cached
 
     try:
         resp = requests.get(OTOSEMIH_XML_URL, timeout=20)
@@ -125,10 +124,10 @@ def otosemih_verileri_getir() -> list[LastikUrun]:
         root = ET.fromstring(resp.content)
     except requests.RequestException as e:
         print(f"[OtoSemih] Bağlantı hatası: {e}")
-        return _cache_data
+        return cache.get(CACHE_KEY_STALE) or []
     except ET.ParseError as e:
         print(f"[OtoSemih] XML parse hatası: {e}")
-        return _cache_data
+        return cache.get(CACHE_KEY_STALE) or []
 
     urunler = []
     for urun in root.findall("urun"):
@@ -161,8 +160,9 @@ def otosemih_verileri_getir() -> list[LastikUrun]:
         except (ValueError, TypeError):
             continue
 
-    _cache_data = urunler
-    _cache_time = time.time()
+    cache.set(CACHE_KEY, urunler, CACHE_TTL)
+    cache.set(CACHE_KEY_STALE, urunler, CACHE_TTL_STALE)
+    print(f"[OtoSemih] {len(urunler)} ürün DB cache'e yazıldı ({CACHE_TTL // 60} dk)")
     return urunler
 
 

@@ -3,272 +3,458 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lastik Fiyat Ara</title>
+<title>MesBul — Lastik Fiyat Karşılaştırma</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
 
   :root {
-    --bg:       #f0f2f5;
-    --surface:  #ffffff;
-    --border:   #e2e6ea;
-    --accent:   #e85d26;
-    --accent-h: #c94d1a;
-    --text:     #1a1d2e;
-    --muted:    #6b7280;
-    --green:    #16a34a;
-    --orange:   #ea580c;
+    --navy:       #0F172A;
+    --slate-50:   #F8FAFC;
+    --slate-100:  #F1F5F9;
+    --slate-200:  #E2E8F0;
+    --slate-300:  #CBD5E1;
+    --slate-400:  #94A3B8;
+    --slate-600:  #475569;
+    --slate-700:  #334155;
+    --slate-900:  #0F172A;
+    --white:      #FFFFFF;
+    --orange:     #E85D26;
+    --orange-dark:#C94D1A;
+    --green-dot:  #10B981;
+    --red:        #EF4444;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
+    background: var(--slate-50);
+    color: var(--slate-900);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem 1rem;
   }
 
-  .wrapper { width: 100%; max-width: 560px; }
+  /* Header */
+  .header {
+    background: #2D2D2D;
+    border-bottom: 1px solid #3D3D3D;
+    padding: 0.875rem 0;
+  }
+  .header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .logo-icon {
+    width: 32px;
+    height: 32px;
+    background: var(--orange);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .logo-icon svg {
+    width: 18px;
+    height: 18px;
+    color: var(--white);
+  }
+  .logo-text {
+    color: var(--white);
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .header-nav {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .nav-user {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #B0B0B0;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  .nav-user::before {
+    content: '👤';
+    font-size: 0.875rem;
+  }
+  .nav-logout {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: transparent;
+    border: 1px solid #4D4D4D;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    color: #E0E0E0;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all .2s;
+  }
+  .nav-logout::before {
+    content: '🚪';
+    font-size: 0.875rem;
+  }
+  .nav-logout:hover {
+    background: #3D3D3D;
+    border-color: #5D5D5D;
+    color: var(--white);
+  }
 
-  /* Logo */
-  .logo {
+  /* Main */
+  .main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem;
+  }
+
+  /* Hero */
+  .hero {
     text-align: center;
     margin-bottom: 2.5rem;
   }
-  .logo-icon {
-    width: 56px; height: 56px;
-    background: linear-gradient(135deg, var(--accent), #c94d1a);
-    border-radius: 16px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.6rem;
-    margin: 0 auto 1rem;
-    box-shadow: 0 4px 12px rgba(232,93,38,.3);
-  }
-  .logo h1 {
-    font-size: 1.8rem; font-weight: 700;
-    letter-spacing: -0.02em;
-  }
-  .logo p {
-    color: var(--muted);
-    font-size: 0.875rem;
-    margin-top: 0.3rem;
-  }
-
-  /* Aktif toptancı badge */
-  .toptanci-badges {
-    display: flex; justify-content: center; gap: 0.5rem;
-    margin-bottom: 2rem;
-  }
-  .badge {
-    display: inline-flex; align-items: center; gap: 0.35rem;
-    background: rgba(22,163,74,.08);
-    border: 1px solid rgba(22,163,74,.2);
-    border-radius: 20px;
-    padding: 0.3rem 0.8rem;
-    font-size: 0.75rem; font-weight: 500;
-    color: #15803d;
-  }
-  .badge::before {
-    content: '';
-    width: 6px; height: 6px;
-    background: #16a34a;
-    border-radius: 50%;
-    display: inline-block;
-  }
-
-  /* Kart */
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 2rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,.06);
-  }
-
-  .field { margin-bottom: 1.25rem; }
-
-  label {
-    display: block;
-    font-size: 0.8rem; font-weight: 500;
-    color: var(--muted);
-    text-transform: uppercase; letter-spacing: 0.06em;
+  .hero-title {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--slate-900);
     margin-bottom: 0.5rem;
   }
+  .hero-subtitle {
+    font-size: 0.9375rem;
+    color: var(--slate-600);
+    font-weight: 400;
+  }
 
-  input, select {
+  /* Source badges */
+  .sources {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+    margin-bottom: 2rem;
+  }
+  .source-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--white);
+    border: 1px solid var(--slate-200);
+    border-radius: 6px;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--slate-700);
+    letter-spacing: 0.01em;
+  }
+  .source-chip::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--green-dot);
+    border-radius: 50%;
+    display: block;
+  }
+
+  /* Card */
+  .card {
+    background: var(--white);
+    border: 1px solid var(--slate-200);
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 1px 3px rgba(15,23,42,.08);
+  }
+
+  /* Error */
+  .error {
+    background: #FEF2F2;
+    border: 1px solid #FECACA;
+    border-radius: 6px;
+    padding: 0.875rem 1rem;
+    color: var(--red);
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+  }
+
+  /* Form */
+  .field {
+    margin-bottom: 1.5rem;
+  }
+  .field-label {
+    display: block;
+    font-size: 0.625rem;
+    font-weight: 600;
+    color: var(--slate-600);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+  .field-input {
     width: 100%;
-    background: #f9fafb;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 0.75rem 1rem;
-    color: var(--text);
+    background: var(--white);
+    border: 1px solid var(--slate-200);
+    border-radius: 6px;
+    padding: 0.75rem 0.875rem;
+    color: var(--slate-900);
     font-family: 'Inter', sans-serif;
-    font-size: 1rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
     outline: none;
-    transition: border-color .15s, box-shadow .15s;
+    transition: border-color .2s, box-shadow .2s;
   }
-  input:focus, select:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(232,93,38,.12);
+  .field-input:focus {
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px rgba(232,93,38,.1);
   }
-  input::placeholder { color: var(--muted); font-family: 'JetBrains Mono', monospace; }
-  select option { background: #fff; }
-
-  .hint {
+  .field-input::placeholder {
+    color: var(--slate-400);
+    font-weight: 400;
+  }
+  .field-hint {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.72rem;
-    color: var(--muted);
-    margin-top: 0.4rem;
+    font-size: 0.6875rem;
+    color: var(--slate-400);
+    margin-top: 0.5rem;
+    font-weight: 500;
   }
 
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
 
-  /* Custom mevsim dropdown */
-  .custom-select { position: relative; }
+  /* Custom select */
+  .custom-select {
+    position: relative;
+  }
   .custom-select-trigger {
     width: 100%;
-    background: #f9fafb;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 0.75rem 1rem;
-    color: var(--text);
+    background: var(--white);
+    border: 1px solid var(--slate-200);
+    border-radius: 6px;
+    padding: 0.75rem 0.875rem;
+    color: var(--slate-900);
     font-family: 'Inter', sans-serif;
-    font-size: 1rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
     cursor: pointer;
-    display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
-    transition: border-color .15s, box-shadow .15s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: border-color .2s, box-shadow .2s;
     user-select: none;
   }
   .custom-select-trigger:hover,
   .custom-select.open .custom-select-trigger {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(232,93,38,.12);
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px rgba(232,93,38,.1);
   }
   .custom-select-trigger .arrow {
-    color: var(--muted); font-size: 0.7rem;
+    color: var(--slate-400);
+    font-size: 0.625rem;
     transition: transform .2s;
   }
-  .custom-select.open .arrow { transform: rotate(180deg); }
-
+  .custom-select.open .arrow {
+    transform: rotate(180deg);
+  }
   .custom-select-dropdown {
     display: none;
-    position: absolute; top: calc(100% + 6px); left: 0; right: 0;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: var(--white);
+    border: 1px solid var(--slate-200);
+    border-radius: 6px;
     overflow: hidden;
     z-index: 50;
-    box-shadow: 0 8px 24px rgba(0,0,0,.12);
+    box-shadow: 0 4px 12px rgba(15,23,42,.12);
   }
-  .custom-select.open .custom-select-dropdown { display: block; }
-
+  .custom-select.open .custom-select-dropdown {
+    display: block;
+  }
   .custom-option {
-    display: flex; align-items: center; gap: 0.6rem;
-    padding: 0.7rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.75rem 0.875rem;
     cursor: pointer;
-    font-size: 0.9rem;
-    color: var(--text);
-    transition: background .1s;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--slate-700);
+    transition: background .15s;
   }
-  .custom-option:hover { background: #f3f4f6; }
-  .custom-option.selected { background: #fff7f4; color: var(--accent); font-weight: 500; }
-  .custom-option .opt-icon { width: 20px; text-align: center; flex-shrink: 0; }
-  /* hidden real input */
-  .custom-select input[type=hidden] { display: none; }
+  .custom-option:hover {
+    background: var(--slate-50);
+  }
+  .custom-option.selected {
+    background: var(--slate-100);
+    color: var(--slate-900);
+  }
+  .custom-option .opt-icon {
+    width: 18px;
+    text-align: center;
+    flex-shrink: 0;
+    font-size: 0.875rem;
+  }
 
-  /* Buton */
-  .btn {
-    width: 100%; margin-top: 0.5rem;
-    background: var(--accent);
-    border: none; border-radius: 10px;
-    padding: 0.85rem;
-    color: #fff;
+  /* Select (native) */
+  select.field-input {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%2394A3B8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.875rem center;
+    padding-right: 2.5rem;
+  }
+
+  /* Button */
+  .btn-primary {
+    width: 100%;
+    background: var(--orange);
+    border: none;
+    border-radius: 6px;
+    padding: 0.875rem 1.5rem;
+    color: var(--white);
     font-family: 'Inter', sans-serif;
-    font-size: 0.95rem; font-weight: 600;
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
     cursor: pointer;
-    transition: background .15s, transform .1s;
+    transition: background .2s, transform .1s;
+    margin-top: 0.5rem;
   }
-  .btn:hover  { background: var(--accent-h); }
-  .btn:active { transform: scale(.98); }
-
-  /* Hata */
-  .hata {
-    background: #fef2f2; border: 1px solid #fecaca;
-    border-radius: 10px; padding: 0.75rem 1rem;
-    color: #dc2626; font-size: 0.875rem;
-    margin-bottom: 1.25rem;
+  .btn-primary:hover {
+    background: var(--orange-dark);
+  }
+  .btn-primary:active {
+    transform: translateY(1px);
   }
 
-  /* Son aramalar */
-  .gecmis { margin-top: 1.5rem; }
-  .gecmis-baslik {
-    font-size: 0.75rem; font-weight: 500;
-    color: var(--muted); text-transform: uppercase;
-    letter-spacing: 0.06em; margin-bottom: 0.6rem;
+  /* Recent searches */
+  .recent {
+    margin-top: 2rem;
   }
-  .gecmis-liste { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-  .gecmis-chip {
-    background: #f3f4f6; border: 1px solid var(--border);
-    border-radius: 8px; padding: 0.3rem 0.65rem;
+  .recent-label {
+    font-size: 0.625rem;
+    font-weight: 600;
+    color: var(--slate-600);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.75rem;
+  }
+  .recent-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .recent-chip {
+    background: var(--white);
+    border: 1px solid var(--slate-200);
+    border-radius: 6px;
+    padding: 0.375rem 0.75rem;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.78rem; color: var(--muted);
-    cursor: pointer; transition: all .15s;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--slate-600);
+    cursor: pointer;
+    transition: all .2s;
   }
-  .gecmis-chip:hover {
-    border-color: var(--accent); color: var(--accent); background: #fff7f4;
+  .recent-chip:hover {
+    border-color: var(--slate-900);
+    color: var(--slate-900);
+    background: var(--slate-50);
+  }
+
+  @media (max-width: 640px) {
+    .grid-2 {
+      grid-template-columns: 1fr;
+    }
+    .hero-title {
+      font-size: 1.5rem;
+    }
   }
 </style>
 </head>
 <body>
 
-<div class="wrapper">
+<header class="header">
+  <div class="header-inner">
+    <div class="logo-area">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.35-4.35"></path>
+        </svg>
+      </div>
+      <span class="logo-text">MesBul</span>
+    </div>
+    <nav class="header-nav">
+      <span class="nav-user">{{ request.user.username }}</span>
+      <a href="{% url 'cikis' %}" class="nav-logout">Çıkış</a>
+    </nav>
+  </div>
+</header>
 
-  <div class="logo">
-    <div class="logo-icon">🔍</div>
-    <h1>MesBul</h1>
-    <p>Toptancı fiyatlarını tek ekranda karşılaştır</p>
+<main class="main">
+
+  <div class="hero">
+    <h1 class="hero-title">Lastik Fiyat Karşılaştırma</h1>
+    <p class="hero-subtitle">Toptancı fiyatlarını tek ekranda karşılaştırın</p>
   </div>
 
-  <div class="toptanci-badges">
-    <span class="badge">USPA Lastik</span>
-    <span class="badge">Keskin Lastik</span>
-    <span class="badge">OtoSemih</span>
-    <span class="badge">NetLastik</span>
+  <div class="sources">
+    <span class="source-chip">USPA Lastik</span>
+    <span class="source-chip">Keskin Lastik</span>
+    <span class="source-chip">OtoSemih</span>
+    <span class="source-chip">NetLastik</span>
   </div>
 
   <div class="card">
     {% if hata %}
-      <div class="hata">⚠️ {{ hata }}</div>
+      <div class="error">⚠️ {{ hata }}</div>
     {% endif %}
 
     <form method="POST" action="{% url 'sonuclar' %}">
       {% csrf_token %}
 
       <div class="field">
-        <label>Lastik Ebatı *</label>
+        <label class="field-label">Lastik Ebatı *</label>
         <input
           type="text"
           name="ebat"
+          class="field-input"
           placeholder="205/55R16"
           autocomplete="off"
           autofocus
           required
         >
-        <div class="hint">→ 205/55R16 &nbsp; 225/45R17 &nbsp; 195/65R15</div>
+        <div class="field-hint">→ 205/55R16 · 225/45R17 · 195/65R15</div>
       </div>
 
       <div class="grid-2">
         <div class="field">
-          <label>Marka</label>
-          <input type="text" name="marka" placeholder="Continental...">
+          <label class="field-label">Marka</label>
+          <input type="text" name="marka" class="field-input" placeholder="Continental">
         </div>
         <div class="field">
-          <label>Mevsim</label>
+          <label class="field-label">Mevsim</label>
           <div class="custom-select" id="mevsim-select">
             <input type="hidden" name="mevsim" id="mevsim-value" value="">
             <div class="custom-select-trigger" onclick="toggleSelect()">
@@ -294,8 +480,8 @@
       </div>
 
       <div class="field">
-        <label>Min. Üretim Yılı (DOT)</label>
-        <select name="min_dot" style="background:#f9fafb">
+        <label class="field-label">Min. Üretim Yılı (DOT)</label>
+        <select name="min_dot" class="field-input">
           <option value="">Fark etmez</option>
           <option value="2026">2026</option>
           <option value="2025">2025 ve üzeri</option>
@@ -303,19 +489,19 @@
           <option value="2023">2023 ve üzeri</option>
           <option value="2022">2022 ve üzeri</option>
         </select>
-        <div class="hint">→ Seçilen yıldan eski DOT'lu ürünler filtrelenir</div>
+        <div class="field-hint">→ Seçilen yıldan eski DOT'lu ürünler filtrelenir</div>
       </div>
 
-      <button type="submit" class="btn">Fiyatları Getir</button>
+      <button type="submit" class="btn-primary">Fiyatları Getir</button>
     </form>
   </div>
 
   {% if gecmis %}
-  <div class="gecmis">
-    <div class="gecmis-baslik">Son Aramalar</div>
-    <div class="gecmis-liste">
+  <div class="recent">
+    <div class="recent-label">Son Aramalar</div>
+    <div class="recent-chips">
       {% for g in gecmis %}
-        <span class="gecmis-chip"
+        <span class="recent-chip"
           data-ebat="{{ g.ebat }}"
           data-marka="{{ g.marka }}"
           onclick="gecmisSecim(this)">
@@ -326,7 +512,7 @@
   </div>
   {% endif %}
 
-</div>
+</main>
 
 <script>
 function gecmisSecim(el) {

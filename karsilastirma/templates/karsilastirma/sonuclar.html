@@ -117,10 +117,77 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
 /* HIDDEN */
 .hidden{display:none!important}
 
+/* MOBİL FİLTRE DRAWER */
+.filter-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200}
+.filter-overlay.open{display:block}
+.sidebar{transition:transform .3s ease}
+
+.filter-fab{display:none;position:fixed;bottom:1.25rem;right:1.25rem;z-index:150;background:var(--orange);color:#fff;border:none;border-radius:50px;padding:.75rem 1.25rem;font-size:.875rem;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(232,93,38,.4);align-items:center;gap:.5rem}
+
+.mobile-cards{display:none;flex-direction:column;gap:.75rem}
+.m-card{background:var(--white);border:1px solid var(--slate-200);border-radius:8px;padding:1rem;box-shadow:0 1px 3px rgba(15,23,42,.06)}
+.m-card.en-ucuz{border-left:3px solid var(--green);background:rgba(16,185,129,.04)}
+.m-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem}
+.m-card-marka{font-weight:700;font-size:.9375rem;color:var(--slate-900)}
+.m-card-fiyat{font-family:'JetBrains Mono',monospace;font-size:1.125rem;font-weight:700;color:var(--slate-900)}
+.m-card-fiyat.cheapest{color:var(--green)}
+.m-card-model{font-size:.8125rem;color:var(--slate-600);margin-bottom:.625rem;line-height:1.4}
+.m-card-meta{display:flex;flex-wrap:wrap;gap:.375rem;align-items:center}
+.m-meta-tag{font-size:.75rem;font-weight:500;padding:.2rem .5rem;border-radius:4px;background:var(--slate-100);color:var(--slate-600)}
+.m-meta-tag.toptanci{background:#EFF6FF;color:#1D4ED8}
+.m-meta-tag.dot{font-family:'JetBrains Mono',monospace;background:var(--slate-100);color:var(--slate-600)}
+
 @media(max-width:768px){
-  .sidebar{display:none}
-  .stats{grid-template-columns:repeat(2,1fr)}
+  .topbar{padding:.75rem 1rem;gap:.75rem}
+  .logo-text{display:none}
+  .topbar-center{display:none}
+  .topbar-right .meta-pill{font-size:.75rem;padding:.25rem .625rem}
+
+  .layout{flex-direction:column}
+  .sidebar{
+    position:fixed;top:0;left:0;bottom:0;
+    width:85vw;max-width:320px;
+    z-index:250;
+    transform:translateX(-100%);
+    height:100vh;
+    top:0;
+    padding-top:1rem;
+    overflow-y:auto;
+  }
+  .sidebar.open{transform:translateX(0)}
+
+  .filter-fab{display:inline-flex}
+
+  .main{padding:.75rem}
+
+  .stats{grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:.75rem}
+  .stat{padding:.625rem .75rem}
+  .stat .lbl{font-size:.5625rem}
+  .stat .val{font-size:1rem}
+
+  .table-toolbar{gap:.5rem}
+  .model-search{font-size:1rem}
+  .sort-btn{padding:.5rem .625rem;font-size:.75rem}
+
+  .tablo-wrap{display:none}
+  .mobile-cards{display:flex}
+
   .gizle{display:none}
+
+  .filter-fab-close{
+    display:flex;
+    width:100%;
+    background:var(--orange);
+    color:#fff;
+    border:none;
+    border-radius:6px;
+    padding:.875rem;
+    font-size:.9375rem;
+    font-weight:700;
+    cursor:pointer;
+    justify-content:center;
+    margin-top:1rem;
+  }
 }
 </style>
 </head>
@@ -146,9 +213,12 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
     </form>
   </div>
   <div class="topbar-right">
+    <a href="{% url 'arama' %}" class="back-btn" style="display:none" id="mobile-back">← Geri</a>
     <div class="meta-pill"><span id="visible-count">{{ sonuc_sayisi }}</span> ürün</div>
   </div>
 </div>
+
+<div class="filter-overlay" id="filter-overlay" onclick="closeFilters()"></div>
 
 <div class="layout">
 
@@ -163,7 +233,7 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
     <div class="filter-list" id="filter-toptanci">
       {% for t, n in toptanci_sayilari.items %}
       <div class="filter-item">
-        <input type="checkbox" id="t-{{ forloop.counter }}" class="filter-cb" data-filter="toptanci" data-value="{{ t }}" checked onchange="applyFilters()">
+        <input type="checkbox" id="t-{{ forloop.counter }}" class="filter-cb" data-filter="toptanci" data-value="{{ t }}" onchange="applyFilters()">
         <label for="t-{{ forloop.counter }}">{{ t }}</label>
         <span class="count">{{ n }}</span>
       </div>
@@ -182,7 +252,7 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
     <div class="filter-list" id="filter-marka">
       {% for m in marka_listesi %}
       <div class="filter-item marka-filter-item">
-        <input type="checkbox" id="m-{{ forloop.counter }}" class="filter-cb" data-filter="marka" data-value="{{ m }}" checked onchange="applyFilters()">
+        <input type="checkbox" id="m-{{ forloop.counter }}" class="filter-cb" data-filter="marka" data-value="{{ m }}" onchange="applyFilters()">
         <label for="m-{{ forloop.counter }}">{{ m }}</label>
       </div>
       {% endfor %}
@@ -195,15 +265,15 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
     <div class="filter-title">Mevsim</div>
     <div class="filter-list" id="filter-mevsim">
       <div class="filter-item">
-        <input type="checkbox" id="mv-yaz" class="filter-cb" data-filter="mevsim" data-value="Yaz" checked onchange="applyFilters()">
+        <input type="checkbox" id="mv-yaz" class="filter-cb" data-filter="mevsim" data-value="Yaz" onchange="applyFilters()">
         <label for="mv-yaz">☀️ Yaz</label>
       </div>
       <div class="filter-item">
-        <input type="checkbox" id="mv-kis" class="filter-cb" data-filter="mevsim" data-value="Kış" checked onchange="applyFilters()">
+        <input type="checkbox" id="mv-kis" class="filter-cb" data-filter="mevsim" data-value="Kış" onchange="applyFilters()">
         <label for="mv-kis">❄️ Kış</label>
       </div>
       <div class="filter-item">
-        <input type="checkbox" id="mv-dort" class="filter-cb" data-filter="mevsim" data-value="4 Mevsim" checked onchange="applyFilters()">
+        <input type="checkbox" id="mv-dort" class="filter-cb" data-filter="mevsim" data-value="4 Mevsim" onchange="applyFilters()">
         <label for="mv-dort" style="display:flex;align-items:center;gap:.3rem">
           <svg viewBox="-465 266.7 28.4 28.3" xmlns="http://www.w3.org/2000/svg" width="13" height="13"><style>.s0{fill:#3FA6EE}.s1{fill:#FDDE0A}</style><g><g><g><path class="s0" d="M-446.5,285.6c0-0.1,0-0.2,0.1-0.2s0.2,0,0.2,0.1c0.1,0.2,0.3,0.3,0.4,0.5c0.1,0.1,0.1,0.1,0.2,0.2s0.2,0.2,0.4,0.4c0.1,0.1,0.1,0.1,0.1,0.2c0,0.8,0,1.7,0,2.5c0,0.2,0.1,0.3,0.3,0.3c0.2,0,0.2-0.1,0.2-0.3c0-0.5,0-0.9,0-1.4c0-0.1,0-0.2,0.1-0.2s0.2,0,0.2,0.1l0.1,0.1c0.4,0.4,0.8,0.8,1.3,1.3c0.2,0,0.3-0.1,0.4-0.2c0.1-0.2,0-0.3-0.1-0.4c-0.4-0.4-0.9-0.9-1.3-1.3c-0.1-0.1-0.1-0.2-0.1-0.3c0.1-0.1,0.2-0.1,0.2-0.1c0.5,0,1.1,0,1.6,0c0.1,0,0.2-0.1,0.2-0.2c0-0.2-0.1-0.3-0.3-0.3c-0.8,0-1.6,0-2.4,0c-0.1,0-0.2,0-0.3-0.1c-0.2-0.2-0.5-0.5-0.7-0.7c-0.1-0.1-0.2-0.2-0.3-0.3c-0.1-0.1-0.1-0.2-0.1-0.2c0-0.1,0.1-0.1,0.2-0.1c0.3,0,0.6,0,0.9,0c0.7,0,1.4,0,2.1,0c0.1,0,0.2-0.1,0.2-0.2s0-0.3,0-0.4s-0.1-0.2-0.2-0.2c-0.4,0-0.8,0-1.2,0.1c-0.9,0.1-1.8,0.1-2.8,0.2c-0.4-0.4-0.7-0.7-1.1-1.1c-0.1-0.1-0.1-0.1,0-0.2c0-0.1,0.1-0.1,0.2-0.1h0.1c1.4,0,2.8,0,4.2,0c0.2,0,0.3-0.1,0.4-0.3c0.1-0.2,0.1-0.3,0-0.5s-0.2-0.2-0.4-0.2c-0.4,0-0.8,0.1-1.2,0.1c-0.7,0.1-1.5,0.1-2.2,0.2c-0.6,0-1.1,0.1-1.7,0.1c-0.2,0-0.3,0-0.4-0.1l-0.2-0.2c0-0.1,0.1-0.2,0.2-0.2c0.3,0,0.7,0,1,0c0.6,0,1.3-0.1,1.9-0.1c1.1-0.1,2.1-0.1,3.2-0.2c0.3,0.3,0.5,0.6,0.8,0.9c0.6,0.7,1.2,1.3,1.8,2c0.1,0.1,0.2,0.2,0.4,0c0.2-0.1,0.2-0.3,0.2-0.3c0.1-0.1,0-0.2-0.1-0.3c-0.4-0.4-0.8-0.8-1.3-1.3c-0.3-0.3-0.6-0.6-0.9-0.9c0-0.1,0.1-0.1,0.2-0.1c0.5,0,0.9,0,1.4,0c0.2,0.2,0.4,0.3,0.5,0.5c0.4,0.4,0.8,0.8,1.3,1.3c0.1,0.1,0.3,0.1,0.4,0s0.1-0.2,0-0.4c-0.4-0.4-0.7-0.7-1.1-1.1c0-0.1,0.1-0.1,0.3-0.1c0.6,0,1.3,0,1.9,0c0.2,0,0.4-0.1,0.4-0.4c0-0.2-0.1-0.4-0.4-0.4c-0.6,0-1.3,0-1.9,0c0-0.1,0-0.2,0.1-0.3c0.4-0.4,0.7-0.7,1.1-1.1c0.1-0.1,0.1-0.1,0.1-0.2c-0.1-0.2-0.3-0.3-0.5-0.1c-0.6,0.6-1.1,1.1-1.7,1.7c-0.5,0-0.9,0-1.4,0c0-0.1,0.1-0.2,0.1-0.3c0.2-0.2,0.4-0.3,0.5-0.5c0.5-0.5,1.1-1.1,1.6-1.6c0,0,0.1-0.1,0.1-0.2s-0.1-0.4-0.3-0.4c-0.2-0.1-0.2-0.1-0.3,0.1c-0.8,0.9-1.7,1.9-2.5,2.8c-0.9,0-1.8-0.1-2.7-0.1c-1.1-0.1-2.2-0.1-3.4-0.2c0-0.1,0-0.1,0.1-0.1l0.1-0.1c0.1-0.1,0.2-0.2,0.4-0.1c0.3,0,0.7,0.1,1,0.1c0.6,0.1,1.3,0.1,1.9,0.2c0.7,0.1,1.5,0.1,2.2,0.2c0.1,0,0.2,0,0.3-0.2c0.1-0.1,0.1-0.3,0.1-0.5c-0.1-0.3-0.2-0.3-0.4-0.3c-0.1,0-0.3,0-0.4,0c-1.3,0-2.5,0-3.8,0c0-0.1,0.1-0.2,0.1-0.3c0.3-0.3,0.6-0.6,1-1c0.7,0,1.4,0.1,2.1,0.1c0.6,0,1.1,0.1,1.7,0.1c0.1,0,0.2,0,0.2-0.1c0.1-0.2,0.1-0.3,0-0.5c-0.3,0-0.5,0-0.8,0c-0.5,0-1,0-1.5,0c-0.2,0-0.4,0-0.6,0c-0.1-0.1,0-0.2,0.1-0.3c0.3-0.3,0.6-0.6,0.9-0.9c0.8,0,1.6,0,2.4,0c0.2,0,0.3-0.1,0.3-0.3c0-0.2-0.1-0.3-0.3-0.3c-0.5,0-1,0-1.6,0c0-0.1,0.1-0.2,0.1-0.3c0.5-0.5,0.9-0.9,1.4-1.4c0.1-0.1,0.1-0.3,0-0.4c-0.1-0.2-0.3-0.2-0.4-0.2s-0.2,0.1-0.2,0.2c-0.4,0.4-0.8,0.8-1.3,1.3c-0.1-0.1-0.1-0.1-0.1-0.3c0-0.5,0-1.1,0-1.6c0-0.1,0-0.2-0.2-0.2c-0.2-0.1-0.3,0-0.3,0.3c0,0.8,0,1.7,0,2.5c-0.2,0.1-0.3,0.3-0.5,0.5s-0.4,0.4-0.6,0.6c-0.1,0-0.1-0.1-0.1-0.2v-0.1c0-1,0-1.9,0-2.9c0-0.2,0-0.2-0.2-0.3c-0.1,0-0.3,0-0.4,0s-0.1,0.1-0.1,0.2c0,0.5,0,0.9,0.1,1.4c0,0.9,0.1,1.7,0.1,2.6c-0.1,0.1-0.3,0.3-0.4,0.4c-0.2,0.2-0.4,0.4-0.6,0.6c-0.1-0.1-0.1-0.1-0.1-0.2c0-1.4,0-2.8,0-4.2c0-0.3-0.1-0.4-0.4-0.5c-0.4-0.1-0.6,0.1-0.6,0.5c0.1,0.6,0.1,1.3,0.2,1.9c0,0.5,0.1,0.9,0.1,1.4s0.1,1.1,0.2,1.6c0,0.2,0,0.4-0.2,0.6l-0.1,0.1c-0.1,0-0.2,0-0.2-0.2c0-0.7-0.1-1.4-0.1-2c0-0.7-0.1-1.3-0.1-2s-0.1-1.4-0.1-2.1c0.3-0.2,0.5-0.5,0.8-0.7c0.7-0.6,1.4-1.3,2.1-1.9c0.2-0.2,0.2-0.3,0-0.4c-0.1-0.1-0.2-0.1-0.3,0c-0.3,0.3-0.6,0.6-0.9,0.9c-0.4,0.4-0.9,0.9-1.3,1.3c0-0.5,0-1,0-1.5c0.2-0.2,0.5-0.5,0.7-0.7c0.4-0.4,0.7-0.7,1.1-1.1c0.1-0.1,0.1-0.2,0.1-0.3c-0.1-0.2-0.3-0.2-0.4-0.1c-0.4,0.4-0.8,0.8-1.1,1.1c0-0.6,0-1.3,0-1.9c0-0.1,0-0.2-0.1-0.3c-0.1,0-0.2-0.1-0.2-0.1s0,0.1,0,0.2c0,4.3,0,8.5,0,12.8c0.2,0,0.4,0.1,0.6,0.2c0.3,0.3,0.4,0.6,0.3,1s-0.4,0.7-0.8,0.7c-0.1,0-0.1,0.1-0.1,0.2c0,4.3,0,8.5,0,12.8v0.1c0.2,0,0.3-0.2,0.3-0.4c0-0.6,0-1.3,0-1.9c0.4,0.4,0.8,0.8,1.1,1.1c0.1,0.1,0.2,0.1,0.4,0c0.1-0.1,0.1-0.2,0-0.4c-0.6-0.6-1.2-1.2-1.8-1.8c0-0.5,0-1,0-1.5c0.2,0.2,0.5,0.5,0.7,0.7c0.5,0.5,1,1,1.4,1.4c0.1,0.1,0.2,0.1,0.3,0.1c0.1-0.1,0.2-0.2,0.3-0.3c-0.3-0.2-0.5-0.5-0.8-0.7c-0.7-0.6-1.4-1.3-2.2-1.9c0-0.9,0.1-1.7,0.1-2.6c0.1-1.2,0.1-2.3,0.2-3.5c0.1,0,0.2,0.1,0.2,0.1l0.1,0.1c0,0.3,0,0.4c-0.1,1-0.2,1.9-0.2,2.9c-0.1,0.6-0.1,1.3-0.2,1.9c0,0.3,0.1,0.4,0.3,0.5c0.4,0.1,0.6-0.1,0.6-0.5c0-1.1,0-2.1,0-3.2c0-0.4,0-0.7,0-1.1c0.3,0.3,0.7,0.7,1,1c0,0.7-0.1,1.4-0.1,2.1c0,0.6-0.1,1.2-0.1,1.9c0.2,0.1,0.5,0.1,0.6-0.1"/></g></g><g><path class="s1" d="M-458.7,280.1c0-4.7,3.1-8.4,7.3-8.4V269c-0.9,1-1.3,0.9-2.3-0.2c-0.6-0.7-1.2-1.5-1.6-2c0,0.8,0,1.7-0.1,2.7c-0.2,1.4-1.1,2.2-2.4,2c-0.8-0.1-1.6-0.4-2.4-0.7c-0.4-0.1-0.8-0.4-1.3-0.6c0.4,0.7,0.8,1.2,1.1,1.7c1.4,2.4,0.7,4.4-1.8,5c-0.7,0.1-1.3,0.3-2,0.4c0.7,0.2,1.5,0.4,2.2,0.7c1.9,0.8,2.2,2.1,0.8,3.8c-0.7,0.6-1.3,1.3-1.9,1.9c0.9,0.1,1.9,0.2,2.9,0.5c1.2,0.3,1.8,1.5,1.5,2.8c-0.2,0.8-0.4,1.5-0.8,2.2c-0.3,0.6-0.7,1.2-1,1.8c0.2,0,0.4-0.2,0.5-0.3c1-0.5,2-1,3-1.4c0.8-0.3,1.6,0.1,1.9,0.9c0.3,0.7,0.5,1.6,0.6,2.4s0,1.6,0,2.3c0.5-0.9,1.3-1.9,2-2.8c0.8-1.1,0.6-1.4,1.5-1.1v-2.5C-455.6,288.5-458.7,284.7-458.7,280.1z"/><path class="s1" d="M-451.3,287.2V273c-3.5,0-6.2,3.2-6.2,7.1C-457.5,284-454.9,287.2-451.3,287.2z"/></g></g></svg>
           4 Mevsim
@@ -225,6 +295,8 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
       <option value="2022">2022 ve üzeri</option>
     </select>
   </div>
+
+  <button class="filter-fab-close" onclick="closeFilters()">✓ Filtreleri Uygula</button>
 
 </aside>
 
@@ -331,6 +403,51 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
     </table>
   </div>
 
+  <!-- MOBİL KART GÖRÜNÜMÜ -->
+  <div class="mobile-cards" id="mobile-cards">
+    {% for u in sonuclar %}
+    <div class="m-card {% if u.fiyat == en_ucuz_fiyat %}en-ucuz{% endif %}"
+         data-toptanci="{{ u.toptanci }}"
+         data-marka="{{ u.marka }}"
+         data-mevsim="{{ u.mevsim }}"
+         data-model="{{ u.urun_adi|lower }}"
+         data-fiyat="{{ u.fiyat }}"
+         data-dot="{{ u.dot }}"
+         id="mc-{{ forloop.counter }}">
+      <div class="m-card-top">
+        <div>
+          <div class="m-card-marka">{{ u.marka }}</div>
+        </div>
+        <div class="m-card-fiyat {% if u.fiyat == en_ucuz_fiyat %}cheapest{% endif %}">{{ u.fiyat_str }}</div>
+      </div>
+      <div class="m-card-model">{{ u.urun_adi }}</div>
+      <div class="m-card-meta">
+        <span class="m-meta-tag toptanci">{{ u.toptanci }}</span>
+        {% if "kış" in u.mevsim|lower or "kis" in u.mevsim|lower %}
+          <span class="m-meta-tag">❄️ Kış</span>
+        {% elif "4" in u.mevsim %}
+          <span class="m-meta-tag">🌤 4 Mevsim</span>
+        {% else %}
+          <span class="m-meta-tag">☀️ Yaz</span>
+        {% endif %}
+        {% if u.dot and u.dot != "0" %}<span class="m-meta-tag dot">DOT {{ u.dot }}</span>{% endif %}
+        {% if u.miktar == 0 %}
+          <span class="m-meta-tag" style="color:#EF4444">Stok Yok</span>
+        {% elif u.miktar <= 4 %}
+          <span class="m-meta-tag" style="color:#D97706">Son {{ u.miktar }}</span>
+        {% else %}
+          <span class="m-meta-tag">{{ u.miktar }} adet</span>
+        {% endif %}
+        {% for toptanci_adi, url in b2b_linkler.items %}
+          {% if toptanci_adi == u.toptanci %}
+            <a href="{{ url }}" target="_blank" class="b2b-btn">B2B</a>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
   <div class="empty hidden" id="empty-state">
     <div class="icon">🔍</div>
     <p>Filtrelere uyan ürün bulunamadı</p>
@@ -355,10 +472,21 @@ function getActiveValues(filterName) {
     .map(cb => cb.dataset.value);
 }
 
+function getAllValues(filterName) {
+  return [...document.querySelectorAll(`.filter-cb[data-filter="${filterName}"]`)]
+    .map(cb => cb.dataset.value);
+}
+
 function applyFilters() {
   const activeToptanci = getActiveValues('toptanci');
   const activeMarka    = getActiveValues('marka');
   const activeMevsim   = getActiveValues('mevsim');
+
+  // Hiç seçili yoksa o filtre için hepsini kabul et
+  const toptanciAktif = activeToptanci.length > 0;
+  const markaAktif    = activeMarka.length > 0;
+  const mevsimAktif   = activeMevsim.length > 0;
+
   const modelQ = document.getElementById('model-search').value.toLowerCase().trim();
   const minDot = parseInt(document.getElementById('dot-filter').value) || 0;
 
@@ -372,12 +500,13 @@ function applyFilters() {
       const m = dotRaw.match(/20\d{2}/);
       if (m) dotOk = parseInt(m[0]) >= minDot;
     }
-    const ok =
-      activeToptanci.includes(row.dataset.toptanci) &&
-      activeMarka.includes(row.dataset.marka) &&
-      activeMevsim.some(mv => row.dataset.mevsim.toLowerCase().includes(mv.toLowerCase())) &&
-      (modelQ === '' || row.dataset.model.includes(modelQ)) &&
-      dotOk;
+
+    const toptanciOk = !toptanciAktif || activeToptanci.includes(row.dataset.toptanci);
+    const markaOk    = !markaAktif    || activeMarka.includes(row.dataset.marka);
+    const mevsimOk   = !mevsimAktif   || activeMevsim.some(mv => row.dataset.mevsim.toLowerCase().includes(mv.toLowerCase()));
+    const modelOk    = modelQ === '' || row.dataset.model.includes(modelQ);
+
+    const ok = toptanciOk && markaOk && mevsimOk && modelOk && dotOk;
 
     row.classList.toggle('hidden', !ok);
     if (ok) visible++;
@@ -396,7 +525,7 @@ function applyFilters() {
 }
 
 function clearFilter(name) {
-  document.querySelectorAll(`.filter-cb[data-filter="${name}"]`).forEach(cb => cb.checked = true);
+  document.querySelectorAll(`.filter-cb[data-filter="${name}"]`).forEach(cb => cb.checked = false);
   applyFilters();
 }
 
@@ -421,19 +550,50 @@ function sortBy(field) {
   applyFilters();
 }
 
-// Başlangıç filtreleri
+// Başlangıçta arama sayfasından gelen mevsim seçimini işaretle
 const initialMevsim = "{{ mevsim }}";
 if (initialMevsim) {
   document.querySelectorAll('.filter-cb[data-filter="mevsim"]').forEach(cb => {
-    cb.checked = cb.dataset.value.toLowerCase() === initialMevsim.toLowerCase();
+    if (cb.dataset.value.toLowerCase() === initialMevsim.toLowerCase()) {
+      cb.checked = true;
+    }
   });
-  applyFilters();
 }
 const initialDot = "{{ min_dot }}";
 if (initialDot) {
   const ds = document.getElementById('dot-filter');
-  if (ds) { ds.value = initialDot; applyFilters(); }
+  if (ds) ds.value = initialDot;
 }
+// Sayfa yüklenince filtreleri uygula
+applyFilters();
+
+// Mobil drawer
+function openFilters() {
+  document.querySelector('.sidebar').classList.add('open');
+  document.getElementById('filter-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeFilters() {
+  document.querySelector('.sidebar').classList.remove('open');
+  document.getElementById('filter-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Mobil kart filtreleme
+const origApply = applyFilters;
+applyFilters = function() {
+  origApply();
+  // Masaüstü satırlarla senkronize mobil kartları gizle/göster
+  document.querySelectorAll('.m-card').forEach((card, i) => {
+    const row = document.querySelectorAll('.data-row')[i];
+    if (row) card.classList.toggle('hidden', row.classList.contains('hidden'));
+  });
+};
+applyFilters();
 </script>
+<button class="filter-fab" id="filter-fab" onclick="openFilters()">
+  ⚙️ Filtrele
+</button>
+
 </body>
 </html>

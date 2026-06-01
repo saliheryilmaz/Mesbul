@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MesBul — Lastik Fiyat Karşılaştırma</title>
 {% load static %}
-<link rel="icon" type="image/svg+xml" href="{% static 'karsilastirma/favicon.svg' %}">
+<link rel="icon" type="image/png" href="{% static 'karsilastirma/favicon1.png' %}">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
 
@@ -59,11 +59,11 @@
   .logo-icon {
     width: 32px;
     height: 32px;
-    background: var(--orange);
     border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
   }
   .logo-icon svg {
     width: 18px;
@@ -72,7 +72,7 @@
   }
   .logo-text {
     color: var(--white);
-    font-size: 1.125rem;
+    font-size: 1.25rem;
     font-weight: 700;
     letter-spacing: -0.01em;
   }
@@ -443,12 +443,7 @@
 <header class="header">
   <div class="header-inner">
     <div class="logo-area">
-      <div class="logo-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"></circle>
-          <path d="m21 21-4.35-4.35"></path>
-        </svg>
-      </div>
+      <img src="{% static 'karsilastirma/favicon1.png' %}" alt="MesBul" style="height:42px;width:42px;border-radius:8px;object-fit:cover;box-shadow:0 2px 8px rgba(0,0,0,.35);">
       <span class="logo-text">MesBul</span>
     </div>
     <nav class="header-nav">

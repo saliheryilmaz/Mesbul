@@ -11,6 +11,7 @@ from .uspa_servis      import uspa_ara
 from .keskin_servis    import keskin_ara
 from .otosemih_servis  import otosemih_ara
 from .netlastik_servis import netlastik_ara
+from .lastsis_servis   import lastsis_ara
 from .models import AramaGecmisi
 
 # Toptancı B2B portal linkleri
@@ -19,6 +20,7 @@ B2B_LINKLER = {
     "Keskin Lastik":  "https://keskinlastik.com",
     "OtoSemih":       "https://www.otosemih.com.tr",
     "NetLastik":      "https://www.netlastik.com",
+    "Lastsis":        "https://panel.lastsis.com",
 }
 
 
@@ -32,6 +34,7 @@ def _tum_toptancilarda_ara(ebat: str, marka: str, mevsim: str) -> list:
         keskin_ara,
         otosemih_ara,
         netlastik_ara,
+        lastsis_ara,
     ]
 
     tum_sonuclar = []

@@ -39,82 +39,143 @@
 
   /* Header */
   .header {
-    background: #2D2D2D;
-    border-bottom: 1px solid #3D3D3D;
-    padding: 0.875rem 0;
+    background: rgba(20, 20, 24, 0.97);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 1px 0 rgba(255,255,255,.06), 0 4px 24px rgba(0,0,0,.35);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: 72px;
+    display: flex;
+    align-items: center;
   }
   .header-inner {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 1.5rem;
+    padding: 0 2rem;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
+
+  /* Logo */
   .logo-area {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.875rem;
+    text-decoration: none;
   }
-  .logo-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 6px;
+  .logo-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    object-fit: cover;
+    box-shadow: 0 0 0 1px rgba(255,255,255,.1), 0 4px 12px rgba(0,0,0,.4);
+    flex-shrink: 0;
+  }
+  .logo-label {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .logo-name {
+    color: #F1F5F9;
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .logo-tagline {
+    color: #64748B;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  /* Divider */
+  .header-divider {
+    width: 1px;
+    height: 28px;
+    background: rgba(255,255,255,.08);
+    margin: 0 0.75rem;
+  }
+
+  /* User area */
+  .user-area {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 10px;
+    padding: 0.375rem 0.5rem 0.375rem 0.375rem;
+    transition: background .2s, border-color .2s;
+  }
+  .user-area:hover {
+    background: rgba(255,255,255,.08);
+    border-color: rgba(255,255,255,.12);
+  }
+  .user-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 7px;
+    background: linear-gradient(135deg, #E85D26, #C94D1A);
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
-  }
-  .logo-icon svg {
-    width: 18px;
-    height: 18px;
-    color: var(--white);
-  }
-  .logo-text {
-    color: var(--white);
-    font-size: 1.25rem;
+    font-size: 0.8125rem;
     font-weight: 700;
-    letter-spacing: -0.01em;
+    color: #fff;
+    flex-shrink: 0;
+    letter-spacing: 0;
+    text-transform: uppercase;
   }
-  .header-nav {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-  .nav-user {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #B0B0B0;
+  .user-name {
+    color: #CBD5E1;
     font-size: 0.875rem;
     font-weight: 500;
+    white-space: nowrap;
   }
-  .nav-user::before {
-    content: '👤';
-    font-size: 0.875rem;
-  }
-  .nav-logout {
+  .btn-logout {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.375rem;
     background: transparent;
-    border: 1px solid #4D4D4D;
-    border-radius: 6px;
-    padding: 0.5rem 1rem;
-    color: #E0E0E0;
-    font-size: 0.875rem;
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 7px;
+    padding: 0.375rem 0.75rem;
+    color: #94A3B8;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8125rem;
     font-weight: 500;
     text-decoration: none;
+    cursor: pointer;
     transition: all .2s;
+    white-space: nowrap;
   }
-  .nav-logout::before {
-    content: '🚪';
-    font-size: 0.875rem;
+  .btn-logout:hover {
+    background: rgba(239,68,68,.12);
+    border-color: rgba(239,68,68,.4);
+    color: #FCA5A5;
   }
-  .nav-logout:hover {
-    background: #3D3D3D;
-    border-color: #5D5D5D;
-    color: var(--white);
+  .btn-logout svg {
+    width: 14px;
+    height: 14px;
+    opacity: 0.7;
+    flex-shrink: 0;
+  }
+  .btn-logout:hover svg {
+    opacity: 1;
+  }
+
+  @media (max-width: 768px) {
+    .header-inner { padding: 0 1rem; }
+    .logo-tagline { display: none; }
+    .user-name { display: none; }
+    .header-divider { display: none; }
   }
 
   /* Main */
@@ -442,14 +503,30 @@
 
 <header class="header">
   <div class="header-inner">
-    <div class="logo-area">
-      <img src="{% static 'karsilastirma/favicon1.png' %}" alt="MesBul" style="height:42px;width:42px;border-radius:8px;object-fit:cover;box-shadow:0 2px 8px rgba(0,0,0,.35);">
-      <span class="logo-text">MesBul</span>
+
+    <a class="logo-area" href="{% url 'arama' %}">
+      <img src="{% static 'karsilastirma/favicon1.png' %}" alt="MesBul" class="logo-img">
+      <div class="logo-label">
+        <span class="logo-name">MesBul</span>
+        <span class="logo-tagline">Lastik Fiyat Karşılaştırma</span>
+      </div>
+    </a>
+
+    <div style="display:flex;align-items:center;gap:0.75rem;">
+      <div class="user-area">
+        <div class="user-avatar">{{ request.user.username|slice:":2" }}</div>
+        <span class="user-name">{{ request.user.username }}</span>
+      </div>
+      <a href="{% url 'cikis' %}" class="btn-logout">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        Çıkış
+      </a>
     </div>
-    <nav class="header-nav">
-      <span class="nav-user">{{ request.user.username }}</span>
-      <a href="{% url 'cikis' %}" class="nav-logout">Çıkış</a>
-    </nav>
+
   </div>
 </header>
 

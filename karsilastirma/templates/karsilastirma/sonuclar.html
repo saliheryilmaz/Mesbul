@@ -7,7 +7,7 @@
 {% load static %}
 <link rel="icon" type="image/png" href="{% static 'karsilastirma/favicon1.png' %}">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 :root {
   --slate-50:#F8FAFC; --slate-100:#F1F5F9; --slate-200:#E2E8F0;
   --slate-300:#CBD5E1; --slate-400:#94A3B8; --slate-600:#475569;
@@ -21,28 +21,34 @@
 body{background:var(--slate-50);color:var(--slate-900);font-family:'Inter',sans-serif;min-height:100vh;display:flex;flex-direction:column}
 
 /* TOPBAR */
-.topbar{background:var(--header-bg);padding:.875rem 1.25rem;display:flex;align-items:center;gap:2rem;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.15);border-bottom:1px solid var(--header-border)}
-.topbar-left{display:flex;align-items:center;gap:1rem}
-.logo-icon{width:42px;height:42px;border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden}
-.logo-text{color:var(--white);font-size:1.25rem;font-weight:700;letter-spacing:-0.01em}
-.back-btn{display:inline-flex;align-items:center;gap:.4rem;color:#B0B0B0;font-size:.875rem;font-weight:500;text-decoration:none;padding:.4rem .75rem;border:1px solid #4D4D4D;border-radius:6px;transition:all .2s}
-.back-btn:hover{color:#fff;border-color:#6b7280;background:#3D3D3D}
-.topbar-center{flex:1;display:flex;justify-content:center}
+.topbar{background:rgba(20,20,24,.97);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 1px 0 rgba(255,255,255,.06),0 4px 24px rgba(0,0,0,.35);height:72px;display:flex;align-items:center;padding:0 2rem;position:sticky;top:0;z-index:100}
+.topbar-left{display:flex;align-items:center;gap:1rem;flex-shrink:0}
+.logo-link{display:flex;align-items:center;gap:.875rem;text-decoration:none}
+.logo-img-sm{width:38px;height:38px;border-radius:9px;object-fit:cover;box-shadow:0 0 0 1px rgba(255,255,255,.1),0 4px 12px rgba(0,0,0,.4);flex-shrink:0}
+.logo-name{color:#F1F5F9;font-size:1.0625rem;font-weight:700;letter-spacing:-0.02em}
+.topbar-sep{width:1px;height:24px;background:rgba(255,255,255,.08);flex-shrink:0}
+.back-btn{display:inline-flex;align-items:center;gap:.4rem;color:#94A3B8;font-size:.8125rem;font-weight:500;text-decoration:none;padding:.375rem .75rem;border:1px solid rgba(255,255,255,.08);border-radius:7px;transition:all .2s;white-space:nowrap}
+.back-btn:hover{color:#F1F5F9;border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.06)}
+.topbar-center{flex:1;display:flex;justify-content:center;padding:0 1.5rem}
 .topbar-search{display:flex;align-items:center;gap:0;max-width:480px;width:100%}
 .topbar-search input{flex:1;background:#1e293b;border:1px solid #374151;border-right:none;border-radius:6px 0 0 6px;padding:.5rem .875rem;color:#fff;font-family:'JetBrains Mono',monospace;font-size:.9375rem;font-weight:600;outline:none;transition:border-color .2s}
 .topbar-search input::placeholder{color:#6b7280;font-weight:500}
 .topbar-search input:focus{border-color:var(--orange)}
 .topbar-search button{background:var(--orange);border:none;border-radius:0 6px 6px 0;padding:.5rem 1rem;color:#fff;font-size:.875rem;font-weight:600;cursor:pointer;transition:background .2s;white-space:nowrap}
 .topbar-search button:hover{background:var(--orange-dark)}
-.topbar-right{display:flex;align-items:center;gap:.75rem}
-.meta-pill{background:#3D3D3D;border-radius:6px;padding:.375rem .875rem;font-size:.8125rem;color:#B0B0B0;font-weight:500}
-.meta-pill span{color:#fff;font-weight:700}
+.topbar-right{display:flex;align-items:center;gap:.625rem;flex-shrink:0}
+.meta-pill{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);border-radius:7px;padding:.3rem .75rem;font-size:.8125rem;color:#94A3B8;font-weight:500}
+.meta-pill span{color:#F1F5F9;font-weight:700}
+.btn-logout-sm{display:inline-flex;align-items:center;gap:.375rem;background:transparent;border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:.375rem .75rem;color:#94A3B8;font-family:'Inter',sans-serif;font-size:.8125rem;font-weight:500;text-decoration:none;cursor:pointer;transition:all .2s;white-space:nowrap}
+.btn-logout-sm:hover{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.4);color:#FCA5A5}
+.btn-logout-sm svg{width:13px;height:13px;opacity:.7;flex-shrink:0}
+.btn-logout-sm:hover svg{opacity:1}
 
 /* LAYOUT */
 .layout{display:flex;flex:1;min-height:0}
 
 /* SIDEBAR */
-.sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);background:var(--white);border-right:1px solid var(--slate-200);padding:1.25rem;overflow-y:auto;position:sticky;top:65px;height:calc(100vh - 65px)}
+.sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);background:var(--white);border-right:1px solid var(--slate-200);padding:1.25rem;overflow-y:auto;position:sticky;top:72px;height:calc(100vh - 72px)}
 .filter-section{margin-bottom:1.5rem}
 .filter-title{font-size:.6875rem;font-weight:700;color:var(--slate-600);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;display:flex;align-items:center;justify-content:space-between}
 .filter-clear{font-size:.6875rem;color:var(--orange);cursor:pointer;font-weight:600;text-transform:uppercase;letter-spacing:.05em;transition:color .2s}
@@ -119,30 +125,165 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
 .hidden{display:none!important}
 
 /* MOBİL FİLTRE DRAWER */
-.filter-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200}
+.filter-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;backdrop-filter:blur(2px)}
 .filter-overlay.open{display:block}
-.sidebar{transition:transform .3s ease}
+.sidebar{transition:transform .3s cubic-bezier(.4,0,.2,1)}
 
-.filter-fab{display:none;position:fixed;bottom:1.25rem;right:1.25rem;z-index:150;background:var(--orange);color:#fff;border:none;border-radius:50px;padding:.75rem 1.25rem;font-size:.875rem;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(232,93,38,.4);align-items:center;gap:.5rem}
+/* MOBİL FAB */
+.filter-fab{display:none;position:fixed;bottom:1.5rem;right:1.5rem;z-index:150;background:var(--orange);color:#fff;border:none;border-radius:100px;padding:.75rem 1.25rem 0.75rem 1rem;font-size:.875rem;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;box-shadow:0 4px 20px rgba(232,93,38,.45);align-items:center;gap:.5rem;letter-spacing:.01em}
+.filter-fab::before{content:'⚙️';font-size:.9rem}
 
-.mobile-cards{display:none;flex-direction:column;gap:.75rem}
-.m-card{background:var(--white);border:1px solid var(--slate-200);border-radius:8px;padding:1rem;box-shadow:0 1px 3px rgba(15,23,42,.06)}
-.m-card.en-ucuz{border-left:3px solid var(--green);background:rgba(16,185,129,.04)}
-.m-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem}
-.m-card-marka{font-weight:700;font-size:.9375rem;color:var(--slate-900)}
-.m-card-fiyat{font-family:'JetBrains Mono',monospace;font-size:1.125rem;font-weight:700;color:var(--slate-900)}
-.m-card-fiyat.cheapest{color:var(--green)}
-.m-card-model{font-size:.8125rem;color:var(--slate-600);margin-bottom:.625rem;line-height:1.4}
-.m-card-meta{display:flex;flex-wrap:wrap;gap:.375rem;align-items:center}
-.m-meta-tag{font-size:.75rem;font-weight:500;padding:.2rem .5rem;border-radius:4px;background:var(--slate-100);color:var(--slate-600)}
-.m-meta-tag.toptanci{background:#EFF6FF;color:#1D4ED8}
-.m-meta-tag.dot{font-family:'JetBrains Mono',monospace;background:var(--slate-100);color:var(--slate-600)}
+/* MOBİL KART LİSTESİ */
+.mobile-cards{display:none;flex-direction:column;gap:12px;padding-bottom:100px}
+
+.m-card{
+  background:#FFFFFF;
+  border:1px solid #E8EDF2;
+  border-radius:12px;
+  padding:1rem 1rem .875rem;
+  box-shadow:0 1px 4px rgba(15,23,42,.07), 0 0 0 0 transparent;
+  transition:box-shadow .2s, transform .15s;
+  cursor:default;
+  font-family:'DM Sans',sans-serif;
+}
+.m-card:active{transform:scale(.99);box-shadow:0 2px 10px rgba(15,23,42,.1)}
+.m-card.en-ucuz{border-color:#BBF7D0;background:linear-gradient(135deg,#F0FDF4 0%,#FFFFFF 60%)}
+
+/* Kart üst satır: Marka + Fiyat */
+.m-card-row1{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  margin-bottom:.375rem;
+  gap:.5rem;
+}
+.m-card-marka{
+  font-size:1rem;
+  font-weight:700;
+  color:#0F172A;
+  letter-spacing:-.015em;
+  line-height:1.25;
+}
+.m-card-fiyat{
+  font-family:'JetBrains Mono',monospace;
+  font-size:1.0625rem;
+  font-weight:700;
+  color:#0F172A;
+  white-space:nowrap;
+  letter-spacing:-.02em;
+}
+.m-card-fiyat.cheapest{color:#059669}
+
+/* Kart orta satır: Model */
+.m-card-model{
+  font-size:.8125rem;
+  color:#64748B;
+  font-weight:400;
+  line-height:1.4;
+  margin-bottom:.625rem;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:100%;
+}
+
+/* Kart alt satır: Badge'ler */
+.m-card-badges{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.375rem;
+  align-items:center;
+}
+
+/* Base badge */
+.mb{
+  display:inline-flex;
+  align-items:center;
+  gap:.25rem;
+  font-size:.6875rem;
+  font-weight:600;
+  font-family:'DM Sans',sans-serif;
+  padding:.2rem .575rem;
+  border-radius:100px;
+  letter-spacing:.01em;
+  white-space:nowrap;
+  line-height:1.4;
+}
+
+/* Badge türleri */
+.mb-seller{background:#F1F5F9;color:#475569;border:1px solid #E2E8F0}
+.mb-season{background:#F1F5F9;color:#475569;border:1px solid #E2E8F0}
+.mb-dot{background:#F1F5F9;color:#475569;border:1px solid #E2E8F0;font-family:'JetBrains Mono',monospace;font-size:.625rem}
+.mb-stock-low{background:#FFF7ED;color:#C2410C;border:1px solid #FED7AA}
+.mb-b2b{background:#EFF6FF;color:#1D4ED8;border:1px solid #BFDBFE;font-weight:700}
+.mb-cheapest{background:#D1FAE5;color:#065F46;border:1px solid #A7F3D0}
+
+/* MOBİL STAT BAR */
+.m-stats{display:none;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:.75rem}
+.m-stat{background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:.625rem .75rem}
+.m-stat-label{font-size:.5625rem;font-weight:600;color:#94A3B8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.25rem;font-family:'DM Sans',sans-serif}
+.m-stat-val{font-family:'JetBrains Mono',monospace;font-size:.9375rem;font-weight:700;color:#0F172A}
+.m-stat-val.green{color:#059669}
+.m-stat-val.blue{color:#2563EB}
+
+/* MOBİL TOOLBAR (sticky) */
+.m-toolbar{
+  display:none;
+  position:sticky;
+  top:72px;
+  z-index:90;
+  background:#F8FAFC;
+  border-bottom:1px solid #E2E8F0;
+  padding:.5rem .75rem;
+  gap:.5rem;
+  flex-wrap:nowrap;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.m-toolbar::-webkit-scrollbar{display:none}
+.m-toolbar-search{
+  flex:1;
+  min-width:120px;
+  background:#FFFFFF;
+  border:1px solid #E2E8F0;
+  border-radius:8px;
+  padding:.625rem .875rem;
+  font-size:1rem;
+  font-family:'DM Sans',sans-serif;
+  color:#0F172A;
+  outline:none;
+  height:44px;
+}
+.m-toolbar-search:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(232,93,38,.1)}
+.m-toolbar-btn{
+  background:#FFFFFF;
+  border:1px solid #E2E8F0;
+  border-radius:8px;
+  padding:0 1rem;
+  font-size:.8125rem;
+  font-weight:600;
+  font-family:'DM Sans',sans-serif;
+  color:#475569;
+  cursor:pointer;
+  white-space:nowrap;
+  height:44px;
+  display:inline-flex;
+  align-items:center;
+  gap:.3rem;
+  transition:all .2s;
+  flex-shrink:0;
+}
+.m-toolbar-btn:hover,.m-toolbar-btn.active{border-color:var(--orange);color:var(--orange);background:#FFF7F4}
+.filter-fab-close{display:flex;width:100%;background:var(--orange);color:#fff;border:none;border-radius:8px;padding:.875rem;font-size:.9375rem;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;justify-content:center;margin-top:1rem;letter-spacing:.01em}
 
 @media(max-width:768px){
-  .topbar{padding:.75rem 1rem;gap:.75rem}
-  .logo-text{display:none}
+  .topbar{padding:0 1rem;gap:.5rem}
+  .logo-name{display:none}
+  .topbar-sep{display:none}
   .topbar-center{display:none}
   .topbar-right .meta-pill{font-size:.75rem;padding:.25rem .625rem}
+  .btn-logout-sm span{display:none}
 
   .layout{flex-direction:column}
   .sidebar{
@@ -151,7 +292,6 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
     z-index:250;
     transform:translateX(-100%);
     height:100vh;
-    top:0;
     padding-top:1rem;
     overflow-y:auto;
   }
@@ -159,36 +299,20 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
 
   .filter-fab{display:inline-flex}
 
-  .main{padding:.75rem}
+  /* Stats: masaüstü gizle, mobil stat göster */
+  .stats{display:none}
+  .m-stats{display:grid}
 
-  .stats{grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:.75rem}
-  .stat{padding:.625rem .75rem}
-  .stat .lbl{font-size:.5625rem}
-  .stat .val{font-size:1rem}
+  /* Toolbar */
+  .m-toolbar{display:flex}
+  .table-toolbar{display:none}
 
-  .table-toolbar{gap:.5rem}
-  .model-search{font-size:1rem}
-  .sort-btn{padding:.5rem .625rem;font-size:.75rem}
-
+  /* Tablo gizle, kart göster */
   .tablo-wrap{display:none}
   .mobile-cards{display:flex}
 
+  .main{padding:.75rem}
   .gizle{display:none}
-
-  .filter-fab-close{
-    display:flex;
-    width:100%;
-    background:var(--orange);
-    color:#fff;
-    border:none;
-    border-radius:6px;
-    padding:.875rem;
-    font-size:.9375rem;
-    font-weight:700;
-    cursor:pointer;
-    justify-content:center;
-    margin-top:1rem;
-  }
 }
 </style>
 </head>
@@ -197,22 +321,29 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
 <!-- TOPBAR -->
 <div class="topbar">
   <div class="topbar-left">
-    <div class="logo-icon">
-      <img src="{% static 'karsilastirma/favicon1.png' %}" alt="MesBul" style="height:42px;width:42px;border-radius:8px;object-fit:cover;box-shadow:0 2px 8px rgba(0,0,0,.35);">
-    </div>
-    <span class="logo-text">MesBul</span>
-    <a href="{% url 'arama' %}" class="back-btn">← Geri</a>
+    <a href="{% url 'arama' %}" class="logo-link">
+      <img src="{% static 'karsilastirma/favicon1.png' %}" alt="MesBul" class="logo-img-sm">
+      <span class="logo-name">MesBul</span>
+    </a>
+    <div class="topbar-sep"></div>
+    <a href="{% url 'arama' %}" class="back-btn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+      Geri
+    </a>
   </div>
   <div class="topbar-center">
     <form method="POST" action="{% url 'sonuclar' %}" class="topbar-search">
       {% csrf_token %}
       <input type="text" name="ebat" value="{{ ebat }}" placeholder="205/55R16" required>
-      <button type="submit">🔍 Ara</button>
+      <button type="submit">Ara</button>
     </form>
   </div>
   <div class="topbar-right">
-    <a href="{% url 'arama' %}" class="back-btn" style="display:none" id="mobile-back">← Geri</a>
     <div class="meta-pill"><span id="visible-count">{{ sonuc_sayisi }}</span> ürün</div>
+    <a href="{% url 'cikis' %}" class="btn-logout-sm">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Çıkış
+    </a>
   </div>
 </div>
 
@@ -401,7 +532,30 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
     </table>
   </div>
 
-  <!-- MOBİL KART GÖRÜNÜMÜ -->
+  <!-- MOBİL STAT BAR -->
+  <div class="m-stats">
+    <div class="m-stat">
+      <div class="m-stat-label">En Ucuz</div>
+      <div class="m-stat-val green">{% if sonuclar %}{{ sonuclar.0.fiyat_str }}{% else %}—{% endif %}</div>
+    </div>
+    <div class="m-stat">
+      <div class="m-stat-label">En Pahalı</div>
+      <div class="m-stat-val">{% if sonuclar %}{% with sonuclar|last as son %}{{ son.fiyat_str }}{% endwith %}{% else %}—{% endif %}</div>
+    </div>
+    <div class="m-stat">
+      <div class="m-stat-label">Toplam</div>
+      <div class="m-stat-val blue" id="m-stat-count">{{ sonuc_sayisi }}</div>
+    </div>
+  </div>
+
+  <!-- MOBİL TOOLBAR -->
+  <div class="m-toolbar" id="m-toolbar">
+    <input type="text" class="m-toolbar-search" placeholder="Model ara..." oninput="applyFilters()" id="m-model-search">
+    <button class="m-toolbar-btn active" id="m-sort-fiyat" onclick="sortBy('fiyat')">↕ Fiyat</button>
+    <button class="m-toolbar-btn" id="m-sort-marka" onclick="sortBy('marka')">↕ Marka</button>
+  </div>
+
+  <!-- MOBİL KART LİSTESİ -->
   <div class="mobile-cards" id="mobile-cards">
     {% for u in sonuclar %}
     <div class="m-card {% if u.fiyat == en_ucuz_fiyat %}en-ucuz{% endif %}"
@@ -412,36 +566,47 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
          data-fiyat="{{ u.fiyat }}"
          data-dot="{{ u.dot }}"
          id="mc-{{ forloop.counter }}">
-      <div class="m-card-top">
-        <div>
-          <div class="m-card-marka">{{ u.marka }}</div>
-        </div>
-        <div class="m-card-fiyat {% if u.fiyat == en_ucuz_fiyat %}cheapest{% endif %}">{{ u.fiyat_str }}</div>
+
+      <!-- Üst satır: Marka + Fiyat -->
+      <div class="m-card-row1">
+        <span class="m-card-marka">{{ u.marka }}</span>
+        <span class="m-card-fiyat {% if u.fiyat == en_ucuz_fiyat %}cheapest{% endif %}">{{ u.fiyat_str }}</span>
       </div>
+
+      <!-- Orta satır: Model -->
       <div class="m-card-model">{{ u.urun_adi }}</div>
-      <div class="m-card-meta">
-        <span class="m-meta-tag toptanci">{{ u.toptanci }}</span>
+
+      <!-- Alt satır: Badge'ler -->
+      <div class="m-card-badges">
+        <span class="mb mb-seller">{{ u.toptanci }}</span>
+
         {% if "kış" in u.mevsim|lower or "kis" in u.mevsim|lower %}
-          <span class="m-meta-tag">❄️ Kış</span>
+          <span class="mb mb-season">❄️ Kış</span>
         {% elif "4" in u.mevsim %}
-          <span class="m-meta-tag">🌤 4 Mevsim</span>
+          <span class="mb mb-season">🌤 4 Mev.</span>
         {% else %}
-          <span class="m-meta-tag">☀️ Yaz</span>
+          <span class="mb mb-season">☀️ Yaz</span>
         {% endif %}
-        {% if u.dot and u.dot != "0" %}<span class="m-meta-tag dot">DOT {{ u.dot }}</span>{% endif %}
-        {% if u.miktar == 0 %}
-          <span class="m-meta-tag" style="color:#EF4444">Stok Yok</span>
-        {% elif u.miktar <= 4 %}
-          <span class="m-meta-tag" style="color:#D97706">Son {{ u.miktar }}</span>
-        {% else %}
-          <span class="m-meta-tag">{{ u.miktar }} adet</span>
+
+        {% if u.dot and u.dot != "0" %}
+          <span class="mb mb-dot">{{ u.dot }}</span>
         {% endif %}
+
+        {% if u.miktar > 0 and u.miktar <= 4 %}
+          <span class="mb mb-stock-low">Son {{ u.miktar }}</span>
+        {% endif %}
+
+        {% if u.fiyat == en_ucuz_fiyat %}
+          <span class="mb mb-cheapest">En Ucuz</span>
+        {% endif %}
+
         {% for toptanci_adi, url in b2b_linkler.items %}
           {% if toptanci_adi == u.toptanci %}
-            <a href="{{ url }}" target="_blank" class="b2b-btn">B2B</a>
+            <a href="{{ url }}" target="_blank" class="mb mb-b2b">B2B</a>
           {% endif %}
         {% endfor %}
       </div>
+
     </div>
     {% endfor %}
   </div>
@@ -485,7 +650,8 @@ function applyFilters() {
   const markaAktif    = activeMarka.length > 0;
   const mevsimAktif   = activeMevsim.length > 0;
 
-  const modelQ = document.getElementById('model-search').value.toLowerCase().trim();
+  const mSearchEl = document.getElementById('m-model-search');
+  const modelQ = (document.getElementById('model-search')?.value || mSearchEl?.value || '').toLowerCase().trim();
   const minDot = parseInt(document.getElementById('dot-filter').value) || 0;
 
   const rows = document.querySelectorAll('.data-row');
@@ -512,6 +678,8 @@ function applyFilters() {
 
   document.getElementById('visible-count').textContent = visible;
   document.getElementById('stat-count').textContent = visible;
+  const msc = document.getElementById('m-stat-count');
+  if (msc) msc.textContent = visible;
   document.getElementById('empty-state').classList.toggle('hidden', visible > 0);
   const tw = document.querySelector('.tablo-wrap');
   if (tw) tw.classList.toggle('hidden', visible === 0);
@@ -519,6 +687,12 @@ function applyFilters() {
   let idx = 1;
   rows.forEach(row => {
     if (!row.classList.contains('hidden')) row.querySelector('.sira').textContent = idx++;
+  });
+
+  // Mobil kartları masaüstü satırlarla senkronize et
+  const mCards = document.querySelectorAll('.m-card');
+  rows.forEach((row, i) => {
+    if (mCards[i]) mCards[i].classList.toggle('hidden', row.classList.contains('hidden'));
   });
 }
 
@@ -536,8 +710,9 @@ function filterMarkalar(q) {
 
 function sortBy(field) {
   if (sortField === field) sortDir *= -1; else { sortField = field; sortDir = 1; }
-  document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.sort-btn,.m-toolbar-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('sort-' + field)?.classList.add('active');
+  document.getElementById('m-sort-' + field)?.classList.add('active');
   const tbody = document.getElementById('table-body');
   const rows = [...tbody.querySelectorAll('.data-row')];
   rows.sort((a, b) => {
@@ -576,21 +751,9 @@ function closeFilters() {
   document.getElementById('filter-overlay').classList.remove('open');
   document.body.style.overflow = '';
 }
-
-// Mobil kart filtreleme
-const origApply = applyFilters;
-applyFilters = function() {
-  origApply();
-  // Masaüstü satırlarla senkronize mobil kartları gizle/göster
-  document.querySelectorAll('.m-card').forEach((card, i) => {
-    const row = document.querySelectorAll('.data-row')[i];
-    if (row) card.classList.toggle('hidden', row.classList.contains('hidden'));
-  });
-};
-applyFilters();
 </script>
 <button class="filter-fab" id="filter-fab" onclick="openFilters()">
-  ⚙️ Filtrele
+   Filtrele
 </button>
 
 </body>

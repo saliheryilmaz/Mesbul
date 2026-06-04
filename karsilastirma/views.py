@@ -75,7 +75,8 @@ class SonuclarView(LoginRequiredMixin, View):
             return render(request, "karsilastirma/arama.html",
                           {"hata": "Lütfen lastik ebatını girin."})
 
-        sonuclar = _tum_toptancilarda_ara(ebat, marka, mevsim)
+        # Tüm mevsimleri çek — filtreleme tamamen frontend'de (sidebar) yapılır
+        sonuclar = _tum_toptancilarda_ara(ebat, marka, "")
 
         # Marka filtresi (case-insensitive)
         if marka:

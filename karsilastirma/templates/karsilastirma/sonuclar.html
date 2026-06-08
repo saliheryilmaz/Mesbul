@@ -215,6 +215,7 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
 .mb-season{background:#F1F5F9;color:#475569;border:1px solid #E2E8F0}
 .mb-dot{background:#F1F5F9;color:#475569;border:1px solid #E2E8F0;font-family:'JetBrains Mono',monospace;font-size:.625rem}
 .mb-stock-low{background:#FFF7ED;color:#C2410C;border:1px solid #FED7AA}
+.mb-stock{background:#F1F5F9;color:#475569;border:1px solid #E2E8F0}
 .mb-b2b{background:#EFF6FF;color:#1D4ED8;border:1px solid #BFDBFE;font-weight:700}
 .mb-cheapest{background:#D1FAE5;color:#065F46;border:1px solid #A7F3D0}
 
@@ -594,6 +595,8 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
 
         {% if u.miktar > 0 and u.miktar <= 4 %}
           <span class="mb mb-stock-low">Son {{ u.miktar }}</span>
+        {% elif u.miktar > 4 %}
+          <span class="mb mb-stock">{{ u.miktar }} adet</span>
         {% endif %}
 
         {% if u.fiyat == en_ucuz_fiyat %}

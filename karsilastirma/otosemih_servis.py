@@ -85,6 +85,8 @@ def _marka_cikar(urun_adi: str) -> str:
         "Westlake", "Goodride", "Gripmax", "Milestone", "Minerva", "Apollo",
         "Dayton", "Fulda", "Kleber", "Vredestein", "General", "Cooper",
         "Windforce", "Wintech", "Doublestar", "Comforser",
+        "Roadstone", "Zeetex", "Mazzini", "Torque", "Haida",
+        "Austone", "Aplus", "Cachland", "Wanli", "Nitto", "Radar",
     ]
     low = urun_adi.lower()
     found = next((m for m in markalar if m.lower() in low), None)

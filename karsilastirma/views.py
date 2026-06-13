@@ -48,6 +48,226 @@ class AbonelikGerekli(LoginRequiredMixin):
 
         return super(LoginRequiredMixin, self).dispatch(request, *args, **kwargs)
 
+# ── Marka normalize ──────────────────────────────────────────────────────────
+
+# Bilinen yazım varyantlarını canonical forma eşle
+# Anahtar: küçük harf + boşluk normalize edilmiş → Değer: gösterilecek isim
+MARKA_ESLESME = {
+    # ── Continental ──
+    "continental":       "Continental",
+    "continenta":        "Continental",
+    "contintental":      "Continental",
+    "continetal":        "Continental",
+    "contiental":        "Continental",
+
+    # ── Bridgestone ──
+    "bridgestone":       "Bridgestone",
+    "bridgeston":        "Bridgestone",
+    "bridgstonne":       "Bridgestone",
+    "brigdestone":       "Bridgestone",
+
+    # ── Michelin ──
+    "michelin":          "Michelin",
+    "michellin":         "Michelin",
+    "michlin":           "Michelin",
+
+    # ── Pirelli ──
+    "pirelli":           "Pirelli",
+    "pirrelli":          "Pirelli",
+    "pireli":            "Pirelli",
+
+    # ── Goodyear ──
+    "goodyear":          "Goodyear",
+    "good year":         "Goodyear",
+    "goodyear dunlop":   "Goodyear",
+
+    # ── Dunlop ──
+    "dunlop":            "Dunlop",
+
+    # ── Hankook ──
+    "hankook":           "Hankook",
+    "han kook":          "Hankook",
+    "hankuk":            "Hankook",
+
+    # ── Yokohama ──
+    "yokohama":          "Yokohama",
+    "yokahoma":          "Yokohama",
+
+    # ── Falken ──
+    "falken":            "Falken",
+
+    # ── Kumho ──
+    "kumho":             "Kumho",
+
+    # ── Lassa ──
+    "lassa":             "Lassa",
+
+    # ── Petlas ──
+    "petlas":            "Petlas",
+
+    # ── Maxxis ──
+    "maxxis":            "Maxxis",
+
+    # ── Toyo ──
+    "toyo":              "Toyo",
+    "toyo tires":        "Toyo",
+
+    # ── Uniroyal ──
+    "uniroyal":          "Uniroyal",
+
+    # ── Nokian ──
+    "nokian":            "Nokian",
+    "nokian tyres":      "Nokian",
+
+    # ── BFGoodrich ──
+    "bfgoodrich":        "BFGoodrich",
+    "bf goodrich":       "BFGoodrich",
+    "bf-goodrich":       "BFGoodrich",
+
+    # ── Apollo ──
+    "apollo":            "Apollo",
+
+    # ── Debica / Dębica ──
+    "debica":            "Debica",
+    "dębica":            "Debica",
+    "debıca":            "Debica",
+
+    # ── Dayton ──
+    "dayton":            "Dayton",
+
+    # ── Barum ──
+    "barum":             "Barum",
+
+    # ── Firestone ──
+    "firestone":         "Firestone",
+
+    # ── Nexen ──
+    "nexen":             "Nexen",
+
+    # ── Starmaxx ──
+    "starmaxx":          "Starmaxx",
+
+    # ── Linglong ──
+    "linglong":          "Linglong",
+    "ling long":         "Linglong",
+
+    # ── Triangle ──
+    "triangle":          "Triangle",
+
+    # ── Kormoran ──
+    "kormoran":          "Kormoran",
+
+    # ── Tigar ──
+    "tigar":             "Tigar",
+
+    # ── Fulda ──
+    "fulda":             "Fulda",
+
+    # ── Kleber ──
+    "kleber":            "Kleber",
+
+    # ── Vredestein ──
+    "vredestein":        "Vredestein",
+
+    # ── General ──
+    "general":           "General",
+    "general tire":      "General",
+
+    # ── Cooper ──
+    "cooper":            "Cooper",
+
+    # ── Sailun ──
+    "sailun":            "Sailun",
+
+    # ── Sava ──
+    "sava":              "Sava",
+
+    # ── Matador ──
+    "matador":           "Matador",
+
+    # ── Semperit ──
+    "semperit":          "Semperit",
+
+    # ── Riken ──
+    "riken":             "Riken",
+
+    # ── Giti ──
+    "giti":              "Giti",
+
+    # ── Leao ──
+    "leao":              "Leao",
+
+    # ── Westlake ──
+    "westlake":          "Westlake",
+
+    # ── Goodride ──
+    "goodride":          "Goodride",
+
+    # ── Nankang ──
+    "nankang":           "Nankang",
+
+    # ── Accelera ──
+    "accelera":          "Accelera",
+
+    # ── Gripmax ──
+    "gripmax":           "Gripmax",
+
+    # ── Milestone ──
+    "milestone":         "Milestone",
+
+    # ── Minerva ──
+    "minerva":           "Minerva",
+
+    # ── Windforce ──
+    "windforce":         "Windforce",
+
+    # ── Wintech ──
+    "wintech":           "Wintech",
+
+    # ── Doublestar ──
+    "doublestar":        "Doublestar",
+
+    # ── Comforser ──
+    "comforser":         "Comforser",
+
+    # ── Laufenn ──
+    "laufenn":           "Laufenn",
+
+    # ── Zeetex ──
+    "zeetex":            "Zeetex",
+
+    # ── Mazzini ──
+    "mazzini":           "Mazzini",
+
+    # ── Torque ──
+    "torque":            "Torque",
+
+    # ── Haida ──
+    "haida":             "Haida",
+
+    # ── Austone ──
+    "austone":           "Austone",
+
+    # ── Aplus ──
+    "aplus":             "Aplus",
+
+    # ── Cachland ──
+    "cachland":          "Cachland",
+}
+
+def _normalize_marka(marka: str) -> str:
+    """Marka adını normalize eder: whitespace temizle, küçük harfe çevir, eşleşme tablosuna bak."""
+    if not marka:
+        return marka
+    temiz = " ".join(marka.strip().split())  # çoklu boşlukları tek yap
+    anahtar = temiz.lower()
+    if anahtar in MARKA_ESLESME:
+        return MARKA_ESLESME[anahtar]
+    # Eşleşme yoksa: İlk harf büyük, geri kalanı küçük (CONTINENTAL → Continental)
+    # title() yerine capitalize() — çok kelimeli markalarda her kelime büyük
+    return " ".join(w.capitalize() for w in temiz.split())
+
+
 # Toptancı B2B portal linkleri ve logo bilgileri
 B2B_LINKLER = {
     "USPA Lastik":   {"url": "https://www.uspalastik.com",  "logo": "toptancilar/uspa1.png"},
@@ -160,6 +380,10 @@ class SonuclarView(AbonelikGerekli, View):
         # Tüm mevsimleri çek — filtreleme tamamen frontend'de (sidebar) yapılır
         sonuclar, hatali_toptancilar = _tum_toptancilarda_ara(ebat, marka, "")
 
+        # Marka adlarını normalize et (CONTINENTAL, Continenta → Continental)
+        for u in sonuclar:
+            u.marka = _normalize_marka(u.marka)
+
         # Marka filtresi (case-insensitive)
         if marka:
             marka_lower = marka.lower()
@@ -192,10 +416,16 @@ class SonuclarView(AbonelikGerekli, View):
         en_ucuz_fiyat = sonuclar[0].fiyat if sonuclar else None
 
         toptanci_sayilari = dict(Counter(s.toptanci for s in sonuclar))
-        marka_listesi = sorted(set(
-            s.marka for s in sonuclar
-            if s.marka and s.marka not in ("—", "Diğer", "Diger", "")
-        ))
+
+        # Marka listesi: normalize edilmiş, case-insensitive unique, sıralı
+        # lower() → canonical form dict ile duplicate'ları kesin engelle
+        _marka_dict: dict[str, str] = {}
+        for s in sonuclar:
+            if s.marka and s.marka not in ("—", "Diğer", "Diger", ""):
+                key = s.marka.lower().strip()
+                if key not in _marka_dict:
+                    _marka_dict[key] = s.marka
+        marka_listesi = sorted(_marka_dict.values())
 
         return render(request, self.template_name, {
             "sonuclar":           sonuclar,

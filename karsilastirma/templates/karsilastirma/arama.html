@@ -171,6 +171,173 @@
     opacity: 1;
   }
 
+/* ===================== GİRİŞ MODALİ ===================== */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 999;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  .modal-overlay.active {
+    display: flex;
+  }
+  .modal-box {
+    background: #fff;
+    border: 1px solid var(--slate-200);
+    border-radius: 12px;
+    padding: 2.25rem 2rem;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 20px 60px rgba(15,23,42,.25);
+    animation: modalIn .2s ease;
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: translateY(-16px) scale(.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .modal-logo {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    margin-bottom: 1.5rem;
+    justify-content: center;
+  }
+  .modal-logo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: .75rem;
+    background: rgba(20,20,24,.97);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 12px;
+    padding: .625rem 1rem .625rem .625rem;
+    box-shadow: 0 4px 16px rgba(15,23,42,.2);
+  }
+  .modal-logo-img {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    object-fit: cover;
+    box-shadow: 0 0 0 1px rgba(255,255,255,.1);
+  }
+  .modal-logo-text {
+    color: #F1F5F9;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    letter-spacing: -.02em;
+  }
+  .modal-title {
+    font-size: 1.1875rem;
+    font-weight: 700;
+    color: var(--slate-900);
+    text-align: center;
+    margin-bottom: 1.5rem;
+    letter-spacing: -.02em;
+  }
+  .modal-error {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    background: #FEF2F2;
+    border: 1px solid #FECACA;
+    border-radius: 6px;
+    padding: .75rem .875rem;
+    color: var(--red);
+    font-size: .875rem;
+    font-weight: 500;
+    margin-bottom: 1.25rem;
+  }
+  .modal-field {
+    margin-bottom: 1.125rem;
+  }
+  .modal-label {
+    display: block;
+    font-size: .625rem;
+    font-weight: 600;
+    color: var(--slate-600);
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    margin-bottom: .375rem;
+  }
+  .modal-input-wrap {
+    position: relative;
+  }
+  .modal-input-icon {
+    position: absolute;
+    left: .75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--slate-400);
+    font-size: .875rem;
+    pointer-events: none;
+  }
+  .modal-input {
+    width: 100%;
+    background: #fff;
+    border: 1px solid var(--slate-200);
+    border-radius: 6px;
+    padding: .6875rem .75rem .6875rem 2.25rem;
+    color: var(--slate-900);
+    font-family: 'Inter', sans-serif;
+    font-size: .9375rem;
+    font-weight: 500;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .modal-input:focus {
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px rgba(232,93,38,.1);
+  }
+  .modal-toggle-pw {
+    position: absolute;
+    right: .75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--slate-400);
+    font-size: .875rem;
+    padding: 0;
+    line-height: 1;
+    transition: color .2s;
+  }
+  .modal-toggle-pw:hover { color: var(--slate-600); }
+  .modal-submit {
+    width: 100%;
+    background: var(--orange);
+    border: none;
+    border-radius: 6px;
+    padding: .8125rem 1.5rem;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: .875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    cursor: pointer;
+    transition: background .2s, transform .1s;
+    margin-top: .375rem;
+  }
+  .modal-submit:hover { background: var(--orange-dark); }
+  .modal-submit:active { transform: translateY(1px); }
+  .modal-footer {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: .8125rem;
+    color: var(--slate-400);
+  }
+  .content-locked {
+    pointer-events: none;
+    user-select: none;
+    filter: blur(2px);
+  }
+
   @media (max-width: 768px) {
     .header-inner { padding: 0 1rem; }
     .logo-tagline { display: none; }
@@ -445,16 +612,54 @@
     background: var(--slate-50);
   }
 
+  /* PARTNERS CAROUSEL */
+  .partners-section {
+    margin-top: 2.5rem;
+    padding: 2.5rem 0;
+    background: #F8FAFC;
+    border-top: 1px solid #E2E8F0;
+    border-bottom: 1px solid #E2E8F0;
+    overflow: hidden;
+  }
+  .partners-title {
+    text-align: center;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    color: #94A3B8;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 1.75rem;
+  }
+  .carousel-track {
+    display: flex;
+    align-items: center;
+    gap: 5rem;
+    width: max-content;
+    animation: marquee 20s linear infinite;
+  }
+  .carousel-track:hover { animation-play-state: paused; }
+  .carousel-track a {
+    display: block;
+    flex-shrink: 0;
+    text-decoration: none;
+    opacity: 0.45;
+    filter: grayscale(1);
+    transition: opacity .3s, filter .3s;
+  }
+  .carousel-track a:hover { opacity: 1; filter: grayscale(0); }
+  .carousel-track img {
+    height: 38px;
+    width: auto;
+    max-width: 160px;
+    object-fit: contain;
+    display: block;
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
   @media (max-width: 768px) {
-  .header-inner {
-    padding: 0 1rem;
-  }
-  .nav-user {
-    display: none;
-  }
-  .main {
-    padding: 1.5rem 1rem;
-  }
   .hero {
     margin-bottom: 1.5rem;
   }
@@ -481,7 +686,7 @@
     gap: 0;
   }
   .field-input {
-    font-size: 1rem; /* iOS zoom önleme: 16px altı zoom yapar */
+    font-size: 1rem;
     padding: 0.875rem 1rem;
   }
   .custom-select-trigger {
@@ -496,6 +701,11 @@
     padding: 0.5rem 0.875rem;
     font-size: 0.8125rem;
   }
+  .header-inner { padding: 0 1rem; }
+  .logo-tagline { display: none; }
+  .user-name { display: none; }
+  .header-divider { display: none; }
+  .main { padding: 1.5rem 1rem; }
 }
 </style>
 </head>
@@ -513,18 +723,31 @@
     </a>
 
     <div style="display:flex;align-items:center;gap:0.75rem;">
-      <div class="user-area">
+      <div class="user-area" id="user-dropdown-trigger" onclick="toggleUserMenu()" style="cursor:pointer;position:relative;">
         <div class="user-avatar">{{ request.user.username|slice:":2" }}</div>
         <span class="user-name">{{ request.user.username }}</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:2px"><path d="m6 9 6 6 6-6"/></svg>
+
+        <!-- Dropdown -->
+        <div id="user-menu" style="display:none;position:absolute;top:calc(100% + 8px);right:0;background:#1E293B;border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:.5rem;min-width:180px;box-shadow:0 8px 24px rgba(0,0,0,.4);z-index:200">
+          <div style="padding:.375rem .625rem;font-size:.75rem;color:#64748B;font-weight:500;border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:.375rem">{{ request.user.username }}</div>
+          {% if request.user.is_staff %}
+          <a href="{% url 'abonelik_yonetim' %}" style="display:flex;align-items:center;gap:.5rem;padding:.5rem .625rem;border-radius:6px;font-size:.8125rem;color:#CBD5E1;text-decoration:none;transition:background .15s" onmouseover="this.style.background='rgba(255,255,255,.06)'" onmouseout="this.style.background='transparent'">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Abonelik Yönetimi
+          </a>
+          {% endif %}
+          <a href="{% url 'odeme_gecmisi' %}" style="display:flex;align-items:center;gap:.5rem;padding:.5rem .625rem;border-radius:6px;font-size:.8125rem;color:#CBD5E1;text-decoration:none;transition:background .15s" onmouseover="this.style.background='rgba(255,255,255,.06)'" onmouseout="this.style.background='transparent'">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            Ödeme Geçmişi
+          </a>
+          <a href="{% url 'cikis' %}" style="display:flex;align-items:center;gap:.5rem;padding:.5rem .625rem;border-radius:6px;font-size:.8125rem;color:#FCA5A5;text-decoration:none;transition:background .15s;margin-top:.25rem" onmouseover="this.style.background='rgba(239,68,68,.1)'" onmouseout="this.style.background='transparent'">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Çıkış Yap
+          </a>
+        </div>
       </div>
-      <a href="{% url 'cikis' %}" class="btn-logout">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-          <polyline points="16 17 21 12 16 7"/>
-          <line x1="21" y1="12" x2="9" y2="12"/>
-        </svg>
-        Çıkış
-      </a>
+      
     </div>
 
   </div>
@@ -626,9 +849,109 @@
   </div>
   {% endif %}
 
+  <!-- İŞ ORTAKLARIMIZ -->
+  <div class="partners-section">
+    <div class="partners-title">İş Ortaklarımız</div>
+    <div class="carousel-track">
+      <a href="https://www.uspalastik.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/uspa1.png' %}" alt="USPA Lastik"></a>
+      <a href="https://keskinlastik.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/keskin0.png' %}" alt="Keskin Lastik"></a>
+      <a href="https://www.otosemih.com.tr" target="_blank"><img src="{% static 'karsilastirma/toptancilar/otosemih.png' %}" alt="OtoSemih"></a>
+      <a href="https://www.netlastik.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/eksililogo.avif' %}" alt="NetLastik"></a>
+      <a href="https://panel.lastsis.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/yocar0.png' %}" alt="Lastsis"></a>
+      <a href="http://95.13.23.154:9015" target="_blank"><img src="{% static 'karsilastirma/toptancilar/dincbaylogo.png' %}" alt="Dinçbay"></a>
+      <a href="https://www.uspalastik.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/uspa1.png' %}" alt="USPA Lastik"></a>
+      <a href="https://keskinlastik.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/keskin0.png' %}" alt="Keskin Lastik"></a>
+      <a href="https://www.otosemih.com.tr" target="_blank"><img src="{% static 'karsilastirma/toptancilar/otosemih.png' %}" alt="OtoSemih"></a>
+      <a href="https://www.netlastik.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/eksililogo.avif' %}" alt="NetLastik"></a>
+      <a href="https://panel.lastsis.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/yocar0.png' %}" alt="Lastsis"></a>
+      <a href="http://95.13.23.154:9015" target="_blank"><img src="{% static 'karsilastirma/toptancilar/dincbaylogo.png' %}" alt="Dinçbay"></a>
+    </div>
+  </div>
+
 </main>
 
+<!-- ========== GİRİŞ MODALİ ========== -->
+<div class="modal-overlay {% if modal_acik %}active{% endif %}" id="giris-modal">
+  <div class="modal-box">
+
+    <div class="modal-logo">
+      <div class="modal-logo-badge">
+        <img src="{% static 'karsilastirma/favicon1.png' %}" alt="MesBul" class="modal-logo-img">
+        <span class="modal-logo-text">MesBul</span>
+      </div>
+    </div>
+
+    <div class="modal-title">Hesabınıza giriş yapın</div>
+
+    {% if login_hata %}
+    <div class="modal-error">
+      <span>⚠️</span>
+      <span>Kullanıcı adı veya şifre hatalı.</span>
+    </div>
+    {% endif %}
+
+    <form method="POST" action="{% url 'giris' %}">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="/">
+
+      <div class="modal-field">
+        <label class="modal-label">Kullanıcı Adı</label>
+        <div class="modal-input-wrap">
+          <span class="modal-input-icon">👤</span>
+          <input
+            type="text"
+            name="kullanici_adi"
+            class="modal-input"
+            placeholder="kullanici_adi"
+            autocomplete="username"
+            id="modal-username-input"
+            value="{{ login_u }}"
+            required
+          >
+        </div>
+      </div>
+
+      <div class="modal-field">
+        <label class="modal-label">Şifre</label>
+        <div class="modal-input-wrap">
+          <span class="modal-input-icon">🔒</span>
+          <input
+            type="password"
+            name="sifre"
+            id="modal-sifre-input"
+            class="modal-input"
+            placeholder="••••••••"
+            autocomplete="current-password"
+            required
+          >
+          <button type="button" class="modal-toggle-pw" onclick="toggleModalSifre()" title="Şifreyi göster/gizle">
+            <span id="modal-goz-ikon">👁️</span>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="modal-submit">Giriş Yap</button>
+    </form>
+
+    <div class="modal-footer">
+      Hesabınız yok mu? Yöneticinizle iletişime geçin.
+    </div>
+
+  </div>
+</div>
+
 <script>
+function toggleUserMenu() {
+  const menu = document.getElementById('user-menu');
+  menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+}
+document.addEventListener('click', function(e) {
+  const trigger = document.getElementById('user-dropdown-trigger');
+  if (trigger && !trigger.contains(e.target)) {
+    document.getElementById('user-menu').style.display = 'none';
+  }
+});
+
 function gecmisSecim(el) {
   document.querySelector('[name=ebat]').value = el.dataset.ebat || '';
   const marka = el.dataset.marka || '';
@@ -657,6 +980,34 @@ document.addEventListener('click', function(e) {
   const sel = document.getElementById('mevsim-select');
   if (!sel.contains(e.target)) sel.classList.remove('open');
 });
+
+// ========== MODAl GİRİŞ ==========
+function toggleModalSifre() {
+  const input = document.getElementById('modal-sifre-input');
+  const ikon  = document.getElementById('modal-goz-ikon');
+  if (input.type === 'password') {
+    input.type = 'text';
+    ikon.textContent = '🙈';
+  } else {
+    input.type = 'password';
+    ikon.textContent = '👁️';
+  }
+}
+
+// Modal açıksa içeriği kilitle ve kullanıcı adı alanına odaklan
+(function() {
+  const modal = document.getElementById('giris-modal');
+  if (modal && modal.classList.contains('active')) {
+    // Arka plan içeriğini kilitle
+    document.querySelector('.main') && document.querySelector('.main').classList.add('content-locked');
+    document.querySelector('.header') && document.querySelector('.header').classList.add('content-locked');
+    // Kullanıcı adı inputuna odaklan
+    setTimeout(function() {
+      const u = document.getElementById('modal-username-input');
+      if (u) u.focus();
+    }, 150);
+  }
+})();
 </script>
 
 </body>

@@ -124,6 +124,21 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
 /* HIDDEN */
 .hidden{display:none!important}
 
+/* HATA BANNER */
+.hata-banner{
+  display:flex;
+  align-items:flex-start;
+  gap:.625rem;
+  background:#FFFBEB;
+  border:1px solid #FDE68A;
+  border-radius:8px;
+  padding:.75rem 1rem;
+  margin-bottom:1rem;
+  font-size:.875rem;
+  color:#92400E;
+  line-height:1.5;
+}
+
 /* MOBİL FİLTRE DRAWER */
 .filter-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;backdrop-filter:blur(2px)}
 .filter-overlay.open{display:block}
@@ -433,6 +448,13 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
 <!-- MAIN -->
 <main class="main">
 
+  {% if hatali_toptancilar %}
+  <div class="hata-banner">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <span>Şu anda bağlantı kurulamayan toptancılar: <strong>{{ hatali_toptancilar|join:", " }}</strong> — sonuçlar eksik olabilir.</span>
+  </div>
+  {% endif %}
+
   <div class="stats">
     <div class="stat">
       <div class="lbl">En Ucuz</div>
@@ -520,9 +542,9 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
           </td>
 
           <td class="gizle" style="text-align:right">
-            {% for toptanci_adi, url in b2b_linkler.items %}
+            {% for toptanci_adi, bilgi in b2b_linkler.items %}
               {% if toptanci_adi == u.toptanci %}
-                <a href="{{ url }}" target="_blank" class="b2b-btn">B2B</a>
+                <a href="{{ bilgi.url }}" target="_blank" class="b2b-btn">B2B</a>
               {% endif %}
             {% endfor %}
           </td>
@@ -603,9 +625,9 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
           <span class="mb mb-cheapest">En Ucuz</span>
         {% endif %}
 
-        {% for toptanci_adi, url in b2b_linkler.items %}
+        {% for toptanci_adi, bilgi in b2b_linkler.items %}
           {% if toptanci_adi == u.toptanci %}
-            <a href="{{ url }}" target="_blank" class="mb mb-b2b">B2B</a>
+            <a href="{{ bilgi.url }}" target="_blank" class="mb mb-b2b">B2B</a>
           {% endif %}
         {% endfor %}
       </div>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Erişim Yok — MesBul</title>
+{% load static %}
+<link rel="icon" type="image/png" href="{% static 'karsilastirma/favicon1.png' %}">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #F8FAFC;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    color: #0F172A;
+  }
+  .card {
+    background: #fff;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 2.5rem 2rem;
+    max-width: 440px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(15,23,42,.08);
+  }
+  .icon {
+    font-size: 3rem;
+    margin-bottom: 1.25rem;
+  }
+  h1 {
+    font-size: 1.375rem;
+    font-weight: 700;
+    margin-bottom: .75rem;
+    letter-spacing: -.02em;
+  }
+  p {
+    font-size: .9375rem;
+    color: #475569;
+    line-height: 1.6;
+    margin-bottom: 1.75rem;
+  }
+  .info-box {
+    background: #FFF7ED;
+    border: 1px solid #FED7AA;
+    border-radius: 8px;
+    padding: .875rem 1rem;
+    font-size: .875rem;
+    color: #92400E;
+    margin-bottom: 1.75rem;
+    text-align: left;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    background: #E85D26;
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    padding: .75rem 1.5rem;
+    font-size: .9375rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  .btn:hover { background: #C94D1A; }
+  .logout-link {
+    display: block;
+    margin-top: 1rem;
+    font-size: .8125rem;
+    color: #94A3B8;
+    text-decoration: none;
+  }
+  .logout-link:hover { color: #475569; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="icon">🔒</div>
+  <h1>Erişim Sınırlı</h1>
+
+  {% if bitis %}
+    <p>Aboneliğinizin süresi <strong>{{ bitis }}</strong> tarihinde dolmuştur. Sistemi kullanmaya devam etmek için aboneliğinizi yenileyin.</p>
+    <div class="info-box">
+      📞 Abonelik yenileme için yöneticinizle iletişime geçin.
+    </div>
+  {% else %}
+    <p>Hesabınıza henüz bir abonelik tanımlanmamış. Yöneticinizden abonelik aktivasyonu talep edin.</p>
+    <div class="info-box">
+      📞 Abonelik aktivasyonu için yöneticinizle iletişime geçin.
+    </div>
+  {% endif %}
+
+  <a href="/" class="btn">🔄 Tekrar Dene</a>
+  <a href="{% url 'cikis' %}" class="logout-link">Çıkış Yap</a>
+</div>
+</body>
+</html>

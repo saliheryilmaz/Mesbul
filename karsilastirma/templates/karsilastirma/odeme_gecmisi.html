@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ödeme Geçmişi — MesBul</title>
+{% load static %}
+<link rel="icon" type="image/png" href="{% static 'karsilastirma/favicon1.png' %}">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
+:root {
+  --slate-50:#F8FAFC; --slate-100:#F1F5F9; --slate-200:#E2E8F0;
+  --slate-400:#94A3B8; --slate-600:#475569; --slate-700:#334155; --slate-900:#0F172A;
+  --white:#FFFFFF; --orange:#E85D26; --orange-dark:#C94D1A; --green:#059669;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--slate-50);color:var(--slate-900);font-family:'Inter',sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased}
+
+/* HEADER */
+.header{background:rgba(20,20,24,.97);backdrop-filter:blur(12px);box-shadow:0 1px 0 rgba(255,255,255,.06),0 4px 24px rgba(0,0,0,.35);height:72px;display:flex;align-items:center;padding:0 2rem;position:sticky;top:0;z-index:100}
+.header-inner{max-width:900px;margin:0 auto;width:100%;display:flex;align-items:center;justify-content:space-between}
+.logo-link{display:flex;align-items:center;gap:.875rem;text-decoration:none}
+.logo-img{width:38px;height:38px;border-radius:9px;object-fit:cover;box-shadow:0 0 0 1px rgba(255,255,255,.1)}
+.logo-name{color:#F1F5F9;font-size:1.0625rem;font-weight:700;letter-spacing:-0.02em}
+.back-btn{display:inline-flex;align-items:center;gap:.4rem;color:#94A3B8;font-size:.8125rem;font-weight:500;text-decoration:none;padding:.375rem .75rem;border:1px solid rgba(255,255,255,.08);border-radius:7px;transition:all .2s}
+.back-btn:hover{color:#F1F5F9;border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.06)}
+
+/* PAGE */
+.page{max-width:900px;margin:0 auto;padding:2rem 1.5rem}
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:2rem;flex-wrap:wrap}
+.page-title{font-size:1.375rem;font-weight:700;letter-spacing:-.02em}
+.page-sub{font-size:.9375rem;color:var(--slate-600);margin-top:.25rem}
+
+/* SUMMARY */
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem}
+.sum-card{background:var(--white);border:1px solid var(--slate-200);border-radius:10px;padding:1rem 1.25rem}
+.sum-label{font-size:.6875rem;font-weight:600;color:var(--slate-600);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.375rem}
+.sum-val{font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:700;color:var(--slate-900)}
+.sum-val.green{color:var(--green)}
+
+/* TABLE */
+.card{background:var(--white);border:1px solid var(--slate-200);border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(15,23,42,.06)}
+table{width:100%;border-collapse:collapse}
+thead th{font-size:.6875rem;font-weight:700;color:var(--slate-600);text-transform:uppercase;letter-spacing:.08em;padding:.875rem 1.25rem;text-align:left;border-bottom:1px solid var(--slate-200);background:var(--slate-50);white-space:nowrap}
+tbody tr{border-bottom:1px solid var(--slate-100);transition:background .1s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:var(--slate-50)}
+td{padding:.875rem 1.25rem;font-size:.875rem;vertical-align:middle}
+.tutar-col{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--green);text-align:right}
+.tarih-col{color:var(--slate-600);font-size:.8125rem}
+
+/* YÖNTEM BADGE */
+.yontem-badge{display:inline-block;font-size:.75rem;font-weight:600;padding:.2rem .6rem;border-radius:100px;background:var(--slate-100);color:var(--slate-600);border:1px solid var(--slate-200)}
+
+/* EMPTY */
+.empty{text-align:center;padding:4rem 2rem}
+.empty-icon{font-size:3rem;margin-bottom:1rem}
+.empty-text{font-size:1rem;color:var(--slate-600);font-weight:500}
+.empty-sub{font-size:.875rem;color:var(--slate-400);margin-top:.5rem}
+
+@media(max-width:640px){
+  .summary{grid-template-columns:1fr 1fr}
+  .page{padding:1.5rem 1rem}
+  thead th:nth-child(4){display:none}
+  td:nth-child(4){display:none}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a class="logo-link" href="{% url 'arama' %}">
+      <img src="{% static 'karsilastirma/favicon1.png' %}" alt="MesBul" class="logo-img">
+      <span class="logo-name">MesBul</span>
+    </a>
+    <a href="{% url 'arama' %}" class="back-btn">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+      Geri
+    </a>
+  </div>
+</header>
+
+<div class="page">
+
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Ödeme Geçmişi</h1>
+      <p class="page-sub">{{ request.user.username }} hesabına ait ödemeler</p>
+    </div>
+  </div>
+
+  <div class="summary">
+    <div class="sum-card">
+      <div class="sum-label">Toplam Ödeme</div>
+      <div class="sum-val">{{ odemeler|length }}</div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-label">Toplam Tutar</div>
+      <div class="sum-val green">{{ toplam|floatformat:2 }} ₺</div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-label">Son Ödeme</div>
+      <div class="sum-val" style="font-size:1rem">
+        {% if odemeler %}{{ odemeler.0.tarih }}{% else %}—{% endif %}
+      </div>
+    </div>
+  </div>
+
+  {% if odemeler %}
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>Tarih</th>
+          <th>Tutar</th>
+          <th>Yöntem</th>
+          <th>Açıklama</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for odeme in odemeler %}
+        <tr>
+          <td class="tarih-col">{{ odeme.tarih }}</td>
+          <td class="tutar-col">{{ odeme.tutar|floatformat:2 }} ₺</td>
+          <td><span class="yontem-badge">{{ odeme.get_yontem_display }}</span></td>
+          <td style="color:var(--slate-600)">{{ odeme.aciklama|default:"—" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty">
+    <div class="empty-icon">💳</div>
+    <div class="empty-text">Henüz ödeme kaydı yok</div>
+    <div class="empty-sub">Ödemeleriniz buraya eklenecektir.</div>
+  </div>
+  {% endif %}
+
+</div>
+</body>
+</html>

@@ -73,9 +73,9 @@ LANGUAGE_CODE = 'tr'
 TIME_ZONE = 'Europe/Istanbul'
 
 # Auth ayarları
-LOGIN_URL = '/giris/'
+LOGIN_URL = '/'
 LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/giris/'
+LOGOUT_REDIRECT_URL = '/'
 
 # Cache — DB backend (tüm worker'lar aynı tabloyu okur, process restart'tan etkilenmez)
 CACHES = {

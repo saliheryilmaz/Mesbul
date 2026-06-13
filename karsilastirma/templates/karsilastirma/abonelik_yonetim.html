@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abonelik Yönetimi — MesBul</title>
+{% load static %}
+<link rel="icon" type="image/png" href="{% static 'karsilastirma/favicon1.png' %}">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
+:root {
+  --slate-50:#F8FAFC; --slate-100:#F1F5F9; --slate-200:#E2E8F0;
+  --slate-400:#94A3B8; --slate-600:#475569; --slate-700:#334155; --slate-900:#0F172A;
+  --white:#FFFFFF; --orange:#E85D26; --orange-dark:#C94D1A;
+  --green:#059669; --red:#DC2626; --yellow:#D97706;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--slate-50);color:var(--slate-900);font-family:'Inter',sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased}
+
+/* HEADER */
+.header{background:rgba(20,20,24,.97);backdrop-filter:blur(12px);box-shadow:0 1px 0 rgba(255,255,255,.06),0 4px 24px rgba(0,0,0,.35);height:72px;display:flex;align-items:center;padding:0 2rem;position:sticky;top:0;z-index:100}
+.header-inner{max-width:1100px;margin:0 auto;width:100%;display:flex;align-items:center;justify-content:space-between}
+.logo-link{display:flex;align-items:center;gap:.875rem;text-decoration:none}
+.logo-img{width:38px;height:38px;border-radius:9px;object-fit:cover;box-shadow:0 0 0 1px rgba(255,255,255,.1)}
+.logo-name{color:#F1F5F9;font-size:1.0625rem;font-weight:700;letter-spacing:-0.02em}
+.back-btn{display:inline-flex;align-items:center;gap:.4rem;color:#94A3B8;font-size:.8125rem;font-weight:500;text-decoration:none;padding:.375rem .75rem;border:1px solid rgba(255,255,255,.08);border-radius:7px;transition:all .2s}
+.back-btn:hover{color:#F1F5F9;border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.06)}
+
+/* PAGE */
+.page{max-width:1100px;margin:0 auto;padding:2rem 1.5rem}
+.page-title{font-size:1.375rem;font-weight:700;letter-spacing:-.02em;margin-bottom:.375rem}
+.page-sub{font-size:.9375rem;color:var(--slate-600);margin-bottom:2rem}
+
+/* STAT CARDS */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem}
+.stat-card{background:var(--white);border:1px solid var(--slate-200);border-radius:10px;padding:1rem 1.25rem}
+.stat-label{font-size:.6875rem;font-weight:600;color:var(--slate-600);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.375rem}
+.stat-val{font-size:1.75rem;font-weight:700;font-family:'JetBrains Mono',monospace}
+.stat-val.green{color:var(--green)} .stat-val.red{color:var(--red)} .stat-val.gray{color:var(--slate-400)}
+
+/* TABLE */
+.card{background:var(--white);border:1px solid var(--slate-200);border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(15,23,42,.06)}
+table{width:100%;border-collapse:collapse}
+thead th{font-size:.6875rem;font-weight:700;color:var(--slate-600);text-transform:uppercase;letter-spacing:.08em;padding:.875rem 1.25rem;text-align:left;border-bottom:1px solid var(--slate-200);background:var(--slate-50);white-space:nowrap}
+tbody tr{border-bottom:1px solid var(--slate-100);transition:background .1s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:var(--slate-50)}
+td{padding:.75rem 1.25rem;font-size:.875rem;vertical-align:middle}
+
+/* STATUS BADGE */
+.badge{display:inline-flex;align-items:center;gap:.3rem;font-size:.75rem;font-weight:600;padding:.2rem .6rem;border-radius:100px}
+.badge-green{background:#D1FAE5;color:#065F46;border:1px solid #A7F3D0}
+.badge-red{background:#FEE2E2;color:#991B1B;border:1px solid #FECACA}
+.badge-gray{background:var(--slate-100);color:var(--slate-600);border:1px solid var(--slate-200)}
+.badge-yellow{background:#FEF3C7;color:#92400E;border:1px solid #FDE68A}
+
+/* INLINE FORM */
+.form-row{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.form-select,.form-input{background:var(--white);border:1px solid var(--slate-200);border-radius:6px;padding:.375rem .625rem;font-size:.8125rem;font-family:'Inter',sans-serif;color:var(--slate-900);outline:none;transition:border-color .2s}
+.form-select:focus,.form-input:focus{border-color:var(--orange);box-shadow:0 0 0 2px rgba(232,93,38,.1)}
+.form-input{width:130px}
+.form-check{display:flex;align-items:center;gap:.3rem;font-size:.8125rem;color:var(--slate-700)}
+.form-check input{accent-color:var(--orange);width:15px;height:15px}
+.btn-save{background:var(--orange);border:none;border-radius:6px;padding:.375rem .875rem;color:#fff;font-size:.8125rem;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;transition:background .2s;white-space:nowrap}
+.btn-save:hover{background:var(--orange-dark)}
+
+/* YENİ KULLANICI FORMU */
+.add-user-card{background:var(--white);border:1px solid var(--slate-200);border-radius:10px;padding:1.5rem;margin-bottom:1.5rem;box-shadow:0 1px 4px rgba(15,23,42,.06)}
+.add-user-title{font-size:.9375rem;font-weight:600;margin-bottom:1.25rem;display:flex;align-items:center;gap:.5rem}
+.add-user-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-bottom:.75rem}
+.field-group{display:flex;flex-direction:column;gap:.375rem}
+.field-label{font-size:.625rem;font-weight:600;color:var(--slate-600);text-transform:uppercase;letter-spacing:.08em}
+.field-ctrl{background:var(--white);border:1px solid var(--slate-200);border-radius:7px;padding:.625rem .75rem;font-size:.9375rem;font-family:'Inter',sans-serif;color:var(--slate-900);outline:none;transition:border-color .2s,box-shadow .2s;width:100%}
+.field-ctrl:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(232,93,38,.1)}
+.add-user-footer{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+.btn-add{background:var(--orange);border:none;border-radius:7px;padding:.625rem 1.25rem;color:#fff;font-size:.875rem;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;transition:background .2s}
+.btn-add:hover{background:var(--orange-dark)}
+.form-error{background:#FEE2E2;border:1px solid #FECACA;border-radius:7px;padding:.625rem .875rem;font-size:.875rem;color:#991B1B;margin-bottom:.75rem}
+
+.user-col{display:flex;align-items:center;gap:.625rem}
+.avatar{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,#E85D26,#C94D1A);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#fff;flex-shrink:0;text-transform:uppercase}
+
+@media(max-width:768px){
+  .add-user-grid{grid-template-columns:1fr 1fr}
+}
+
+@media(max-width:768px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .form-row{gap:.375rem}
+  .form-input{width:110px}
+  thead th:nth-child(3),.td-plan{display:none}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a class="logo-link" href="{% url 'arama' %}">
+      <img src="{% static 'karsilastirma/favicon1.png' %}" alt="MesBul" class="logo-img">
+      <span class="logo-name">MesBul</span>
+    </a>
+    <a href="{% url 'arama' %}" class="back-btn">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+      Geri
+    </a>
+  </div>
+</header>
+
+<div class="page">
+  <h1 class="page-title">Abonelik Yönetimi</h1>
+  <p class="page-sub">Kullanıcı aboneliklerini buradan ekleyip düzenleyebilirsin.</p>
+
+  <!-- YENİ KULLANICI EKLE -->
+  <div class="add-user-card">
+    <div class="add-user-title">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+      Yeni Kullanıcı Ekle
+    </div>
+
+    {% if form_hata %}
+    <div class="form-error">⚠️ {{ form_hata }}</div>
+    {% endif %}
+
+    <form method="POST" action="{% url 'kullanici_ekle' %}">
+      {% csrf_token %}
+      <div class="add-user-grid">
+        <div class="field-group">
+          <label class="field-label">Kullanıcı Adı *</label>
+          <input type="text" name="username" class="field-ctrl" placeholder=""
+            value="{% if form_data %}{{ form_data.username }}{% endif %}" required autocomplete="off">
+        </div>
+        <div class="field-group">
+          <label class="field-label">E-posta</label>
+          <input type="email" name="email" class="field-ctrl" 
+            value="{% if form_data %}{{ form_data.email }}{% endif %}">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Şifre *</label>
+          <input type="password" name="sifre" class="field-ctrl" placeholder="••••••••" required autocomplete="new-password">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Plan</label>
+          <select name="plan" class="field-ctrl">
+            <option value="demo"  {% if form_data.plan == 'demo'   %}selected{% endif %}>Demo</option>
+            <option value="aylik" {% if form_data.plan == 'aylik'  %}selected{% endif %}>Aylık</option>
+            <option value="yillik"{% if form_data.plan == 'yillik' %}selected{% endif %}>Yıllık</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Abonelik Bitiş *</label>
+          <input type="date" name="bitis" class="field-ctrl"
+            value="{% if form_data %}{{ form_data.bitis }}{% endif %}" required>
+        </div>
+      </div>
+      <div class="add-user-footer">
+        <button type="submit" class="btn-add">+ Kullanıcı Oluştur</button>
+        <span style="font-size:.8125rem;color:var(--slate-400)">Oluşturulan kullanıcı direkt sisteme giriş yapabilir.</span>
+      </div>
+    </form>
+  </div>
+
+  {% with toplam=kullanicilar|length %}
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-label">Toplam Kullanıcı</div>
+      <div class="stat-val gray">{{ toplam }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Aktif Abonelik</div>
+      <div class="stat-val green">{{ aktif_sayisi }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Bu Hafta Bitenler</div>
+      <div class="stat-val yellow">{{ bu_hafta_biten }}</div>
+    </div>
+  </div>
+  {% endwith %}
+
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>Kullanıcı</th>
+          <th>Durum</th>
+          <th class="td-plan">Plan</th>
+          <th>Bitiş</th>
+          <th>Abonelik Güncelle</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in kullanicilar %}
+        <tr>
+          <td>
+            <div class="user-col">
+              <div class="avatar">{{ u.username|slice:":2" }}</div>
+              <div>
+                <div style="font-weight:600;font-size:.875rem">{{ u.username }}</div>
+                {% if u.email %}<div style="font-size:.75rem;color:var(--slate-400)">{{ u.email }}</div>{% endif %}
+              </div>
+            </div>
+          </td>
+          <td>
+            {% if u.abonelik %}
+              {% if u.abonelik.erisim_var_mi %}
+                <span class="badge badge-green">✓ Aktif</span>
+              {% else %}
+                <span class="badge badge-red">✗ Süresi Doldu</span>
+              {% endif %}
+            {% else %}
+              <span class="badge badge-gray">— Yok</span>
+            {% endif %}
+          </td>
+          <td class="td-plan">
+            {% if u.abonelik %}
+              <span style="font-size:.8125rem;color:var(--slate-600)">{{ u.abonelik.get_plan_display }}</span>
+            {% else %}
+              <span style="color:var(--slate-400)">—</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if u.abonelik %}
+              <span style="font-family:'JetBrains Mono',monospace;font-size:.8125rem">{{ u.abonelik.bitis }}</span>
+            {% else %}
+              <span style="color:var(--slate-400)">—</span>
+            {% endif %}
+          </td>
+          <td>
+            <form method="POST" action="{% url 'abonelik_kaydet' u.id %}">
+              {% csrf_token %}
+              <div class="form-row">
+                <select name="plan" class="form-select">
+                  <option value="demo"   {% if u.abonelik.plan == 'demo'   %}selected{% endif %}>Demo</option>
+                  <option value="aylik"  {% if u.abonelik.plan == 'aylik'  %}selected{% endif %}>Aylık</option>
+                  <option value="yillik" {% if u.abonelik.plan == 'yillik' %}selected{% endif %}>Yıllık</option>
+                </select>
+                <input type="date" name="bitis" class="form-input"
+                  value="{% if u.abonelik %}{{ u.abonelik.bitis|date:'Y-m-d' }}{% endif %}"
+                  required>
+                <label class="form-check">
+                  <input type="checkbox" name="aktif" {% if not u.abonelik or u.abonelik.aktif %}checked{% endif %}>
+                  Aktif
+                </label>
+                <button type="submit" class="btn-save">Kaydet</button>
+              </div>
+            </form>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5" style="text-align:center;padding:3rem;color:var(--slate-400)">
+            Henüz kullanıcı yok. Admin panelinden kullanıcı ekleyebilirsin.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ÖDEME EKLE -->
+  <div class="add-user-card" style="margin-top:1.5rem">
+    <div class="add-user-title">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+      Ödeme Kaydı Ekle
+    </div>
+    <form method="POST" action="{% url 'odeme_ekle' %}">
+      {% csrf_token %}
+      <div class="add-user-grid">
+        <div class="field-group">
+          <label class="field-label">Kullanıcı *</label>
+          <select name="kullanici_id" class="field-ctrl" required>
+            <option value="">— Seç —</option>
+            {% for u in kullanicilar %}
+              <option value="{{ u.id }}">{{ u.username }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Tutar (₺) *</label>
+          <input type="text" name="tutar" class="field-ctrl" placeholder="1500.00" required>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Tarih *</label>
+          <input type="date" name="tarih" class="field-ctrl" required>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Yöntem</label>
+          <select name="yontem" class="field-ctrl">
+            <option value="havale">Havale / EFT</option>
+            <option value="nakit">Nakit</option>
+            <option value="kredi_karti">Kredi Kartı</option>
+            <option value="diger">Diğer</option>
+          </select>
+        </div>
+        <div class="field-group" style="grid-column:span 2">
+          <label class="field-label">Açıklama</label>
+          <input type="text" name="aciklama" class="field-ctrl" placeholder="Dekont no, dönem vb.">
+        </div>
+      </div>
+      <div class="add-user-footer">
+        <button type="submit" class="btn-add">+ Ödeme Ekle</button>
+      </div>
+    </form>
+  </div>
+
+</div>
+
+</body>
+</html>

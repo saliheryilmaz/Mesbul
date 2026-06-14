@@ -16,6 +16,7 @@ from .otosemih_servis  import otosemih_ara
 from .netlastik_servis import netlastik_ara
 from .lastsis_servis   import lastsis_ara
 from .dincbay_servis   import dincbay_ara
+from .degeras_servis   import degeras_ara
 from .models import AramaGecmisi, Abonelik, Odeme
 
 
@@ -276,6 +277,7 @@ B2B_LINKLER = {
     "NetLastik":     {"url": "https://www.netlastik.com",   "logo": "toptancilar/eksililogo.avif"},
     "Lastsis":       {"url": "https://panel.lastsis.com",   "logo": "toptancilar/yocar0.png"},
     "Dinçbay":       {"url": "http://95.13.23.154:9015",    "logo": "toptancilar/dincbaylogo.png"},
+    "Degeras":       {"url": "https://netclick-apis.degeras.com", "logo": "toptancilar/degeras.png"},
 }
 
 
@@ -292,6 +294,7 @@ def _tum_toptancilarda_ara(ebat: str, marka: str, mevsim: str) -> tuple[list, li
         netlastik_ara,
         lastsis_ara,
         dincbay_ara,
+        degeras_ara,
     ]
 
     # Modül adı → görünen toptancı adı
@@ -302,6 +305,7 @@ def _tum_toptancilarda_ara(ebat: str, marka: str, mevsim: str) -> tuple[list, li
         "karsilastirma.netlastik_servis": "NetLastik",
         "karsilastirma.lastsis_servis":   "Lastsis",
         "karsilastirma.dincbay_servis":   "Dinçbay",
+        "karsilastirma.degeras_servis":   "Degeras",
     }
 
     tum_sonuclar = []

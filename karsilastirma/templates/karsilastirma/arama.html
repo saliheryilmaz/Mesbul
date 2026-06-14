@@ -767,6 +767,7 @@
     <span class="source-chip">NetLastik</span>
     <span class="source-chip">Lastsis</span>
     <span class="source-chip">Dinçbay</span>
+    <span class="source-chip">Degeras</span>
   </div>
 
   <div class="card">
@@ -800,16 +801,16 @@
               <span class="arrow">▼</span>
             </div>
             <div class="custom-select-dropdown" id="mevsim-dropdown">
-              <div class="custom-option selected" data-value="" onclick="selectMevsim(this)">
+              <div class="custom-option selected" data-value="" data-label="Tümü" onclick="selectMevsim(this)">
                 <span class="opt-icon">🔍</span> Tümü
               </div>
-              <div class="custom-option" data-value="Yaz" onclick="selectMevsim(this)">
+              <div class="custom-option" data-value="Yaz" data-label="☀️ Yaz" onclick="selectMevsim(this)">
                 <span class="opt-icon">☀️</span> Yaz
               </div>
-              <div class="custom-option" data-value="Kış" onclick="selectMevsim(this)">
+              <div class="custom-option" data-value="Kış" data-label="❄️ Kış" onclick="selectMevsim(this)">
                 <span class="opt-icon">❄️</span> Kış
               </div>
-              <div class="custom-option" data-value="4 Mevsim" onclick="selectMevsim(this)">
+              <div class="custom-option" data-value="4 Mevsim" data-label="🌤️ 4 Mevsim" onclick="selectMevsim(this)">
                 <span class="opt-icon opt-svg" id="dort-icon"></span> 4 Mevsim
               </div>
             </div>
@@ -859,12 +860,15 @@
       <a href="https://www.netlastik.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/eksililogo.avif' %}" alt="NetLastik"></a>
       <a href="https://panel.lastsis.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/yocar0.png' %}" alt="Lastsis"></a>
       <a href="http://95.13.23.154:9015" target="_blank"><img src="{% static 'karsilastirma/toptancilar/dincbaylogo.png' %}" alt="Dinçbay"></a>
+      <a href="https://netclick-apis.degeras.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/degeras.png' %}" alt="Degeras" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span style="display:none;font-size:1.1rem;font-weight:700;color:#334155;letter-spacing:-.02em">Degeras</span></a>
+      <!-- duplicate for seamless loop -->
       <a href="https://www.uspalastik.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/uspa1.png' %}" alt="USPA Lastik"></a>
       <a href="https://keskinlastik.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/keskin0.png' %}" alt="Keskin Lastik"></a>
       <a href="https://www.otosemih.com.tr" target="_blank"><img src="{% static 'karsilastirma/toptancilar/otosemih.png' %}" alt="OtoSemih"></a>
       <a href="https://www.netlastik.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/eksililogo.avif' %}" alt="NetLastik"></a>
       <a href="https://panel.lastsis.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/yocar0.png' %}" alt="Lastsis"></a>
       <a href="http://95.13.23.154:9015" target="_blank"><img src="{% static 'karsilastirma/toptancilar/dincbaylogo.png' %}" alt="Dinçbay"></a>
+      <a href="https://netclick-apis.degeras.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/degeras.png' %}" alt="Degeras" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span style="display:none;font-size:1.1rem;font-weight:700;color:#334155;letter-spacing:-.02em">Degeras</span></a>
     </div>
   </div>
 
@@ -967,7 +971,7 @@ function toggleSelect() {
 
 function selectMevsim(el) {
   const value = el.dataset.value;
-  const label = el.textContent.trim();
+  const label = el.dataset.label || el.textContent.trim();
   document.getElementById('mevsim-value').value = value;
   document.getElementById('mevsim-label').textContent = label;
   document.querySelectorAll('#mevsim-dropdown .custom-option').forEach(o => o.classList.remove('selected'));

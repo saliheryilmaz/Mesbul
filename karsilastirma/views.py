@@ -1,14 +1,18 @@
 import re
+import json
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
+from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.decorators import method_decorator
+from django.utils import timezone
+from django.views.decorators.http import require_POST
 
 from .uspa_servis      import uspa_ara
 from .keskin_servis    import keskin_ara
@@ -17,7 +21,8 @@ from .netlastik_servis import netlastik_ara
 from .lastsis_servis   import lastsis_ara
 from .dincbay_servis   import dincbay_ara
 from .degeras_servis   import degeras_ara
-from .models import AramaGecmisi, Abonelik, Odeme
+from .art4_servis      import art4_ara
+from .models import AramaGecmisi, Abonelik, Odeme, Notlar
 
 
 class AbonelikGerekli(LoginRequiredMixin):
@@ -278,6 +283,7 @@ B2B_LINKLER = {
     "Lastsis":       {"url": "https://panel.lastsis.com",   "logo": "toptancilar/yocar0.png"},
     "Dinçbay":       {"url": "http://95.13.23.154:9015",    "logo": "toptancilar/dincbaylogo.png"},
     "Degeras":       {"url": "https://netclick-apis.degeras.com", "logo": "toptancilar/degeras.png"},
+    "Art4":          {"url": "https://xml1.xmlbankasi.com",  "logo": "toptancilar/art4.png"},
 }
 
 
@@ -295,6 +301,7 @@ def _tum_toptancilarda_ara(ebat: str, marka: str, mevsim: str) -> tuple[list, li
         lastsis_ara,
         dincbay_ara,
         degeras_ara,
+        art4_ara,
     ]
 
     # Modül adı → görünen toptancı adı
@@ -306,6 +313,7 @@ def _tum_toptancilarda_ara(ebat: str, marka: str, mevsim: str) -> tuple[list, li
         "karsilastirma.lastsis_servis":   "Lastsis",
         "karsilastirma.dincbay_servis":   "Dinçbay",
         "karsilastirma.degeras_servis":   "Degeras",
+        "karsilastirma.art4_servis":      "Art4",
     }
 
     tum_sonuclar = []
@@ -645,3 +653,74 @@ class AbonelikKaydetView(View):
             }
         )
         return redirect('abonelik_yonetim')
+
+
+# ── Not Yönetimi ─────────────────────────────────────────────────────────────
+
+class NotlarView(LoginRequiredMixin, View):
+    """Kullanıcının notlarını JSON olarak döner (AJAX)."""
+    login_url = '/'
+
+    def get(self, request):
+        # Süresi dolmuş notları sil
+        Notlar.objects.filter(kullanici=request.user, silinme__lt=timezone.now()).delete()
+
+        notlar = Notlar.objects.filter(kullanici=request.user)
+        data = [
+            {
+                "id":         n.pk,
+                "ebat":       n.ebat,
+                "marka":      n.marka,
+                "icerik":     n.icerik,
+                "tarih":      n.olusturulma.strftime("%d.%m.%Y %H:%M"),
+                "kalan_gun":  n.kalan_gun,
+            }
+            for n in notlar
+        ]
+        return JsonResponse({"notlar": data})
+
+
+class NotEkleView(LoginRequiredMixin, View):
+    """Yeni not ekle (AJAX POST)."""
+    login_url = '/'
+
+    def post(self, request):
+        try:
+            body  = json.loads(request.body)
+        except (json.JSONDecodeError, ValueError):
+            return JsonResponse({"hata": "Geçersiz istek"}, status=400)
+
+        icerik = body.get("icerik", "").strip()
+        ebat   = body.get("ebat",   "").strip()
+        marka  = body.get("marka",  "").strip()
+
+        if not icerik:
+            return JsonResponse({"hata": "Not boş olamaz"}, status=400)
+
+        # Süresi dolmuş notları temizle
+        Notlar.objects.filter(kullanici=request.user, silinme__lt=timezone.now()).delete()
+
+        not_obj = Notlar.objects.create(
+            kullanici=request.user,
+            ebat=ebat,
+            marka=marka,
+            icerik=icerik,
+        )
+        return JsonResponse({
+            "id":         not_obj.pk,
+            "ebat":       not_obj.ebat,
+            "marka":      not_obj.marka,
+            "icerik":     not_obj.icerik,
+            "tarih":      not_obj.olusturulma.strftime("%d.%m.%Y %H:%M"),
+            "kalan_gun":  not_obj.kalan_gun,
+        }, status=201)
+
+
+class NotSilView(LoginRequiredMixin, View):
+    """Notu sil (AJAX DELETE)."""
+    login_url = '/'
+
+    def delete(self, request, not_id):
+        not_obj = get_object_or_404(Notlar, pk=not_id, kullanici=request.user)
+        not_obj.delete()
+        return JsonResponse({"ok": True})

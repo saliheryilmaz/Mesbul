@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -76,3 +78,31 @@ class Odeme(models.Model):
 
     def __str__(self):
         return f"{self.kullanici.username} — {self.tutar} ₺ ({self.tarih})"
+
+
+class Notlar(models.Model):
+    """Kullanıcının fiyat verirken aldığı kısa notlar. 7 gün sonra otomatik silinir."""
+    kullanici   = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notlar")
+    ebat        = models.CharField(max_length=30, blank=True)
+    marka       = models.CharField(max_length=80, blank=True)
+    icerik      = models.TextField()
+    olusturulma = models.DateTimeField(auto_now_add=True)
+    silinme     = models.DateTimeField()
+
+    class Meta:
+        verbose_name        = "Not"
+        verbose_name_plural = "Notlar"
+        ordering            = ["-olusturulma"]
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.silinme = timezone.now() + timedelta(days=7)
+        super().save(*args, **kwargs)
+
+    @property
+    def kalan_gun(self) -> int:
+        delta = self.silinme - timezone.now()
+        return max(0, delta.days)
+
+    def __str__(self):
+        return f"{self.kullanici.username} | {self.ebat} | {self.icerik[:40]}"

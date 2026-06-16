@@ -1,7 +1,8 @@
 from django.urls import path
 from .views import (AramaView, SonuclarView, GirisView, CikisView,
                     AbonelikYonetimView, AbonelikKaydetView,
-                    KullaniciEkleView, OdemeGecmisiView, OdemeEkleView)
+                    KullaniciEkleView, OdemeGecmisiView, OdemeEkleView,
+                    NotlarView, NotEkleView, NotSilView)
 
 urlpatterns = [
     path("",                              AramaView.as_view(),           name="arama"),
@@ -13,4 +14,8 @@ urlpatterns = [
     path("abonelikler/kullanici-ekle/",   KullaniciEkleView.as_view(),   name="kullanici_ekle"),
     path("abonelikler/odeme-ekle/",       OdemeEkleView.as_view(),       name="odeme_ekle"),
     path("odeme-gecmisim/",               OdemeGecmisiView.as_view(),    name="odeme_gecmisi"),
+    # Notlar
+    path("notlar/",                       NotlarView.as_view(),          name="notlar"),
+    path("notlar/ekle/",                  NotEkleView.as_view(),         name="not_ekle"),
+    path("notlar/<int:not_id>/sil/",      NotSilView.as_view(),          name="not_sil"),
 ]

@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from django.utils.html import format_html, mark_safe
 
-from .models import Abonelik, AramaGecmisi, Odeme
+from .models import Abonelik, AramaGecmisi, Odeme, Notlar
 
 
 # ── Abonelik inline — User admin içinde görünür ──────────────────────────────
@@ -87,3 +87,16 @@ class OdemeAdmin(admin.ModelAdmin):
     def tutar_tl(self, obj):
         return f"{obj.tutar:,.2f} ₺"
     tutar_tl.short_description = "Tutar"
+
+
+@admin.register(Notlar)
+class NotlarAdmin(admin.ModelAdmin):
+    list_display   = ("kullanici", "ebat", "marka", "kisa_icerik", "olusturulma", "silinme")
+    list_filter    = ("kullanici",)
+    search_fields  = ("kullanici__username", "ebat", "marka", "icerik")
+    readonly_fields = ("olusturulma", "silinme")
+    ordering       = ("-olusturulma",)
+
+    def kisa_icerik(self, obj):
+        return obj.icerik[:60] + ("…" if len(obj.icerik) > 60 else "")
+    kisa_icerik.short_description = "Not"

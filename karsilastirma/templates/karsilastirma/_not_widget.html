@@ -285,7 +285,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
-  // Sayfa yüklenince badge'i güncelle
+// Sayfa yüklenince badge'i güncelle + filtreleme FAB varsa not butonunu yukarı al
   fetch(NOT_API).then(r => r.json()).then(d => {
     const badge = document.getElementById('not-badge');
     if (d.notlar && d.notlar.length > 0) {
@@ -293,6 +293,23 @@ document.addEventListener('DOMContentLoaded', function() {
       badge.style.display = 'flex';
     }
   }).catch(()=>{});
+
+  // Filtreleme FAB butonuyla çakışmayı önle
+  const filterFab = document.getElementById('filter-fab');
+  const notFab    = document.getElementById('not-fab');
+  if (filterFab && notFab) {
+    // Filtreleme FAB görünür durumdaysa (mobil) not FAB'ı yukarı al
+    function konumGuncelle() {
+      const fabGorunum = window.getComputedStyle(filterFab).display;
+      if (fabGorunum !== 'none') {
+        notFab.style.bottom = (filterFab.offsetHeight + 24 + 24) + 'px'; // FAB yüksekliği + iki taraf boşluk
+      } else {
+        notFab.style.bottom = '1.5rem';
+      }
+    }
+    konumGuncelle();
+    window.addEventListener('resize', konumGuncelle);
+  }
 });
 </script>
 {% endif %}

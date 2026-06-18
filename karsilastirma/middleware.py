@@ -17,6 +17,7 @@ Nasıl çalışır:
 
 from django.contrib.auth import logout
 from django.shortcuts import redirect
+from django.db import connection
 
 
 class TekOturumMiddleware:
@@ -29,15 +30,17 @@ class TekOturumMiddleware:
             and not request.user.is_staff
         ):
             try:
-                abonelik = request.user.abonelik
+                from karsilastirma.models import Abonelik
+
+                # DB'den taze oku — ORM cache'ini atla
+                abonelik = Abonelik.objects.get(kullanici_id=request.user.pk)
                 kayitli_key = abonelik.session_key or ""
                 mevcut_key  = request.session.session_key or ""
 
                 if kayitli_key and mevcut_key and kayitli_key != mevcut_key:
-                    # Başka bir cihazdan giriş yapılmış — bu oturumu kapat
                     logout(request)
                     return redirect("/?login_hata=oturum&u=")
             except Exception:
-                pass  # Abonelik yoksa ya da herhangi bir hata — geç
+                pass
 
         return self.get_response(request)

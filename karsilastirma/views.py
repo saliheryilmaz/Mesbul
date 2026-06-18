@@ -496,9 +496,13 @@ class GirisView(View):
                         }, status=403)
 
                     # ── Tek oturum kontrolü ──────────────────────────────
+                    # Session'ı hemen DB'ye yaz — key'in garantili olması için
+                    request.session.save()
+                    yeni_key = request.session.session_key
+
                     # Önceki aktif session varsa DB'den sil
                     eski_key = abonelik.session_key
-                    if eski_key and eski_key != request.session.session_key:
+                    if eski_key and eski_key != yeni_key:
                         from django.contrib.sessions.backends.db import SessionStore
                         try:
                             SessionStore(eski_key).delete()
@@ -506,7 +510,7 @@ class GirisView(View):
                             pass
 
                     # Yeni session key'i kaydet
-                    abonelik.session_key = request.session.session_key or ""
+                    abonelik.session_key = yeni_key or ""
                     abonelik.save(update_fields=["session_key"])
                     # ─────────────────────────────────────────────────────
 

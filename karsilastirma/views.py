@@ -494,6 +494,22 @@ class GirisView(View):
                             "bitis": abonelik.bitis,
                             "plan":  abonelik.plan,
                         }, status=403)
+
+                    # ── Tek oturum kontrolü ──────────────────────────────
+                    # Önceki aktif session varsa DB'den sil
+                    eski_key = abonelik.session_key
+                    if eski_key and eski_key != request.session.session_key:
+                        from django.contrib.sessions.backends.db import SessionStore
+                        try:
+                            SessionStore(eski_key).delete()
+                        except Exception:
+                            pass
+
+                    # Yeni session key'i kaydet
+                    abonelik.session_key = request.session.session_key or ""
+                    abonelik.save(update_fields=["session_key"])
+                    # ─────────────────────────────────────────────────────
+
                 except Abonelik.DoesNotExist:
                     return render(request, "karsilastirma/abonelik_bitti.html", {
                         "bitis": None,

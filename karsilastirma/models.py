@@ -30,12 +30,14 @@ class Abonelik(models.Model):
         ("demo",   "Demo"),
     ]
 
-    kullanici  = models.OneToOneField(User, on_delete=models.CASCADE, related_name="abonelik")
-    plan       = models.CharField(max_length=10, choices=PLAN_CHOICES, default="demo")
-    baslangic  = models.DateField(default=timezone.localdate)
-    bitis      = models.DateField()
-    aktif      = models.BooleanField(default=True)
-    not_alani  = models.TextField(blank=True, help_text="Müşteri notları")
+    kullanici   = models.OneToOneField(User, on_delete=models.CASCADE, related_name="abonelik")
+    plan        = models.CharField(max_length=10, choices=PLAN_CHOICES, default="demo")
+    baslangic   = models.DateField(default=timezone.localdate)
+    bitis       = models.DateField()
+    aktif       = models.BooleanField(default=True)
+    not_alani   = models.TextField(blank=True, help_text="Müşteri notları")
+    session_key = models.CharField(max_length=40, blank=True, default="",
+                                   help_text="Aktif session key — tek oturum kontrolü için")
 
     class Meta:
         verbose_name        = "Abonelik"

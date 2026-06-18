@@ -893,7 +893,11 @@
     {% if login_hata %}
     <div class="modal-error">
       <span>⚠️</span>
-      <span>Kullanıcı adı veya şifre hatalı.</span>
+      {% if login_hata == "oturum" %}
+        <span>Hesabınız başka bir cihazdan açıldı. Lütfen tekrar giriş yapın.</span>
+      {% else %}
+        <span>Kullanıcı adı veya şifre hatalı.</span>
+      {% endif %}
     </div>
     {% endif %}
 

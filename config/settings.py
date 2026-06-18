@@ -78,6 +78,16 @@ LOGIN_URL = '/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
+# Email — Gmail SMTP
+EMAIL_BACKEND         = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST            = 'smtp.gmail.com'
+EMAIL_PORT            = 587
+EMAIL_USE_TLS         = True
+EMAIL_HOST_USER       = os.getenv('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD   = os.getenv('EMAIL_HOST_PASSWORD', '')  # Gmail App Password
+DEFAULT_FROM_EMAIL    = os.getenv('EMAIL_HOST_USER', '')
+ILETISIM_ALICI_EMAIL  = os.getenv('ILETISIM_ALICI_EMAIL', os.getenv('EMAIL_HOST_USER', ''))
+
 # Cache — DB backend (tüm worker'lar aynı tabloyu okur, process restart'tan etkilenmez)
 CACHES = {
     'default': {

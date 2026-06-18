@@ -370,6 +370,7 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
 <!-- SIDEBAR -->
 <aside class="sidebar">
 
+  {% if not demo_mod %}
   <div class="filter-section">
     <div class="filter-title">
       Toptancı
@@ -387,6 +388,22 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
   </div>
 
   <hr class="filter-divider">
+  {% else %}
+  <div class="filter-section">
+    <div class="filter-title">Toptancı</div>
+    <a href="/" onclick="uyelikModalAc();return false;"
+      style="display:flex;align-items:center;gap:.5rem;background:#FFF7F4;border:1px solid #FECACA;border-radius:6px;padding:.625rem .75rem;text-decoration:none;transition:background .2s"
+      onmouseover="this.style.background='#FEE2E2'" onmouseout="this.style.background='#FFF7F4'">
+      <span style="font-size:1rem">🔒</span>
+      <div>
+        <div style="font-size:.8125rem;font-weight:700;color:#E85D26">Toptancıları Görmek İçin</div>
+        <div style="font-size:.75rem;color:#C2410C;font-weight:500">Ücretli Üyelik Alın →</div>
+      </div>
+    </a>
+  </div>
+
+  <hr class="filter-divider">
+  {% endif %}
 
   <div class="filter-section">
     <div class="filter-title">
@@ -448,7 +465,7 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
 <!-- MAIN -->
 <main class="main">
 
-  {% if hatali_toptancilar %}
+  {% if hatali_toptancilar and not demo_mod %}
   <div class="hata-banner">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
     <span>Şu anda bağlantı kurulamayan toptancılar: <strong>{{ hatali_toptancilar|join:", " }}</strong> — sonuçlar eksik olabilir.</span>
@@ -483,14 +500,18 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
       <thead>
         <tr>
           <th>#</th>
-          <th>Toptancı</th>
+          {% if not demo_mod %}
+            <th>Toptancı</th>
+          {% else %}
+            <th>Toptancı <span style="font-size:.6rem;font-weight:600;color:#E85D26;background:#FFF7F4;border:1px solid #FECACA;border-radius:4px;padding:.1rem .35rem;vertical-align:middle;white-space:nowrap">🔒 Üye</span></th>
+          {% endif %}
           <th>Marka</th>
           <th>Model</th>
           <th class="gizle">Mevsim</th>
           <th class="gizle">DOT</th>
           <th class="gizle">Stok</th>
           <th style="text-align:right">Fiyat</th>
-          <th class="gizle">B2B</th>
+          {% if not demo_mod %}<th class="gizle">B2B</th>{% endif %}
         </tr>
       </thead>
       <tbody id="table-body">
@@ -505,7 +526,14 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
             data-idx="{{ forloop.counter }}">
 
           <td><span class="sira">{{ forloop.counter }}</span></td>
-          <td><div class="toptanci-name">{{ u.toptanci }}</div></td>
+          {% if not demo_mod %}
+            <td><div class="toptanci-name">{{ u.toptanci }}</div></td>
+          {% else %}
+            <td><a href="/" onclick="uyelikModalAc();return false;"
+              style="display:inline-flex;align-items:center;gap:.3rem;font-size:.75rem;font-weight:600;color:#E85D26;background:#FFF7F4;border:1px solid #FECACA;border-radius:4px;padding:.2rem .5rem;text-decoration:none;white-space:nowrap">
+              🔒 Üyelik Al
+            </a></td>
+          {% endif %}
           <td><div class="marka-name">{{ u.marka }}</div></td>
           <td><div class="model-name">{{ u.urun_adi }}</div></td>
 
@@ -542,11 +570,13 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
           </td>
 
           <td class="gizle" style="text-align:right">
+            {% if not demo_mod %}
             {% for toptanci_adi, bilgi in b2b_linkler.items %}
               {% if toptanci_adi == u.toptanci %}
                 <a href="{{ bilgi.url }}" target="_blank" class="b2b-btn">B2B</a>
               {% endif %}
             {% endfor %}
+            {% endif %}
           </td>
 
         </tr>
@@ -601,7 +631,11 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
 
       <!-- Alt satır: Badge'ler -->
       <div class="m-card-badges">
-        <span class="mb mb-seller">{{ u.toptanci }}</span>
+        {% if not demo_mod %}<span class="mb mb-seller">{{ u.toptanci }}</span>
+        {% else %}
+          <a href="/" onclick="uyelikModalAc();return false;"
+            class="mb" style="background:#FFF7F4;color:#E85D26;border:1px solid #FECACA;font-weight:700;text-decoration:none">🔒 Üyelik Al</a>
+        {% endif %}
 
         {% if "kış" in u.mevsim|lower or "kis" in u.mevsim|lower %}
           <span class="mb mb-season">❄️ Kış</span>
@@ -625,11 +659,13 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
           <span class="mb mb-cheapest">En Ucuz</span>
         {% endif %}
 
+        {% if not demo_mod %}
         {% for toptanci_adi, bilgi in b2b_linkler.items %}
           {% if toptanci_adi == u.toptanci %}
             <a href="{{ bilgi.url }}" target="_blank" class="mb mb-b2b">B2B</a>
           {% endif %}
         {% endfor %}
+        {% endif %}
       </div>
 
     </div>
@@ -782,5 +818,6 @@ function closeFilters() {
 </button>
 
 {% include "karsilastirma/_not_widget.html" %}
+{% if demo_mod %}{% include "karsilastirma/_uyelik_modal.html" %}{% endif %}
 </body>
 </html>

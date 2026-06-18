@@ -2,7 +2,7 @@ from django.urls import path
 from .views import (AramaView, SonuclarView, GirisView, CikisView,
                     AbonelikYonetimView, AbonelikKaydetView,
                     KullaniciEkleView, OdemeGecmisiView, OdemeEkleView,
-                    NotlarView, NotEkleView, NotSilView)
+                    NotlarView, NotEkleView, NotSilView, UyelikTalepView)
 
 urlpatterns = [
     path("",                              AramaView.as_view(),           name="arama"),
@@ -18,4 +18,6 @@ urlpatterns = [
     path("notlar/",                       NotlarView.as_view(),          name="notlar"),
     path("notlar/ekle/",                  NotEkleView.as_view(),         name="not_ekle"),
     path("notlar/<int:not_id>/sil/",      NotSilView.as_view(),          name="not_sil"),
+    # Üyelik talebi
+    path("uyelik-talep/",                 UyelikTalepView.as_view(),     name="uyelik_talep"),
 ]

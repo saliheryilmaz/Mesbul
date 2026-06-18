@@ -373,6 +373,12 @@ class AramaView(View):
             "modal_acik":  modal_acik,
             "login_hata":  login_hata,
             "login_u":     request.GET.get("u", ""),
+            "demo_mod": (
+                request.user.is_authenticated
+                and not request.user.is_staff
+                and hasattr(request.user, 'abonelik')
+                and request.user.abonelik.plan == "demo"
+            ),
         })
 
 
@@ -451,6 +457,10 @@ class SonuclarView(AbonelikGerekli, View):
             "marka_listesi":      marka_listesi,
             "b2b_linkler":        B2B_LINKLER,
             "hatali_toptancilar": hatali_toptancilar,
+            "demo_mod":           (
+                hasattr(request.user, 'abonelik') and
+                request.user.abonelik.plan == "demo"
+            ) if not request.user.is_staff else False,
         })
 
 
@@ -614,6 +624,64 @@ class CikisView(View):
     def get(self, request):
         logout(request)
         return redirect('arama')  # Ana sayfa — modal otomatik açılacak
+
+
+class UyelikTalepView(View):
+    """Üyelik talep formunu işler, siteye mail gönderir."""
+
+    def post(self, request):
+        import json as _json
+        from django.core.mail import send_mail
+        from django.conf import settings as conf
+
+        try:
+            body = _json.loads(request.body)
+        except (ValueError, _json.JSONDecodeError):
+            return JsonResponse({"hata": "Geçersiz istek"}, status=400)
+
+        ad_soyad = body.get("ad_soyad", "").strip()
+        telefon  = body.get("telefon",  "").strip()
+        email    = body.get("email",    "").strip()
+        plan     = body.get("plan",     "").strip()
+        mesaj    = body.get("mesaj",    "").strip()
+
+        if not ad_soyad or not telefon:
+            return JsonResponse({"hata": "Ad soyad ve telefon zorunludur"}, status=400)
+        if not email:
+            return JsonResponse({"hata": "E-posta zorunludur"}, status=400)
+
+        plan_label = {
+            "aylik":  "Aylık — 1.000 ₺/ay (KDV hariç)",
+            "yillik": "Yıllık — 10.000 ₺/yıl (KDV hariç, 2 ay bedava)",
+            "demo":   "Demo",
+        }.get(plan, plan)
+
+        konu = f"[MesBul] Yeni Üyelik Talebi — {ad_soyad} ({plan_label})"
+        icerik = (
+            f"Yeni üyelik talebi geldi:\n\n"
+            f"Ad Soyad : {ad_soyad}\n"
+            f"Telefon  : {telefon}\n"
+            f"E-posta  : {email or '—'}\n"
+            f"Plan     : {plan_label}\n"
+            f"Mesaj    : {mesaj or '—'}\n"
+        )
+
+        alici = getattr(conf, 'ILETISIM_ALICI_EMAIL', '') or conf.EMAIL_HOST_USER
+        try:
+            from django.core.mail import EmailMessage
+            msg = EmailMessage(
+                subject=konu,
+                body=icerik,
+                from_email=conf.DEFAULT_FROM_EMAIL,
+                to=[alici],
+                reply_to=[email],   # "Yanıtla" tuşu müşteriye gider
+            )
+            msg.send(fail_silently=False)
+        except Exception as e:
+            print(f"[UyelikTalep] Mail gönderilemedi: {e}")
+            return JsonResponse({"hata": "Mail gönderilemedi, lütfen tekrar deneyin."}, status=500)
+
+        return JsonResponse({"ok": True})
 
 
 @method_decorator(staff_member_required(login_url='giris'), name='dispatch')

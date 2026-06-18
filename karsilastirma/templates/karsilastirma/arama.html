@@ -761,14 +761,20 @@
   </div>
 
   <div class="sources">
-    <span class="source-chip">USPA Lastik</span>
-    <span class="source-chip">Keskin Lastik</span>
-    <span class="source-chip">OtoSemih</span>
-    <span class="source-chip">NetLastik</span>
-    <span class="source-chip">Yocar(Lastsis)</span>
-    <span class="source-chip">Dinçbay</span>
-    <span class="source-chip">Degeras</span>
-    <span class="source-chip">Art Jant Lastik</span>
+    {% if demo_mod %}
+      <span class="source-chip" style="background:#FFF7F4;border-color:#FECACA;color:#E85D26;cursor:pointer" onclick="uyelikModalAc()">
+        🔒 Toptancıları görmek için üyelik alın
+      </span>
+    {% else %}
+      <span class="source-chip">USPA Lastik</span>
+      <span class="source-chip">Keskin Lastik</span>
+      <span class="source-chip">OtoSemih</span>
+      <span class="source-chip">NetLastik</span>
+      <span class="source-chip">Yocar(Lastsis)</span>
+      <span class="source-chip">Dinçbay</span>
+      <span class="source-chip">Degeras</span>
+      <span class="source-chip">Art Jant Lastik</span>
+    {% endif %}
   </div>
 
   <div class="card">
@@ -945,11 +951,44 @@
     </form>
 
     <div class="modal-footer">
-      Hesabınız yok mu? Yöneticinizle iletişime geçin.
+      Üyelik için
+      <button onclick="uyelikModalAc()" style="background:none;border:none;color:#E85D26;font-weight:700;cursor:pointer;font-size:.8125rem;padding:0;text-decoration:underline;font-family:'Inter',sans-serif">buraya tıklayın</button>
+      &nbsp;·&nbsp;
+      <span style="color:#94A3B8;font-size:.75rem">Demo: <b style="color:#475569">demo / demo</b></span>
     </div>
 
   </div>
 </div>
+
+<!-- ========== ÜYELİK TALEP MODALİ ========== -->
+{% include "karsilastirma/_uyelik_modal.html" %}
+
+<style>
+.plan-kart {
+  cursor: pointer;
+  border-radius: 8px;
+  padding: .875rem;
+  position: relative;
+  transition: box-shadow .2s;
+}
+.plan-kart:hover { box-shadow: 0 4px 12px rgba(15,23,42,.1); }
+</style>
+
+<script>
+// Arama sayfasına özgü: üyelik modal açılınca giriş modalini kapat, kapanınca geri aç
+const _origUyelikModalAc = uyelikModalAc;
+function uyelikModalAc() {
+  const giris = document.getElementById('giris-modal');
+  if (giris) giris.classList.remove('active');
+  _origUyelikModalAc();
+}
+const _origUyelikModalKapat = uyelikModalKapat;
+function uyelikModalKapat() {
+  _origUyelikModalKapat();
+  const giris = document.getElementById('giris-modal');
+  if (giris) giris.classList.add('active');
+}
+</script>
 
 <script>
 function toggleUserMenu() {
@@ -1022,5 +1061,6 @@ function toggleModalSifre() {
 </script>
 
 {% include "karsilastirma/_not_widget.html" %}
+{% include "karsilastirma/_uyelik_modal.html" %}
 </body>
 </html>

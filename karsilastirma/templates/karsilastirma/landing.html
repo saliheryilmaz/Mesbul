@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MesBul — Lastik Fiyat Karşılaştırma</title>
+{% load static %}
+<link rel="icon" type="image/png" href="{% static 'karsilastirma/favicon1.png' %}">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: #0F172A;
+  color: #F1F5F9;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── LAYOUT ── */
+.landing {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* ── SOL: MEDYA ── */
+.media-panel {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: #000;
+}
+
+.media-panel video,
+.media-panel .media-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+
+/* Üstüne gradient overlay */
+.media-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(15,23,42,.15) 0%,
+    rgba(15,23,42,.05) 60%,
+    rgba(15,23,42,.6) 100%
+  );
+  z-index: 2;
+}
+
+/* Logo + slogan sol altta */
+.media-brand {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 2.5rem;
+  z-index: 3;
+}
+.media-brand-logo {
+  display: flex;
+  align-items: center;
+  gap: .875rem;
+  margin-bottom: .75rem;
+}
+.media-brand-logo img {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.5);
+}
+.media-brand-name {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -.03em;
+  text-shadow: 0 2px 8px rgba(0,0,0,.4);
+}
+.media-brand-slogan {
+  font-size: .9375rem;
+  color: rgba(255,255,255,.75);
+  font-weight: 500;
+  text-shadow: 0 1px 4px rgba(0,0,0,.4);
+}
+
+/* Medya seçici (görsel / video toggle) */
+.media-tabs {
+  position: absolute;
+  top: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: flex;
+  gap: .375rem;
+  background: rgba(0,0,0,.4);
+  backdrop-filter: blur(8px);
+  border-radius: 100px;
+  padding: .25rem;
+}
+.media-tab {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,.6);
+  font-size: .75rem;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  padding: .375rem .875rem;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all .2s;
+  letter-spacing: .02em;
+}
+.media-tab.active {
+  background: #E85D26;
+  color: #fff;
+}
+
+/* ── SAĞ: GİRİŞ PANELİ ── */
+.auth-panel {
+  width: 440px;
+  min-width: 440px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3rem 2.5rem;
+  position: relative;
+  overflow-y: auto;
+}
+
+.auth-logo {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  margin-bottom: 2rem;
+}
+.auth-logo img {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+}
+.auth-logo-name {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0F172A;
+  letter-spacing: -.03em;
+}
+
+.auth-title {
+  font-size: 1.625rem;
+  font-weight: 800;
+  color: #0F172A;
+  letter-spacing: -.03em;
+  margin-bottom: .375rem;
+}
+.auth-sub {
+  font-size: .9375rem;
+  color: #64748B;
+  margin-bottom: 2rem;
+  font-weight: 400;
+}
+
+/* Hata mesajı */
+.auth-error {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  border-radius: 8px;
+  padding: .75rem 1rem;
+  color: #EF4444;
+  font-size: .875rem;
+  font-weight: 500;
+  margin-bottom: 1.25rem;
+}
+
+/* Form alanları */
+.auth-field {
+  margin-bottom: 1.125rem;
+}
+.auth-label {
+  display: block;
+  font-size: .6875rem;
+  font-weight: 700;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  margin-bottom: .4rem;
+}
+.auth-input-wrap {
+  position: relative;
+}
+.auth-input-icon {
+  position: absolute;
+  left: .875rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94A3B8;
+  font-size: .9375rem;
+  pointer-events: none;
+}
+.auth-input {
+  width: 100%;
+  background: #F8FAFC;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 8px;
+  padding: .75rem .875rem .75rem 2.5rem;
+  color: #0F172A;
+  font-family: 'Inter', sans-serif;
+  font-size: .9375rem;
+  font-weight: 500;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+.auth-input:focus {
+  border-color: #E85D26;
+  box-shadow: 0 0 0 3px rgba(232,93,38,.12);
+  background: #fff;
+}
+.auth-input::placeholder { color: #CBD5E1; font-weight: 400; }
+
+.auth-toggle-pw {
+  position: absolute;
+  right: .875rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #94A3B8;
+  font-size: .9375rem;
+  padding: 0;
+  line-height: 1;
+  transition: color .2s;
+}
+.auth-toggle-pw:hover { color: #475569; }
+
+/* Giriş butonu */
+.auth-btn {
+  width: 100%;
+  background: #E85D26;
+  border: none;
+  border-radius: 8px;
+  padding: .9375rem;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: .9375rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  cursor: pointer;
+  transition: background .2s, transform .1s;
+  margin-top: .25rem;
+}
+.auth-btn:hover { background: #C94D1A; }
+.auth-btn:active { transform: translateY(1px); }
+
+/* Ayırıcı */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  margin: 1.5rem 0;
+  color: #CBD5E1;
+  font-size: .8125rem;
+  font-weight: 500;
+}
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #E2E8F0;
+}
+
+/* Üyelik butonu */
+.auth-uyelik-btn {
+  width: 100%;
+  background: #fff;
+  border: 2px solid #E85D26;
+  border-radius: 8px;
+  padding: .875rem;
+  color: #E85D26;
+  font-family: 'Inter', sans-serif;
+  font-size: .9375rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  cursor: pointer;
+  transition: all .2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+}
+.auth-uyelik-btn:hover {
+  background: #E85D26;
+  color: #fff;
+}
+
+/* Demo bilgisi */
+.auth-demo {
+  margin-top: 1.5rem;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  padding: .875rem 1rem;
+  text-align: center;
+}
+.auth-demo-title {
+  font-size: .6875rem;
+  font-weight: 700;
+  color: #94A3B8;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  margin-bottom: .375rem;
+}
+.auth-demo-info {
+  font-size: .875rem;
+  color: #475569;
+  font-weight: 500;
+}
+.auth-demo-info b { color: #0F172A; font-family: 'JetBrains Mono', monospace; }
+
+/* İletişim */
+.auth-contact {
+  margin-top: 1.5rem;
+  font-size: .8125rem;
+  color: #94A3B8;
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* ── MOBİL ── */
+@media (max-width: 768px) {
+  .landing { flex-direction: column; overflow: auto; }
+  body { overflow: auto; }
+  .media-panel {
+    min-height: 45vh;
+    flex: none;
+  }
+  .media-brand { bottom: 1.5rem; left: 1.5rem; }
+  .media-brand-name { font-size: 1.25rem; }
+  .auth-panel {
+    width: 100%;
+    min-width: 0;
+    padding: 2rem 1.5rem;
+    justify-content: flex-start;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="landing">
+
+  <!-- ── SOL: MEDYA PANELİ ── -->
+  <div class="media-panel" id="media-panel">
+
+    <!-- Video (varsayılan görünür) -->
+    <video id="media-video" autoplay muted loop playsinline
+      style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1">
+      <source src="{% static 'karsilastirma/videobul.mp4' %}" type="video/mp4">
+    </video>
+
+    <!-- Görsel (video yoksa veya görsel tab seçilince) -->
+    <img id="media-image" class="media-img"
+      src="{% static 'karsilastirma/mesbulfoto0.png' %}"
+      alt="MesBul"
+      style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1">
+
+    <div class="media-overlay"></div>
+
+    <!-- Tab seçici -->
+    <div class="media-tabs">
+      <button class="media-tab active" id="tab-video" onclick="medyaSec('video')">▶ Video</button>
+      <button class="media-tab" id="tab-gorsel" onclick="medyaSec('gorsel')">🖼 Görsel</button>
+    </div>
+
+    <!-- Marka -->
+    <div class="media-brand">
+      <div class="media-brand-logo">
+        <img src="{% static 'karsilastirma/favicon1.png' %}" alt="MesBul">
+        <span class="media-brand-name">MesBul</span>
+      </div>
+      <div class="media-brand-slogan">Tüm toptancıları tek ekranda karşılaştır</div>
+    </div>
+
+  </div>
+
+  <!-- ── SAĞ: GİRİŞ PANELİ ── -->
+  <div class="auth-panel">
+
+    <div class="auth-logo">
+      <img src="{% static 'karsilastirma/favicon1.png' %}" alt="MesBul">
+      <span class="auth-logo-name">MesBul</span>
+    </div>
+
+    <h1 class="auth-title">Hoş Geldiniz</h1>
+    <p class="auth-sub">Lastik satıcıları için fiyat karşılaştırma platformu</p>
+
+    {% if login_hata %}
+    <div class="auth-error">
+      <span>⚠️</span>
+      {% if login_hata == "oturum" %}
+        <span>Hesabınız başka bir cihazdan açıldı. Tekrar giriş yapın.</span>
+      {% else %}
+        <span>Kullanıcı adı veya şifre hatalı.</span>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <form method="POST" action="{% url 'giris' %}">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="/">
+
+      <div class="auth-field">
+        <label class="auth-label">Kullanıcı Adı</label>
+        <div class="auth-input-wrap">
+          <span class="auth-input-icon">👤</span>
+          <input type="text" name="kullanici_adi" class="auth-input"
+            placeholder="kullanici_adi"
+            autocomplete="username"
+            value="{{ login_u }}"
+            required>
+        </div>
+      </div>
+
+      <div class="auth-field">
+        <label class="auth-label">Şifre</label>
+        <div class="auth-input-wrap">
+          <span class="auth-input-icon">🔒</span>
+          <input type="password" name="sifre" id="sifre-input" class="auth-input"
+            placeholder="••••••••"
+            autocomplete="current-password"
+            required>
+          <button type="button" class="auth-toggle-pw" onclick="toggleSifre()">
+            <span id="goz-ikon">👁️</span>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="auth-btn">Giriş Yap →</button>
+    </form>
+
+    <div class="auth-divider">veya</div>
+
+    <button class="auth-uyelik-btn" onclick="uyelikModalAc()">
+      ✦ Üyelik Planlarını Gör
+    </button>
+
+    <div class="auth-demo">
+      <div class="auth-demo-title">Denemek İster misiniz?</div>
+      <div class="auth-demo-info">
+        Kullanıcı adı: <b>demo</b> &nbsp;·&nbsp; Şifre: <b>demo</b>
+      </div>
+    </div>
+
+    <div class="auth-contact">
+      Hesabınız yok mu? <a href="#" onclick="uyelikModalAc();return false;" style="color:#E85D26;font-weight:600;text-decoration:none">Üyelik alın</a>
+    </div>
+
+  </div>
+</div>
+
+{% include "karsilastirma/_uyelik_modal.html" %}
+
+<script>
+function toggleSifre() {
+  const input = document.getElementById('sifre-input');
+  const ikon  = document.getElementById('goz-ikon');
+  if (input.type === 'password') {
+    input.type = 'text';
+    ikon.textContent = '🙈';
+  } else {
+    input.type = 'password';
+    ikon.textContent = '👁️';
+  }
+}
+
+function medyaSec(tip) {
+  const video  = document.getElementById('media-video');
+  const image  = document.getElementById('media-image');
+  const tabV   = document.getElementById('tab-video');
+  const tabG   = document.getElementById('tab-gorsel');
+
+  if (tip === 'video') {
+    video.style.display = 'block';
+    image.style.display = 'none';
+    video.play();
+    tabV.classList.add('active');
+    tabG.classList.remove('active');
+  } else {
+    video.style.display = 'none';
+    video.pause();
+    image.style.display = 'block';
+    tabG.classList.add('active');
+    tabV.classList.remove('active');
+  }
+}
+
+// Video yoksa otomatik görsele geç
+document.getElementById('media-video').addEventListener('error', function() {
+  medyaSec('gorsel');
+});
+</script>
+
+</body>
+</html>

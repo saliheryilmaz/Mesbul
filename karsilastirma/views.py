@@ -344,14 +344,23 @@ def _tum_toptancilarda_ara(ebat: str, marka: str, mevsim: str) -> tuple[list, li
 
 class AramaView(View):
     """
-    Giriş yapılmamış kullanıcıya sayfayı göster ama giriş modali otomatik açık gelsin.
-    Giriş yapılmış ama aboneliği bitmiş kullanıcıya abonelik_bitti sayfası göster.
+    Giriş yapılmamış kullanıcılara landing sayfası göster.
+    Giriş yapılmış kullanıcılara arama sayfası göster.
     """
-    template_name = "karsilastirma/arama.html"
+    template_name      = "karsilastirma/arama.html"
+    landing_template   = "karsilastirma/landing.html"
 
     def get(self, request):
-        # Abonelik kontrolü (sadece giriş yapılmışsa)
-        if request.user.is_authenticated and not request.user.is_staff:
+        # Giriş yapılmamışsa → landing
+        if not request.user.is_authenticated:
+            login_hata = request.GET.get("login_hata", "")
+            return render(request, self.landing_template, {
+                "login_hata": login_hata,
+                "login_u":    request.GET.get("u", ""),
+            })
+
+        # Abonelik kontrolü
+        if not request.user.is_staff:
             try:
                 abonelik = request.user.abonelik
                 if not abonelik.erisim_var_mi:
@@ -365,16 +374,13 @@ class AramaView(View):
                     "plan":  None,
                 }, status=403)
 
-        gecmis = AramaGecmisi.objects.filter(kullanici=request.user)[:8] if request.user.is_authenticated else []
-
-        # Giriş hatası varsa (modal açık dönecek) veya giriş yapılmamışsa modal_acik=True
+        gecmis     = AramaGecmisi.objects.filter(kullanici=request.user)[:8]
         login_hata = request.GET.get("login_hata", "")
-        modal_acik = not request.user.is_authenticated or bool(login_hata)
 
         return render(request, self.template_name, {
             "gecmis":      gecmis,
             "b2b_linkler": B2B_LINKLER,
-            "modal_acik":  modal_acik,
+            "modal_acik":  bool(login_hata),
             "login_hata":  login_hata,
             "login_u":     request.GET.get("u", ""),
             "demo_mod": (

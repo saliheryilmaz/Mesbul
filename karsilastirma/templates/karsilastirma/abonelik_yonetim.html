@@ -142,9 +142,10 @@ td{padding:.75rem 1.25rem;font-size:.875rem;vertical-align:middle}
         <div class="field-group">
           <label class="field-label">Plan</label>
           <select name="plan" class="field-ctrl">
-            <option value="demo"  {% if form_data.plan == 'demo'   %}selected{% endif %}>Demo</option>
-            <option value="aylik" {% if form_data.plan == 'aylik'  %}selected{% endif %}>Aylık</option>
-            <option value="yillik"{% if form_data.plan == 'yillik' %}selected{% endif %}>Yıllık</option>
+            <option value="demo"    {% if form_data.plan == 'demo'    %}selected{% endif %}>Demo</option>
+            <option value="deneme"  {% if form_data.plan == 'deneme'  %}selected{% endif %}>Deneme (1 hafta)</option>
+            <option value="aylik"   {% if form_data.plan == 'aylik'   %}selected{% endif %}>Aylık</option>
+            <option value="yillik"  {% if form_data.plan == 'yillik'  %}selected{% endif %}>Yıllık</option>
           </select>
         </div>
         <div class="field-group">
@@ -230,9 +231,10 @@ td{padding:.75rem 1.25rem;font-size:.875rem;vertical-align:middle}
               {% csrf_token %}
               <div class="form-row">
                 <select name="plan" class="form-select">
-                  <option value="demo"   {% if u.abonelik.plan == 'demo'   %}selected{% endif %}>Demo</option>
-                  <option value="aylik"  {% if u.abonelik.plan == 'aylik'  %}selected{% endif %}>Aylık</option>
-                  <option value="yillik" {% if u.abonelik.plan == 'yillik' %}selected{% endif %}>Yıllık</option>
+                  <option value="demo"    {% if u.abonelik.plan == 'demo'    %}selected{% endif %}>Demo</option>
+                  <option value="deneme"  {% if u.abonelik.plan == 'deneme'  %}selected{% endif %}>Deneme</option>
+                  <option value="aylik"   {% if u.abonelik.plan == 'aylik'   %}selected{% endif %}>Aylık</option>
+                  <option value="yillik"  {% if u.abonelik.plan == 'yillik'  %}selected{% endif %}>Yıllık</option>
                 </select>
                 <input type="date" name="bitis" class="form-input"
                   value="{% if u.abonelik %}{{ u.abonelik.bitis|date:'Y-m-d' }}{% endif %}"

@@ -25,9 +25,10 @@ class Abonelik(models.Model):
     """Her kullanıcıya bir abonelik kaydı. Admin panelinden yönetilir."""
 
     PLAN_CHOICES = [
-        ("aylik",  "Aylık"),
-        ("yillik", "Yıllık"),
-        ("demo",   "Demo"),
+        ("aylik",   "Aylık"),
+        ("yillik",  "Yıllık"),
+        ("demo",    "Demo"),
+        ("deneme",  "Deneme"),
     ]
 
     kullanici   = models.OneToOneField(User, on_delete=models.CASCADE, related_name="abonelik")

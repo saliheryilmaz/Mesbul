@@ -515,8 +515,8 @@ class GirisView(View):
                             "plan":  abonelik.plan,
                         }, status=403)
 
-                    # ── Tek oturum kontrolü (demo kullanıcılar muaf) ─────
-                    if abonelik.plan != "demo":
+                    # ── Tek oturum kontrolü (demo ve deneme kullanıcılar muaf) ─────
+                    if abonelik.plan not in ("demo", "deneme"):
                         # Session'ı hemen DB'ye yaz — key'in garantili olması için
                         request.session.save()
                         yeni_key = request.session.session_key

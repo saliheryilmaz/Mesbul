@@ -35,8 +35,8 @@ class TekOturumMiddleware:
                 # DB'den taze oku — ORM cache'ini atla
                 abonelik = Abonelik.objects.get(kullanici_id=request.user.pk)
 
-                # Demo kullanıcılar tek oturum kısıtından muaf
-                if abonelik.plan == "demo":
+                # Demo ve deneme kullanıcılar tek oturum kısıtından muaf
+                if abonelik.plan in ("demo", "deneme"):
                     return self.get_response(request)
 
                 kayitli_key = abonelik.session_key or ""

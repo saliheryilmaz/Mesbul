@@ -67,6 +67,8 @@ MARKA_ESLESME = {
     "contintental":      "Continental",
     "continetal":        "Continental",
     "contiental":        "Continental",
+    "conti":             "Continental",
+    "contı":             "Continental",
 
     # ── Bridgestone ──
     "bridgestone":       "Bridgestone",
@@ -264,11 +266,13 @@ MARKA_ESLESME = {
 }
 
 def _normalize_marka(marka: str) -> str:
-    """Marka adını normalize eder: whitespace temizle, küçük harfe çevir, eşleşme tablosuna bak."""
+    """Marka adını normalize eder: whitespace temizle, Türkçe karakter düzelt, küçük harfe çevir, eşleşme tablosuna bak."""
     if not marka:
         return marka
     temiz = " ".join(marka.strip().split())  # çoklu boşlukları tek yap
-    anahtar = temiz.lower()
+    # Türkçe büyük İ → i, I → ı, Ş → ş vb. için özel lower
+    tr_map = str.maketrans("İIŞĞÜÖÇ", "iışğüöç")
+    anahtar = temiz.translate(tr_map).lower()
     if anahtar in MARKA_ESLESME:
         return MARKA_ESLESME[anahtar]
     # Eşleşme yoksa: İlk harf büyük, geri kalanı küçük (CONTINENTAL → Continental)

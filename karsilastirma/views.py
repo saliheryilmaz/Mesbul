@@ -291,7 +291,7 @@ B2B_LINKLER = {
     "Degeras":       {"url": "https://netclick-apis.degeras.com", "logo": "toptancilar/degeras.png"},
     "Art4":          {"url": "https://xml1.xmlbankasi.com",  "logo": "toptancilar/art4.png"},
     "Simetri":       {"url": "https://xml.continentaldas.com", "logo": "toptancilar/simetri.png"},
-    "Yılkarlas":     {"url": "https://connect.b2bstore.com",   "logo": "toptancilar/yilkarlas.png"},
+    "Yılkarlas":     {"url": "https://connect.b2bstore.com",   "logo": "toptancilar/yilkarlas.jpeg"},
 }
 
 

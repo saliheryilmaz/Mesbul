@@ -23,6 +23,7 @@ from .dincbay_servis   import dincbay_ara
 from .degeras_servis   import degeras_ara
 from .art4_servis      import art4_ara
 from .simetri_servis   import simetri_ara
+from .yilkarlas_servis import yilkarlas_ara
 from .models import AramaGecmisi, Abonelik, Odeme, Notlar
 
 
@@ -286,6 +287,7 @@ B2B_LINKLER = {
     "Degeras":       {"url": "https://netclick-apis.degeras.com", "logo": "toptancilar/degeras.png"},
     "Art4":          {"url": "https://xml1.xmlbankasi.com",  "logo": "toptancilar/art4.png"},
     "Simetri":       {"url": "https://xml.continentaldas.com", "logo": "toptancilar/simetri.png"},
+    "Yılkarlas":     {"url": "https://connect.b2bstore.com",   "logo": "toptancilar/yilkarlas.png"},
 }
 
 
@@ -305,6 +307,7 @@ def _tum_toptancilarda_ara(ebat: str, marka: str, mevsim: str) -> tuple[list, li
         degeras_ara,
         art4_ara,
         simetri_ara,
+        yilkarlas_ara,
     ]
 
     # Modül adı → görünen toptancı adı
@@ -318,6 +321,7 @@ def _tum_toptancilarda_ara(ebat: str, marka: str, mevsim: str) -> tuple[list, li
         "karsilastirma.degeras_servis":   "Degeras",
         "karsilastirma.art4_servis":      "Art4",
         "karsilastirma.simetri_servis":   "Simetri",
+        "karsilastirma.yilkarlas_servis": "Yılkarlas",
     }
 
     tum_sonuclar = []

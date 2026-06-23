@@ -1111,6 +1111,6 @@ function toggleModalSifre() {
 
 {% include "karsilastirma/_not_widget.html" %}
 {% include "karsilastirma/_uyelik_modal.html" %}
-{% if request.user.is_staff %}{% include "karsilastirma/_iskonto_yonetim.html" %}{% endif %}
+{% if request.user.is_authenticated %}{% include "karsilastirma/_iskonto_yonetim.html" %}{% endif %}
 </body>
 </html>

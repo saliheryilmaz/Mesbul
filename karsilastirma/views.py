@@ -10,6 +10,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.utils import timezone
 from django.views.decorators.http import require_POST
@@ -466,7 +467,7 @@ class SonuclarView(AbonelikGerekli, View):
         # İskonto bilgilerini dict olarak hazırla: {toptanci_adi: iskonto_metni}
         iskontolar = {
             i.toptanci_adi: i.iskonto_metni
-            for i in ToptanciIskonto.objects.all()
+            for i in ToptanciIskonto.objects.filter(kullanici=request.user)
             if i.iskonto_metni
         }
 
@@ -653,13 +654,14 @@ class CikisView(View):
         return redirect('arama')  # Ana sayfa — modal otomatik açılacak
 
 
-@method_decorator(staff_member_required(login_url='giris'), name='dispatch')
+@method_decorator(login_required(login_url='/'), name='dispatch')
 class IskontoYonetimView(View):
-    """Staff: toptancı iskonto bilgilerini AJAX ile kaydeder/listeler."""
+    """Her kullanıcı kendi iskonto bilgilerini AJAX ile kaydeder/listeler."""
 
     def get(self, request):
         iskontolar = list(
-            ToptanciIskonto.objects.values('toptanci_adi', 'iskonto_metni')
+            ToptanciIskonto.objects.filter(kullanici=request.user)
+            .values('toptanci_adi', 'iskonto_metni')
         )
         return JsonResponse({"iskontolar": iskontolar})
 
@@ -676,6 +678,7 @@ class IskontoYonetimView(View):
             return JsonResponse({"hata": "Toptancı adı zorunlu"}, status=400)
 
         obj, _ = ToptanciIskonto.objects.update_or_create(
+            kullanici=request.user,
             toptanci_adi=toptanci_adi,
             defaults={"iskonto_metni": iskonto_metni},
         )

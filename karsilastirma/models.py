@@ -112,17 +112,21 @@ class Notlar(models.Model):
 
 
 class ToptanciIskonto(models.Model):
-    """Her toptancının iskonto/özel fiyat bilgisi. Admin tarafından güncellenir."""
-    toptanci_adi = models.CharField(max_length=60, unique=True,
-                                    help_text="Toptancı adı (views.py'deki B2B_LINKLER ile eşleşmeli)")
+    """Her kullanıcının her toptancı için kendi iskonto/özel fiyat notu."""
+    kullanici    = models.ForeignKey(User, on_delete=models.CASCADE,
+                                     related_name="iskontolar", null=True, blank=True)
+    toptanci_adi = models.CharField(max_length=60,
+                                    help_text="Toptancı adı (B2B_LINKLER ile eşleşmeli)")
     iskonto_metni = models.TextField(blank=True,
-                                     help_text="Tooltip'te gösterilecek iskonto/not metni. Boşsa tooltip çıkmaz.")
+                                     help_text="Tooltip'te gösterilecek iskonto/not metni.")
     guncelleme   = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name        = "Toptancı İskonto"
         verbose_name_plural = "Toptancı İskontolar"
         ordering            = ["toptanci_adi"]
+        unique_together     = [("kullanici", "toptanci_adi")]
 
     def __str__(self):
-        return f"{self.toptanci_adi}: {self.iskonto_metni[:60]}"
+        kim = self.kullanici.username if self.kullanici else "global"
+        return f"{kim} / {self.toptanci_adi}: {self.iskonto_metni[:40]}"

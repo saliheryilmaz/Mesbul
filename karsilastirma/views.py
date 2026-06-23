@@ -24,7 +24,7 @@ from .degeras_servis   import degeras_ara
 from .art4_servis      import art4_ara
 from .simetri_servis   import simetri_ara
 from .yilkarlas_servis import yilkarlas_ara
-from .models import AramaGecmisi, Abonelik, Odeme, Notlar
+from .models import AramaGecmisi, Abonelik, Odeme, Notlar, ToptanciIskonto
 
 
 class AbonelikGerekli(LoginRequiredMixin):
@@ -463,6 +463,13 @@ class SonuclarView(AbonelikGerekli, View):
                     _marka_dict[key] = s.marka
         marka_listesi = sorted(_marka_dict.values())
 
+        # İskonto bilgilerini dict olarak hazırla: {toptanci_adi: iskonto_metni}
+        iskontolar = {
+            i.toptanci_adi: i.iskonto_metni
+            for i in ToptanciIskonto.objects.all()
+            if i.iskonto_metni
+        }
+
         return render(request, self.template_name, {
             "sonuclar":           sonuclar,
             "ebat":               ebat,
@@ -475,6 +482,7 @@ class SonuclarView(AbonelikGerekli, View):
             "marka_listesi":      marka_listesi,
             "b2b_linkler":        B2B_LINKLER,
             "hatali_toptancilar": hatali_toptancilar,
+            "iskontolar":         iskontolar,
             "demo_mod":           (
                 hasattr(request.user, 'abonelik') and
                 request.user.abonelik.plan == "demo"
@@ -643,6 +651,35 @@ class CikisView(View):
     def get(self, request):
         logout(request)
         return redirect('arama')  # Ana sayfa — modal otomatik açılacak
+
+
+@method_decorator(staff_member_required(login_url='giris'), name='dispatch')
+class IskontoYonetimView(View):
+    """Staff: toptancı iskonto bilgilerini AJAX ile kaydeder/listeler."""
+
+    def get(self, request):
+        iskontolar = list(
+            ToptanciIskonto.objects.values('toptanci_adi', 'iskonto_metni')
+        )
+        return JsonResponse({"iskontolar": iskontolar})
+
+    def post(self, request):
+        try:
+            body = json.loads(request.body)
+        except (ValueError, json.JSONDecodeError):
+            return JsonResponse({"hata": "Geçersiz istek"}, status=400)
+
+        toptanci_adi   = body.get("toptanci_adi", "").strip()
+        iskonto_metni  = body.get("iskonto_metni", "").strip()
+
+        if not toptanci_adi:
+            return JsonResponse({"hata": "Toptancı adı zorunlu"}, status=400)
+
+        obj, _ = ToptanciIskonto.objects.update_or_create(
+            toptanci_adi=toptanci_adi,
+            defaults={"iskonto_metni": iskonto_metni},
+        )
+        return JsonResponse({"ok": True, "toptanci_adi": obj.toptanci_adi})
 
 
 class UyelikTalepView(View):

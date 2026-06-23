@@ -109,3 +109,20 @@ class Notlar(models.Model):
 
     def __str__(self):
         return f"{self.kullanici.username} | {self.ebat} | {self.icerik[:40]}"
+
+
+class ToptanciIskonto(models.Model):
+    """Her toptancının iskonto/özel fiyat bilgisi. Admin tarafından güncellenir."""
+    toptanci_adi = models.CharField(max_length=60, unique=True,
+                                    help_text="Toptancı adı (views.py'deki B2B_LINKLER ile eşleşmeli)")
+    iskonto_metni = models.TextField(blank=True,
+                                     help_text="Tooltip'te gösterilecek iskonto/not metni. Boşsa tooltip çıkmaz.")
+    guncelleme   = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name        = "Toptancı İskonto"
+        verbose_name_plural = "Toptancı İskontolar"
+        ordering            = ["toptanci_adi"]
+
+    def __str__(self):
+        return f"{self.toptanci_adi}: {self.iskonto_metni[:60]}"

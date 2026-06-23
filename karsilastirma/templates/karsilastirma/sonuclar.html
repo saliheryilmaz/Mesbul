@@ -527,7 +527,9 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
 
           <td><span class="sira">{{ forloop.counter }}</span></td>
           {% if not demo_mod %}
-            <td><div class="toptanci-name">{{ u.toptanci }}</div></td>
+            <td>
+              <div class="toptanci-name" data-toptanci-key="{{ u.toptanci }}">{{ u.toptanci }}</div>
+            </td>
           {% else %}
             <td><a href="/" onclick="uyelikModalAc();return false;"
               style="display:inline-flex;align-items:center;gap:.3rem;font-size:.75rem;font-weight:600;color:#E85D26;background:#FFF7F4;border:1px solid #FECACA;border-radius:4px;padding:.2rem .5rem;text-decoration:none;white-space:nowrap">
@@ -631,7 +633,7 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
 
       <!-- Alt satır: Badge'ler -->
       <div class="m-card-badges">
-        {% if not demo_mod %}<span class="mb mb-seller">{{ u.toptanci }}</span>
+        {% if not demo_mod %}<span class="mb mb-seller" data-toptanci-key="{{ u.toptanci }}">{{ u.toptanci }}</span>
         {% else %}
           <a href="/" onclick="uyelikModalAc();return false;"
             class="mb" style="background:#FFF7F4;color:#E85D26;border:1px solid #FECACA;font-weight:700;text-decoration:none">🔒 Üyelik Al</a>
@@ -812,6 +814,53 @@ function closeFilters() {
   document.getElementById('filter-overlay').classList.remove('open');
   document.body.style.overflow = '';
 }
+
+// ── İskonto Tooltip ──────────────────────────────────────────────────────────
+const ISKONTOLAR = {{ iskontolar|safe }};
+
+// Tooltip elementi oluştur
+const _tip = document.createElement('div');
+_tip.id = 'iskonto-tooltip';
+_tip.style.cssText = `
+  position:fixed;z-index:9999;background:#1E293B;color:#F1F5F9;
+  font-size:.8125rem;font-family:'Inter',sans-serif;font-weight:500;
+  padding:.625rem .875rem;border-radius:8px;max-width:260px;line-height:1.5;
+  box-shadow:0 8px 24px rgba(0,0,0,.4);pointer-events:none;
+  opacity:0;transition:opacity .15s;white-space:pre-line;
+`;
+document.body.appendChild(_tip);
+
+function _showTip(el, text) {
+  if (!text) return;
+  _tip.textContent = text;
+  _tip.style.opacity = '1';
+  const rect = el.getBoundingClientRect();
+  let top = rect.bottom + 6;
+  let left = rect.left;
+  // Sağ taşma kontrolü
+  if (left + 270 > window.innerWidth) left = window.innerWidth - 274;
+  _tip.style.top  = top  + 'px';
+  _tip.style.left = left + 'px';
+}
+function _hideTip() { _tip.style.opacity = '0'; }
+
+document.addEventListener('mouseover', function(e) {
+  const el = e.target.closest('[data-toptanci-key]');
+  if (!el) return;
+  const key = el.dataset.toptanciKey;
+  if (ISKONTOLAR[key]) _showTip(el, ISKONTOLAR[key]);
+});
+document.addEventListener('mouseout', function(e) {
+  if (e.target.closest('[data-toptanci-key]')) _hideTip();
+});
+// Mobil: dokunuşta
+document.addEventListener('touchstart', function(e) {
+  const el = e.target.closest('[data-toptanci-key]');
+  if (!el) { _hideTip(); return; }
+  const key = el.dataset.toptanciKey;
+  if (ISKONTOLAR[key]) { _showTip(el, ISKONTOLAR[key]); }
+  else _hideTip();
+}, {passive: true});
 </script>
 <button class="filter-fab" id="filter-fab" onclick="openFilters()">
    Filtrele

@@ -39,8 +39,8 @@ KARAOGLU_XML_URL = os.environ.get(
     'https://www.b2bkaraoglulastik.com/TWVyaGFiYSBEw7ZueWE'
 )
 
-CACHE_KEY       = "karaoglu_tum_urunler"
-CACHE_KEY_STALE = "karaoglu_tum_urunler_stale"
+CACHE_KEY       = "karaoglu_tum_urunler_v2"
+CACHE_KEY_STALE = "karaoglu_tum_urunler_stale_v2"
 CACHE_TTL       = 55 * 60
 CACHE_TTL_STALE = 24 * 60 * 60
 
@@ -173,10 +173,12 @@ def karaoglu_ara(ebat: str, marka: str = "", mevsim: str = "") -> list[LastikUru
 
     sonuclar = []
     for u in tum:
-        # Description'daki ebatı da normalize ederek karşılaştır
-        desc_norm = u.urun_adi.upper().replace(" ", "").replace("/", "")
+        # Description'daki ebatı normalize et: 205/55/16 ve 205/55R16 → 20555 16
+        # R harfini ve slash'ları kaldırarak sadece sayısal kısmı karşılaştır
+        desc_norm = re.sub(r'[/R\s]', '', u.urun_adi.upper())
+        ebat_norm = re.sub(r'[/R\s]', '', ebat_temiz)
 
-        if ebat_temiz and ebat_temiz not in desc_norm:
+        if ebat_norm and ebat_norm not in desc_norm:
             continue
         if marka_temiz and marka_temiz not in u.marka.upper() and marka_temiz not in u.urun_adi.upper():
             continue

@@ -27,6 +27,7 @@ from .simetri_servis   import simetri_ara
 from .yilkarlas_servis import yilkarlas_ara
 from .oltay_servis     import oltay_ara
 from .asoto_servis     import asoto_ara
+from .karaoglu_servis  import karaoglu_ara
 from .models import AramaGecmisi, Abonelik, Odeme, Notlar, ToptanciIskonto
 
 
@@ -297,6 +298,7 @@ B2B_LINKLER = {
     "Yılkarlas":     {"url": "https://connect.b2bstore.com",   "logo": "toptancilar/yilkarlas.jpeg"},
     "Oltay":         {"url": "https://www.oltaylastik.com",    "logo": "toptancilar/oltay.png"},
     "AS Oto":        {"url": "https://asotolastik.com",        "logo": "toptancilar/asoto.png"},
+    "Karaoğlu":      {"url": "https://www.b2bkaraoglulastik.com", "logo": "toptancilar/karaoglu.png"},
 }
 
 
@@ -319,6 +321,7 @@ def _tum_toptancilarda_ara(ebat: str, marka: str, mevsim: str) -> tuple[list, li
         yilkarlas_ara,
         oltay_ara,
         asoto_ara,
+        karaoglu_ara,
     ]
 
     # Modül adı → görünen toptancı adı
@@ -335,6 +338,7 @@ def _tum_toptancilarda_ara(ebat: str, marka: str, mevsim: str) -> tuple[list, li
         "karsilastirma.yilkarlas_servis": "Yılkarlas",
         "karsilastirma.oltay_servis":     "Oltay",
         "karsilastirma.asoto_servis":     "AS Oto",
+        "karsilastirma.karaoglu_servis":  "Karaoğlu",
     }
 
     tum_sonuclar = []

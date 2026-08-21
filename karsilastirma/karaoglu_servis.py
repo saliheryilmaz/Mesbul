@@ -39,8 +39,8 @@ KARAOGLU_XML_URL = os.environ.get(
     'https://www.b2bkaraoglulastik.com/TWVyaGFiYSBEw7ZueWE'
 )
 
-CACHE_KEY       = "karaoglu_tum_urunler_v2"
-CACHE_KEY_STALE = "karaoglu_tum_urunler_stale_v2"
+CACHE_KEY       = "karaoglu_tum_urunler_v3"
+CACHE_KEY_STALE = "karaoglu_tum_urunler_stale_v3"
 CACHE_TTL       = 55 * 60
 CACHE_TTL_STALE = 24 * 60 * 60
 
@@ -127,7 +127,22 @@ def karaoglu_verileri_getir() -> list[LastikUrun]:
 
     for p in products:
         try:
-            miktar = int(float(_txt(p, "InitialStockAmount") or "0"))
+            # Rize şubesi hariç kalan depoların stokunu hesapla
+            depolar = p.findall("./Depolar/Depo")
+            if depolar:
+                rize_olmayan_adet = 0
+                for d in depolar:
+                    depo_adi = (d.findtext("Depoadi") or "").strip().upper()
+                    if "RİZE" in depo_adi:
+                        continue
+                    try:
+                        rize_olmayan_adet += int(float(d.findtext("Adet") or "0"))
+                    except (ValueError, TypeError):
+                        pass
+                miktar = rize_olmayan_adet
+            else:
+                miktar = int(float(_txt(p, "InitialStockAmount") or "0"))
+
             if miktar <= 0:
                 continue
 

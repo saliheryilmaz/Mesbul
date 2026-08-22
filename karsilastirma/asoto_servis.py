@@ -1,21 +1,22 @@
 """
-AS Otomotiv XML Servisi (b2bstore.com - type=0)
+AS Otomotiv XML Servisi (b2bstore.com)
 URL: https://connect.b2bstore.com/Export/xml/Export.asmx/ExportProduct
-     ?Token=...&type=0
+     ?Token=c5e75ee4-4463-4714-83fa-cadd503cb8a2=279b78ab-659c-4702-9ae5-4e87225f4db4&type=0
 
 XML yapısı:
     <Node>
       <Product>
-        <ProductName>155/ R12 88/86N EVOVAN MİLESTONE TL</ProductName>
-        <Brand>milestone</Brand>
-        <ProductCode>L-MİL15512</ProductCode>
-        <pricePlusTax>1900.00</pricePlusTax>
-        <Price>1583.33</Price>
+        <ProductName>185/60 R15 84T MP93 NORDİCCA MATADOR TL</ProductName>
+        <Brand>matador</Brand>
+        <ProductCode>L-MAT15854600000</ProductCode>
+        <pricePlusTax>2251.85</pricePlusTax>
+        <Price>1876.55</Price>
         <TaxRatio>20</TaxRatio>
-        <StockNumber>0</StockNumber>
-        <Season>Summer</Season>
-        <ProductionDate>2025</ProductionDate>
+        <StockNumber>4</StockNumber>
+        <Season>Winter</Season>
+        <ProductionDate>2021</ProductionDate>
         <ProductTypeCode>Lastik</ProductTypeCode>
+        <Category1>KIŞ LASTİK</Category1>
       </Product>
       ...
     </Node>
@@ -37,30 +38,32 @@ from django.core.cache import cache
 ASOTO_XML_URL = os.environ.get(
     'ASOTO_XML_URL',
     'https://connect.b2bstore.com/Export/xml/Export.asmx/ExportProduct'
-    '?Token=46891f02-376e-4492-8314-abd62740f333=279b78ab-659c-4702-9ae5-4e87225f4db4&type=0'
+    '?Token=c5e75ee4-4463-4714-83fa-cadd503cb8a2=279b78ab-659c-4702-9ae5-4e87225f4db4&type=0'
 )
 
-CACHE_KEY       = "asoto_tum_urunler_v2"
-CACHE_KEY_STALE = "asoto_tum_urunler_stale_v2"
+CACHE_KEY       = "asoto_tum_urunler_v4"
+CACHE_KEY_STALE = "asoto_tum_urunler_stale_v4"
 CACHE_TTL       = 55 * 60
 CACHE_TTL_STALE = 24 * 60 * 60
 
+# 205/55R16 veya 205/55 R16 veya 155/ R12
 _EBAT_RE = re.compile(
-    r'\d{3}/\d{2}\s*R\d{2}'   # 205/55R16 veya 205/55 R16
-    r'|\d{3}/\s*R\d{2}',       # 155/ R12
+    r'\d{3}/\d{2}\s*R\d{2}'
+    r'|\d{3}/\s*R\d{2}',
     re.IGNORECASE
 )
-_DOT_RE  = re.compile(r'20\d{2}')
+_DOT_RE = re.compile(r'20\d{2}')
 
 _MEVSIM_MAP = {
-    "summer":    "Yaz",
-    "yaz":       "Yaz",
-    "winter":    "Kış",
-    "kış":       "Kış",
-    "kis":       "Kış",
-    "allseason": "4 Mevsim",
-    "all season":"4 Mevsim",
-    "4 mevsim":  "4 Mevsim",
+    "summer":     "Yaz",
+    "yaz":        "Yaz",
+    "winter":     "Kış",
+    "kış":        "Kış",
+    "kis":        "Kış",
+    "allseason":  "4 Mevsim",
+    "all season": "4 Mevsim",
+    "4 mevsim":   "4 Mevsim",
+    "fourseason":  "4 Mevsim",
 }
 
 
@@ -92,15 +95,24 @@ def _txt(el, tag: str) -> str:
     return (el.findtext(tag, "") or "").strip()
 
 
-def _mevsim_cikar(season: str, name: str) -> str:
+def _mevsim_cikar(season: str, name: str, category: str) -> str:
+    # Önce Season alanından çıkar
     s = season.strip().lower().replace("-", "").replace(" ", "")
     if s in _MEVSIM_MAP:
         return _MEVSIM_MAP[s]
-    # name'den çıkar
+    # Category1 alanından çıkar (KIŞ LASTİK, YAZ LASTİK, 4 MEVSİM LASTİK)
+    cat = category.lower()
+    if "kış" in cat or "kis" in cat:
+        return "Kış"
+    if "4 mevsim" in cat or "dört mevsim" in cat:
+        return "4 Mevsim"
+    if "yaz" in cat:
+        return "Yaz"
+    # Son çare: ürün adından çıkar
     k = name.lower()
     if "kış" in k or "kis" in k or "winter" in k:
         return "Kış"
-    if "4 mevsim" in k or "allseason" in k or "m+s" in k:
+    if "4 mevsim" in k or "allseason" in k or "all season" in k or "m+s" in k:
         return "4 Mevsim"
     return "Yaz"
 
@@ -133,22 +145,22 @@ def asoto_verileri_getir() -> list[LastikUrun]:
             if tip and "lastik" not in tip:
                 continue
 
+            miktar = int(float(_txt(p, "StockNumber") or "0"))
+            if miktar <= 0:
+                continue
+
             # KDV dahil fiyat tercih edilir
             fiyat_str = _txt(p, "pricePlusTax") or _txt(p, "Price") or "0"
             fiyat = float(fiyat_str.replace(",", "."))
             if fiyat < 100:
                 continue
 
-            miktar = int(float(_txt(p, "StockNumber") or "0"))
-            # AS Oto stok bilgisi 0 gelebilir — fiyatı geçerliyse en az 1 varsay
-            if miktar <= 0:
-                miktar = 1
-
-            name   = _txt(p, "ProductName")
-            marka  = _txt(p, "Brand")
-            sku    = _txt(p, "ProductCode")
-            season = _txt(p, "Season")
-            dot    = _txt(p, "ProductionDate")
+            name     = _txt(p, "ProductName")
+            marka    = _txt(p, "Brand")
+            sku      = _txt(p, "ProductCode")
+            season   = _txt(p, "Season")
+            dot      = _txt(p, "ProductionDate")
+            category = _txt(p, "Category1")
 
             # Ebat kontrolü
             if not _EBAT_RE.search(name):
@@ -166,7 +178,7 @@ def asoto_verileri_getir() -> list[LastikUrun]:
                 fiyat     = fiyat,
                 miktar    = miktar,
                 dot       = _DOT_RE.search(dot).group() if _DOT_RE.search(dot) else "",
-                mevsim    = _mevsim_cikar(season, name),
+                mevsim    = _mevsim_cikar(season, name, category),
             ))
         except (ValueError, TypeError):
             continue

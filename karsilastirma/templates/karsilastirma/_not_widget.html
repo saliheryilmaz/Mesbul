@@ -41,6 +41,12 @@
         onfocus="this.style.borderColor='#E85D26';this.style.boxShadow='0 0 0 3px rgba(232,93,38,.1)'"
         onblur="this.style.borderColor='#E2E8F0';this.style.boxShadow='none'">
     </div>
+    <div style="margin-bottom:.5rem">
+      <input id="not-musteri" type="text" placeholder="Müşteri adı (opsiyonel)"
+        style="width:100%;box-sizing:border-box;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:6px;padding:.5rem .75rem;font-size:.8125rem;color:#0F172A;outline:none;transition:border-color .2s"
+        onfocus="this.style.borderColor='#E85D26';this.style.boxShadow='0 0 0 3px rgba(232,93,38,.1)'"
+        onblur="this.style.borderColor='#E2E8F0';this.style.boxShadow='none'">
+    </div>
     <div style="display:flex;gap:.5rem;align-items:flex-start">
       <textarea id="not-icerik" placeholder="Müşteriye verilen fiyat, müşteri adı, not..." rows="2"
         style="flex:1;resize:none;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:6px;padding:.5rem .75rem;font-size:.875rem;color:#0F172A;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;line-height:1.5"
@@ -123,8 +129,18 @@
   display: inline-block;
   margin-bottom: .5rem;
 }
-.not-kart-icerik {
-  font-size: .875rem;
+.not-kart-musteri {
+  font-size: .75rem;
+  font-weight: 600;
+  color: #1D4ED8;
+  background: #EFF6FF;
+  border: 1px solid #BFDBFE;
+  border-radius: 4px;
+  padding: .125rem .5rem;
+  display: inline-block;
+  margin-bottom: .375rem;
+}
+.not-kart-icerik {  font-size: .875rem;
   color: #1C1917;
   line-height: 1.55;
   white-space: pre-wrap;
@@ -218,6 +234,7 @@ function notlariRender(notlar) {
   liste.innerHTML = notlar.map(n => `
     <div class="not-kart" id="not-${n.id}">
       ${n.ebat ? `<div class="not-kart-ebat">${n.ebat}${n.marka ? ' · '+n.marka : ''}</div>` : ''}
+      ${n.musteri ? `<div class="not-kart-musteri">👤 ${escHtml(n.musteri)}</div>` : ''}
       <div class="not-kart-icerik">${escHtml(n.icerik)}</div>
       <div class="not-kart-meta">
         <div>
@@ -237,10 +254,11 @@ function escHtml(s) {
 }
 
 async function notEkle() {
-  const icerik = document.getElementById('not-icerik').value.trim();
-  const ebat   = document.getElementById('not-ebat').value.trim();
-  const marka  = document.getElementById('not-marka').value.trim();
-  const hataEl = document.getElementById('not-hata');
+  const icerik  = document.getElementById('not-icerik').value.trim();
+  const ebat    = document.getElementById('not-ebat').value.trim();
+  const marka   = document.getElementById('not-marka').value.trim();
+  const musteri = document.getElementById('not-musteri').value.trim();
+  const hataEl  = document.getElementById('not-hata');
 
   if (!icerik) {
     hataEl.textContent = 'Not içeriği boş olamaz.';
@@ -253,10 +271,11 @@ async function notEkle() {
     const r = await fetch(NOT_EKLE_API, {
       method: 'POST',
       headers: {'Content-Type':'application/json','X-CSRFToken':CSRF},
-      body: JSON.stringify({icerik, ebat, marka})
+      body: JSON.stringify({icerik, ebat, marka, musteri})
     });
     if (!r.ok) throw new Error();
     document.getElementById('not-icerik').value = '';
+    document.getElementById('not-musteri').value = '';
     notlariYukle();
   } catch(e) {
     hataEl.textContent = 'Bir hata oluştu.';

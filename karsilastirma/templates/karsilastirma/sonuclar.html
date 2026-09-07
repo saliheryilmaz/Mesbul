@@ -117,6 +117,11 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
 .b2b-btn{display:inline-flex;align-items:center;justify-content:center;background:#1E40AF;color:#fff;font-size:.75rem;font-weight:700;border-radius:4px;padding:.25rem .625rem;text-decoration:none;letter-spacing:.03em;transition:background .2s;white-space:nowrap}
 .b2b-btn:hover{background:#1e3a8a}
 
+/* Satır bazlı not butonu */
+.satir-not-btn{background:none;border:1px solid #E2E8F0;border-radius:4px;padding:.25rem .375rem;cursor:pointer;color:#94A3B8;display:inline-flex;align-items:center;justify-content:center;transition:all .15s}
+.satir-not-btn:hover{background:#FFF7F4;border-color:#E85D26;color:#E85D26}
+.satir-not-btn-mobil{background:none;border:none;cursor:pointer;font-size:.8rem;padding:.15rem .3rem;border-radius:4px;transition:background .15s;line-height:1}
+
 /* EMPTY */
 .empty{text-align:center;padding:4rem 2rem;color:var(--muted)}
 .empty .icon{font-size:2.5rem;margin-bottom:1rem}
@@ -512,6 +517,7 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
           <th class="gizle">Stok</th>
           <th style="text-align:right">Fiyat</th>
           {% if not demo_mod %}<th class="gizle">B2B</th>{% endif %}
+          {% if request.user.is_authenticated %}<th class="gizle"></th>{% endif %}
         </tr>
       </thead>
       <tbody id="table-body">
@@ -580,6 +586,16 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
             {% endfor %}
             {% endif %}
           </td>
+
+          {% if request.user.is_authenticated %}
+          <td class="gizle" style="text-align:center">
+            <button class="satir-not-btn"
+              onclick="satirNotAc('{{ u.toptanci|escapejs }}','{{ u.marka|escapejs }}','{{ u.urun_adi|escapejs }}','{{ u.dot|escapejs }}')"
+              title="Not ekle">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+            </button>
+          </td>
+          {% endif %}
 
         </tr>
         {% endfor %}
@@ -667,6 +683,14 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
             <a href="{{ bilgi.url }}" target="_blank" class="mb mb-b2b">B2B</a>
           {% endif %}
         {% endfor %}
+        {% endif %}
+
+        {% if request.user.is_authenticated %}
+        <button class="mb satir-not-btn-mobil"
+          onclick="satirNotAc('{{ u.toptanci|escapejs }}','{{ u.marka|escapejs }}','{{ u.urun_adi|escapejs }}','{{ u.dot|escapejs }}')"
+          title="Not ekle">
+          📝
+        </button>
         {% endif %}
       </div>
 
@@ -861,6 +885,38 @@ document.addEventListener('touchstart', function(e) {
   if (ISKONTOLAR[key]) { _showTip(el, ISKONTOLAR[key]); }
   else _hideTip();
 }, {passive: true});
+
+// ── Satır bazlı hızlı not ekleme ─────────────────────────────────────────────
+function satirNotAc(toptanci, marka, model, dot) {
+  // Not panelini aç
+  const overlay = document.getElementById('not-overlay');
+  const panel   = document.getElementById('not-panel');
+  if (!overlay || !panel) return;
+  overlay.style.display = 'block';
+  panel.style.display   = 'flex';
+
+  // Ebat alanı — sayfanın mevcut ebatını koru
+  const ebatEl  = document.getElementById('not-ebat');
+  const markaEl = document.getElementById('not-marka');
+  const icerikEl= document.getElementById('not-icerik');
+
+  // İçeriği otomatik doldur: "Toptancı Marka Model DOT"
+  const dotStr = dot ? ' ' + dot : '';
+  icerikEl.value = toptanci + ' ' + marka + ' ' + model + dotStr + '\nFiyat: ';
+
+  // Marka alanını doldur
+  if (markaEl) markaEl.value = marka;
+
+  // Notları yükle ve imleci fiyat kısmına konumlandır
+  if (typeof notlariYukle === 'function') notlariYukle();
+
+  // İmleci "Fiyat: " sonrasına taşı
+  setTimeout(() => {
+    icerikEl.focus();
+    const pos = icerikEl.value.length;
+    icerikEl.setSelectionRange(pos, pos);
+  }, 100);
+}
 </script>
 <button class="filter-fab" id="filter-fab" onclick="openFilters()">
    Filtrele

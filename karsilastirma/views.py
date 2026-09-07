@@ -830,6 +830,7 @@ class NotlarView(LoginRequiredMixin, View):
                 "id":         n.pk,
                 "ebat":       n.ebat,
                 "marka":      n.marka,
+                "musteri":    n.musteri,
                 "icerik":     n.icerik,
                 "tarih":      n.olusturulma.strftime("%d.%m.%Y %H:%M"),
                 "kalan_gun":  n.kalan_gun,
@@ -849,9 +850,10 @@ class NotEkleView(LoginRequiredMixin, View):
         except (json.JSONDecodeError, ValueError):
             return JsonResponse({"hata": "Geçersiz istek"}, status=400)
 
-        icerik = body.get("icerik", "").strip()
-        ebat   = body.get("ebat",   "").strip()
-        marka  = body.get("marka",  "").strip()
+        icerik  = body.get("icerik",   "").strip()
+        ebat    = body.get("ebat",     "").strip()
+        marka   = body.get("marka",    "").strip()
+        musteri = body.get("musteri",  "").strip()
 
         if not icerik:
             return JsonResponse({"hata": "Not boş olamaz"}, status=400)
@@ -863,12 +865,14 @@ class NotEkleView(LoginRequiredMixin, View):
             kullanici=request.user,
             ebat=ebat,
             marka=marka,
+            musteri=musteri,
             icerik=icerik,
         )
         return JsonResponse({
             "id":         not_obj.pk,
             "ebat":       not_obj.ebat,
             "marka":      not_obj.marka,
+            "musteri":    not_obj.musteri,
             "icerik":     not_obj.icerik,
             "tarih":      not_obj.olusturulma.strftime("%d.%m.%Y %H:%M"),
             "kalan_gun":  not_obj.kalan_gun,

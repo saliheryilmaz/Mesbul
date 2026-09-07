@@ -88,6 +88,7 @@ class Notlar(models.Model):
     kullanici   = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notlar")
     ebat        = models.CharField(max_length=30, blank=True)
     marka       = models.CharField(max_length=80, blank=True)
+    musteri     = models.CharField(max_length=100, blank=True)
     icerik      = models.TextField()
     olusturulma = models.DateTimeField(auto_now_add=True)
     silinme     = models.DateTimeField()

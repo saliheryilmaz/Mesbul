@@ -42,6 +42,29 @@ Proje Django tabanlıdır ve varsayılan olarak SQLite ile çalışabilir. Ortam
 - ThreadPoolExecutor ile paralel işleme
 
 
+## Coolify / Hetzner production
+
+Railpack build pack seçin, uygulama portunu **8000** olarak ayarlayın ve HTTPS domaininizi bağlayın. `railpack.json` aşağıdaki başlangıç komutunu tanımlar; Coolify'da Start Command override kullanıyorsanız aynı değeri girin:
+
+```sh
+python manage.py migrate && python manage.py collectstatic --noinput && gunicorn config.wsgi:application --bind 0.0.0.0:8000
+```
+
+Coolify runtime ortam değişkenleri:
+
+- `SECRET_KEY`: güçlü, benzersiz ve deploy'lar arasında sabit bir değer.
+- `DEBUG=False`, `ALLOWED_HOSTS=example.com,www.example.com`.
+- `CSRF_TRUSTED_ORIGINS=https://example.com,https://www.example.com`.
+- `DJANGO_BEHIND_PROXY=True`: yalnızca Coolify proxy'si arkasında kullanın; proxy gelen `X-Forwarded-Proto` başlığını güvenilir şekilde ayarlamalı ve port 8000 internete doğrudan açılmamalıdır.
+- `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`: kalıcı MySQL sunucusunun bilgileri (port 3306). Mevcut veritabanı seçim davranışı korunur: `DB_PASSWORD` boşsa SQLite kullanılır. Production için MySQL kullanın; SQLite seçilirse `db.sqlite3` dosyasının container yenilenmesinde kaybolmaması için kalıcı depolama gerekir.
+- Mevcut XML URL değişkenlerinizi ve e-posta ayarlarınızı da Coolify'a taşıyın; `.env` dosyasını repoya eklemeyin.
+
+`migrate`, XML servislerinin kullandığı `django_cache` tablosunu da oluşturur; mevcut tabloya ve verilere dokunmaz. `collectstatic`, dosyaları `staticfiles/` altında toplar ve WhiteNoise bunları Gunicorn üzerinden sunar. XML servis kodları değiştirilmemiştir. Gunicorn timeout değeri, 40 saniyeye kadar bekleyebilen XML servisleri için 120 saniyedir.
+
+Playwright production bağımlılığı değildir. Eski keşif betikleri için `pip install -r requirements-dev.txt` ve `python -m playwright install chromium` kullanabilirsiniz.
+
+Kaynaklar: [Railpack yapılandırması](https://railpack.com/config/file), [Django ile WhiteNoise](https://whitenoise.readthedocs.io/en/stable/django.html).
+
 ## Geliştirici
 
 **Salih Eryılmaz**  

@@ -52,17 +52,17 @@ python manage.py migrate && python manage.py collectstatic --noinput && gunicorn
 
 ### mysqlclient native sistem bağımlılıkları
 
-`railpack.json`, build aşamasında `build-essential`, `pkg-config`, `libmariadb-dev` ve `libmariadb-dev-compat` kurar. Bu paketler mysqlclient'ın C uzantısı için derleyici, MariaDB başlıkları ve MySQL uyumlu bağlantı dosyalarını sağlar. Python 3.13 ortamını Railpack yönetmeye devam eder.
+`railpack.json`, Railpack **v0.23.0** için build aşamasında yalnızca `build-essential`, `default-libmysqlclient-dev` ve `pkg-config` ister. Debian Bookworm'da `default-libmysqlclient-dev`, gereken MariaDB geliştirme paketlerini bağımlılık olarak getirir; ayrıca `libmariadb-dev` veya `libmariadb-dev-compat` listelenmez. Python 3.13 ve ona ait başlık dosyalarını Railpack'in Python kurulumu sağlar; ayrıca sistem Python'u kurulmaz.
 
-Final production image ayrıca `deploy.aptPackages` üzerinden **`libmariadb3`** kurar; bu paket `libmariadb.so.3` dosyasını sistem kütüphane dizinine yerleştirir. Yalnızca build aşamasına kurmak yeterli değildir: build ve runtime katmanları ayrıdır. `...` girdileri Railpack'in otomatik eklediği paketleri korur.
+Final production image `deploy.aptPackages: ["libmariadb3"]` üzerinden yalnızca gereken MariaDB runtime paketini ister; bu paket `libmariadb.so.3` dosyasını sistem kütüphane dizinine yerleştirir. Yalnızca build aşamasına kurmak yeterli değildir: build ve runtime katmanları ayrıdır. Her iki listede de `...` kullanılmaz. Runtime listesi otomatik `default-mysql-client` seçimini değiştirir; mysqlclient için MySQL komut satırı istemcisinin kurulması gerekmez. Apt, bu paketlerin zorunlu bağımlılıklarını kendisi çözer.
 
-Bu değişikliği deploy ederken yeni image build edin; yalnızca eski container'ı yeniden başlatmak yeterli değildir. Coolify'da `RAILPACK_BUILD_APT_PACKAGES` veya `RAILPACK_DEPLOY_APT_PACKAGES` override'ları varsa bu paket listeleriyle uyumlu olduklarını kontrol edin. Runtime container terminalinde veritabanına bağlanmadan doğrulayabilirsiniz:
+Bu değişikliği deploy ederken yeni image build edin; yalnızca eski container'ı yeniden başlatmak yeterli değildir. Coolify'da eski `RAILPACK_BUILD_APT_PACKAGES` veya `RAILPACK_DEPLOY_APT_PACKAGES` override'larını kaldırıp repodaki yapılandırmayı kullanın. Build logunda `build-essential default-libmysqlclient-dev pkg-config`, runtime paket adımında `libmariadb3` beklenir. Runtime container terminalinde veritabanına bağlanmadan doğrulayabilirsiniz:
 
 ```sh
 python -c "import ctypes; ctypes.CDLL('libmariadb.so.3'); import MySQLdb; print('MariaDB runtime ve MySQLdb OK')"
 ```
 
-Kaynaklar: [Railpack build/runtime Apt paketleri](https://railpack.com/guides/installing-packages), [libmariadb3 dosya listesi](https://packages.debian.org/bookworm/amd64/libmariadb3/filelist).
+Kaynaklar: [Railpack v0.23.0 runtime yapılandırması](https://github.com/railwayapp/railpack/blob/v0.23.0/core/generate/context.go), [Debian Bookworm geliştirme paketi](https://packages.debian.org/bookworm/default-libmysqlclient-dev), [libmariadb3 dosya listesi](https://packages.debian.org/bookworm/amd64/libmariadb3/filelist).
 
 ### Coolify runtime ortam değişkenleri
 

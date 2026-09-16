@@ -50,7 +50,21 @@ Railpack build pack seçin, uygulama portunu **8000** olarak ayarlayın ve HTTPS
 python manage.py migrate && python manage.py collectstatic --noinput && gunicorn config.wsgi:application --bind 0.0.0.0:8000
 ```
 
-Coolify runtime ortam değişkenleri:
+### mysqlclient native sistem bağımlılıkları
+
+`railpack.json`, build aşamasında `build-essential`, `pkg-config`, `libmariadb-dev` ve `libmariadb-dev-compat` kurar. Bu paketler mysqlclient'ın C uzantısı için derleyici, MariaDB başlıkları ve MySQL uyumlu bağlantı dosyalarını sağlar. Python 3.13 ortamını Railpack yönetmeye devam eder.
+
+Final production image ayrıca `deploy.aptPackages` üzerinden **`libmariadb3`** kurar; bu paket `libmariadb.so.3` dosyasını sistem kütüphane dizinine yerleştirir. Yalnızca build aşamasına kurmak yeterli değildir: build ve runtime katmanları ayrıdır. `...` girdileri Railpack'in otomatik eklediği paketleri korur.
+
+Bu değişikliği deploy ederken yeni image build edin; yalnızca eski container'ı yeniden başlatmak yeterli değildir. Coolify'da `RAILPACK_BUILD_APT_PACKAGES` veya `RAILPACK_DEPLOY_APT_PACKAGES` override'ları varsa bu paket listeleriyle uyumlu olduklarını kontrol edin. Runtime container terminalinde veritabanına bağlanmadan doğrulayabilirsiniz:
+
+```sh
+python -c "import ctypes; ctypes.CDLL('libmariadb.so.3'); import MySQLdb; print('MariaDB runtime ve MySQLdb OK')"
+```
+
+Kaynaklar: [Railpack build/runtime Apt paketleri](https://railpack.com/guides/installing-packages), [libmariadb3 dosya listesi](https://packages.debian.org/bookworm/amd64/libmariadb3/filelist).
+
+### Coolify runtime ortam değişkenleri
 
 - `SECRET_KEY`: güçlü, benzersiz ve deploy'lar arasında sabit bir değer.
 - `DEBUG=False`, `ALLOWED_HOSTS=example.com,www.example.com`.

@@ -15,19 +15,22 @@ from django.utils.decorators import method_decorator
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
-from .uspa_servis      import uspa_ara
-from .keskin_servis    import keskin_ara
-from .otosemih_servis  import otosemih_ara
-from .netlastik_servis import netlastik_ara
-from .lastsis_servis   import lastsis_ara
-from .dincbay_servis   import dincbay_ara
-from .degeras_servis   import degeras_ara
-from .art4_servis      import art4_ara
-from .simetri_servis   import simetri_ara
-from .yilkarlas_servis import yilkarlas_ara
-from .oltay_servis     import oltay_ara
-from .asoto_servis     import asoto_ara
-from .karaoglu_servis  import karaoglu_ara
+from .uspa_servis        import uspa_ara
+from .keskin_servis      import keskin_ara
+from .otosemih_servis    import otosemih_ara
+from .netlastik_servis   import netlastik_ara
+from .lastsis_servis     import lastsis_ara
+from .dincbay_servis     import dincbay_ara
+from .degeras_servis     import degeras_ara
+from .art4_servis        import art4_ara
+from .simetri_servis     import simetri_ara
+from .yilkarlas_servis   import yilkarlas_ara
+from .oltay_servis       import oltay_ara
+from .asoto_servis       import asoto_ara
+from .karaoglu_servis    import karaoglu_ara
+from .cakiroglu_servis   import cakiroglu_ara
+from .ayko_servis        import ayko_ara
+from .halilyilmaz_servis import halilyilmaz_ara
 from .models import AramaGecmisi, Abonelik, Odeme, Notlar, ToptanciIskonto
 
 
@@ -296,9 +299,12 @@ B2B_LINKLER = {
     "Art4":          {"url": "https://xml1.xmlbankasi.com",  "logo": "toptancilar/art4.png"},
     "Simetri":       {"url": "https://xml.continentaldas.com", "logo": "toptancilar/simetri.png"},
     "Yılkarlas":     {"url": "https://connect.b2bstore.com",   "logo": "toptancilar/yilkarlas.jpeg"},
-    "Oltay":         {"url": "https://www.oltaylastik.com",    "logo": "toptancilar/oltay.png"},
-    "AS Oto":        {"url": "https://asotolastik.com",        "logo": "toptancilar/asoto.png"},
-    "Karaoğlu":      {"url": "https://www.b2bkaraoglulastik.com", "logo": "toptancilar/karaoglu.png"},
+    "Oltay":         {"url": "https://www.oltaylastik.com",    "logo": "toptancilar/oltayfoto.jpg"},
+    "AS Oto":        {"url": "https://asotolastik.com",        "logo": "toptancilar/asoto.jpg"},
+    "Karaoğlu":      {"url": "https://www.b2bkaraoglulastik.com", "logo": "toptancilar/karaoglu-logo.png"},
+    "Çakıroğlu":     {"url": "https://next.paflima.com",         "logo": "toptancilar/cakiroglu.png"},
+    "Ayko":          {"url": "https://next.paflima.com",         "logo": "toptancilar/ayko.png"},
+    "Halil Yılmaz":  {"url": "https://next.paflima.com",         "logo": "toptancilar/halilyilmaz.png"},
 }
 
 
@@ -322,23 +328,29 @@ def _tum_toptancilarda_ara(ebat: str, marka: str, mevsim: str) -> tuple[list, li
         oltay_ara,
         asoto_ara,
         karaoglu_ara,
+        cakiroglu_ara,
+        ayko_ara,
+        halilyilmaz_ara,
     ]
 
     # Modül adı → görünen toptancı adı
     MODUL_ISIM = {
-        "karsilastirma.uspa_servis":      "USPA Lastik",
-        "karsilastirma.keskin_servis":    "Keskin Lastik",
-        "karsilastirma.otosemih_servis":  "OtoSemih",
-        "karsilastirma.netlastik_servis": "NetLastik",
-        "karsilastirma.lastsis_servis":   "Lastsis",
-        "karsilastirma.dincbay_servis":   "Dinçbay",
-        "karsilastirma.degeras_servis":   "Degeras",
-        "karsilastirma.art4_servis":      "Art4",
-        "karsilastirma.simetri_servis":   "Simetri",
-        "karsilastirma.yilkarlas_servis": "Yılkarlas",
-        "karsilastirma.oltay_servis":     "Oltay",
-        "karsilastirma.asoto_servis":     "AS Oto",
-        "karsilastirma.karaoglu_servis":  "Karaoğlu",
+        "karsilastirma.uspa_servis":       "USPA Lastik",
+        "karsilastirma.keskin_servis":     "Keskin Lastik",
+        "karsilastirma.otosemih_servis":   "OtoSemih",
+        "karsilastirma.netlastik_servis":  "NetLastik",
+        "karsilastirma.lastsis_servis":    "Lastsis",
+        "karsilastirma.dincbay_servis":    "Dinçbay",
+        "karsilastirma.degeras_servis":    "Degeras",
+        "karsilastirma.art4_servis":       "Art4",
+        "karsilastirma.simetri_servis":    "Simetri",
+        "karsilastirma.yilkarlas_servis":  "Yılkarlas",
+        "karsilastirma.oltay_servis":      "Oltay",
+        "karsilastirma.asoto_servis":      "AS Oto",
+        "karsilastirma.karaoglu_servis":   "Karaoğlu",
+        "karsilastirma.cakiroglu_servis":  "Çakıroğlu",
+        "karsilastirma.ayko_servis":       "Ayko",
+        "karsilastirma.halilyilmaz_servis": "Halil Yılmaz",
     }
 
     tum_sonuclar = []

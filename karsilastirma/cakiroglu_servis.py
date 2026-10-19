@@ -62,12 +62,19 @@ class LastikUrun:
         return f"{self.miktar} adet"
 
 
-def _mevsim_normalize(mevsim_raw: str) -> str:
-    """XML'deki Mevsim değerini standart forma çevirir."""
-    m = mevsim_raw.strip().lower()
-    if "kış" in m or "kis" in m or "winter" in m:
+def _mevsim_cikar(mevsim_alan: str, urun_adi: str) -> str:
+    """
+    Önce Mevsim alanına bak, boşsa UrunAdi'ndan çıkar.
+    Döndürülen değer: "Yaz" | "Kış" | "4 Mevsim"
+    """
+    kaynak = mevsim_alan.strip() if mevsim_alan else ""
+    if not kaynak:
+        kaynak = urun_adi
+
+    k = kaynak.lower()
+    if "kış" in k or "kis" in k or "winter" in k or "ice" in k or "snow" in k or "blizzak" in k or "iceways" in k:
         return "Kış"
-    if "4 mevsim" in m or "4mevsim" in m or "all" in m:
+    if "4 mevsim" in k or "4mevsim" in k or "all season" in k or "allseason" in k or "all-season" in k or "multiways" in k or "m+s" in k or "allseason" in k:
         return "4 Mevsim"
     return "Yaz"
 
@@ -95,7 +102,9 @@ def cakiroglu_verileri_getir() -> list[LastikUrun]:
     urunler = []
     for urun in root.findall("Urun"):
         try:
-            miktar = int(urun.findtext("Miktar", "0") or "0")
+            miktar_raw = (urun.findtext("Miktar", "0") or "0").strip()
+            # "8+" veya "8 +" gibi değerleri de handle et
+            miktar = int(miktar_raw.rstrip("+").strip() or "0")
             if miktar <= 0:
                 continue
 
@@ -109,15 +118,17 @@ def cakiroglu_verileri_getir() -> list[LastikUrun]:
             # Dot: "2025" gibi geliyor, 4 haneli yıl değilse boş bırak
             dot = dot_raw if re.fullmatch(r"20\d{2}", dot_raw) else ""
 
+            urun_adi   = (urun.findtext("UrunAdi", "") or "").strip()
+
             urunler.append(LastikUrun(
                 toptanci  = "Çakıroğlu",
                 stok_kodu = (urun.findtext("StokKodu", "") or "").strip(),
                 marka     = (urun.findtext("Marka", "") or "").strip(),
-                urun_adi  = (urun.findtext("UrunAdi", "") or "").strip(),
+                urun_adi  = urun_adi,
                 fiyat     = fiyat,
                 miktar    = miktar,
                 dot       = dot,
-                mevsim    = _mevsim_normalize(mevsim_raw),
+                mevsim    = _mevsim_cikar(mevsim_raw, urun_adi),
             ))
         except (ValueError, TypeError):
             continue

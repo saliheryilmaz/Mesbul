@@ -31,6 +31,7 @@ from .karaoglu_servis    import karaoglu_ara
 from .cakiroglu_servis   import cakiroglu_ara
 from .ayko_servis        import ayko_ara
 from .halilyilmaz_servis import halilyilmaz_ara
+from .mollaoglu_servis   import mollaoglu_ara
 from .models import AramaGecmisi, Abonelik, Odeme, Notlar, ToptanciIskonto
 
 
@@ -305,6 +306,7 @@ B2B_LINKLER = {
     "Çakıroğlu":     {"url": "https://next.paflima.com",         "logo": "toptancilar/cakiroglu.png"},
     "Ayko":          {"url": "https://next.paflima.com",         "logo": "toptancilar/ayko.png"},
     "Halil Yılmaz":  {"url": "https://next.paflima.com",         "logo": "toptancilar/halilyilmaz.png"},
+    "Mollaoğlu":     {"url": "https://bayi.mollaoglu.com.tr",     "logo": "toptancilar/mollaoglu.png"},
 }
 
 
@@ -331,6 +333,7 @@ def _tum_toptancilarda_ara(ebat: str, marka: str, mevsim: str) -> tuple[list, li
         cakiroglu_ara,
         ayko_ara,
         halilyilmaz_ara,
+        mollaoglu_ara,
     ]
 
     # Modül adı → görünen toptancı adı
@@ -351,6 +354,7 @@ def _tum_toptancilarda_ara(ebat: str, marka: str, mevsim: str) -> tuple[list, li
         "karsilastirma.cakiroglu_servis":  "Çakıroğlu",
         "karsilastirma.ayko_servis":       "Ayko",
         "karsilastirma.halilyilmaz_servis": "Halil Yılmaz",
+        "karsilastirma.mollaoglu_servis":   "Mollaoğlu",
     }
 
     tum_sonuclar = []

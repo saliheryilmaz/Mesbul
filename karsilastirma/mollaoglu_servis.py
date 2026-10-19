@@ -107,8 +107,9 @@ def mollaoglu_verileri_getir() -> list[LastikUrun]:
     urunler = []
     for urun in root.findall(".//ProductShared"):
         try:
-            # Stok kontrolü
-            stok = int(urun.findtext("StockNumberSort", "0") or "0")
+            # Stok kontrolü — "20+" gibi değerleri de handle et
+            stok_raw = (urun.findtext("StockNumberSort", "0") or "0").strip()
+            stok = int(stok_raw.rstrip("+").strip() or "0")
             if stok <= 0:
                 continue
 

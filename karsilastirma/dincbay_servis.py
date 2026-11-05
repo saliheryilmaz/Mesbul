@@ -29,7 +29,7 @@ from dataclasses import dataclass
 
 from django.core.cache import cache
 
-DINCBAY_XML_URL  = "http://95.13.23.154:9015/api/Product/40bf1a33-72c3-4c69-bff3-4504e35cab33"
+DINCBAY_XML_URL  = "http://95.13.23.154:9015/api/Product/a1fd1a49-5123-44c2-b84a-0d3550fc26ba"
 CACHE_KEY        = "dincbay_tum_urunler"
 CACHE_KEY_STALE  = "dincbay_tum_urunler_stale"
 CACHE_TTL        = 55 * 60       # 55 dakika

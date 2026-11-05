@@ -31,7 +31,7 @@ from django.core.cache import cache
 
 MOLLAOGLU_XML_URL = (
     "https://connect.b2bstore.com/Export/xml/Export.asmx/ExportProductXmlV2"
-    "?Token=7e604585-8820-4936-94dd-e105cb3b6c7a=eb8ea6de-6ae8-4529-8d9a-97533ebbce5c&type=0"
+    "?Token=af8c883a-aa96-48ed-8341-7a776ccb37e1=eb8ea6de-6ae8-4529-8d9a-97533ebbce5c&type=1"
 )
 CACHE_KEY       = "mollaoglu_tum_urunler"
 CACHE_KEY_STALE = "mollaoglu_tum_urunler_stale"

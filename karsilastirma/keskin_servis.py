@@ -100,16 +100,27 @@ def keskin_verileri_getir() -> list[LastikUrun]:
     for stok in root.findall("Stok"):
         try:
             fiyat = float(stok.findtext("BAYI", "0") or "0")
-            if fiyat == 0:
+            if fiyat < 100:
                 continue
 
-            toplam = 0
-            for sube in SUBE_ALANLARI:
-                try:
-                    val = (stok.findtext(sube, "0") or "0").replace("+", "").strip()
-                    toplam += float(val)
-                except ValueError:
-                    pass
+            # Toplam stok: önce ADET alanına bak, yoksa şubeleri topla
+            adet_raw = (stok.findtext("ADET", "0") or "0").replace("+", "").strip()
+            try:
+                toplam = float(adet_raw)
+            except ValueError:
+                toplam = 0
+
+            if toplam <= 0:
+                # ADET 0 ise şubeleri topla
+                for sube in SUBE_ALANLARI:
+                    try:
+                        val = (stok.findtext(sube, "0") or "0").replace("+", "").strip()
+                        toplam += float(val)
+                    except ValueError:
+                        pass
+
+            if toplam <= 0:
+                continue
 
             urunler.append(LastikUrun(
                 toptanci  = "Keskin Lastik",

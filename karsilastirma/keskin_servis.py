@@ -8,28 +8,25 @@ Django DB cache kullanılır — tüm worker'lar aynı cache'i paylaşır.
 XML yapısı:
     <Stoklar>
       <Stok>
-        <PrcCode>APOLLO-16005</PrcCode>
-        <ACIKLAMA>215/55/16 93V PREMIUM LIFE ALNAC 4G</ACIKLAMA>
-        <Brand>APOLLO</Brand>
+        <PrcCode>CONTI-13010</PrcCode>
+        <ACIKLAMA>175/70/13 82T ECO CONTACT 6</ACIKLAMA>
+        <Brand>CONTINENTAL</Brand>
         <KATEGORİ>BİNEK</KATEGORİ>
-        <MEVSIM>YAZ</MEVSIM>
-        <DOT>2025</DOT>
-        <BAYI>3250</BAYI>
-        <ADET>1.00</ADET>           ← veya "20+"
-        <MERKEZ_ADET>1.00</MERKEZ_ADET>
-        ...şube adetleri...
-        <SEARCHKEYWORDS>215/55/16,2155516</SEARCHKEYWORDS>
+        <MEVSIM>YAZ</MEVSIM>          ← YAZ | KIŞ | 4 MEVSİM
+        <DOT>2026</DOT>
+        <BAYI>3322</BAYI>
+        <ADET>4.00</ADET>             ← veya "20+"
+        <SEARCHKEYWORDS>175/70/13,1757013</SEARCHKEYWORDS>
       </Stok>
     </Stoklar>
 
-Ebat formatı: "215/55/16" (R yok, eğik çizgili)
-Stok: ADET alanı, "20+" gelirse 20 olarak alınır
+Ebat formatı: "175/70/13" (R yok, eğik çizgili)
 """
 
 import re
 import requests
 import xml.etree.ElementTree as ET
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from django.core.cache import cache
 
@@ -40,8 +37,8 @@ KESKIN_XML_URL = (
 
 CACHE_KEY       = "keskin_tum_urunler"
 CACHE_KEY_STALE = "keskin_tum_urunler_stale"
-CACHE_TTL       = 55 * 60       # 55 dakika (rate limit 60 dk)
-CACHE_TTL_STALE = 24 * 60 * 60  # 24 saat fallback
+CACHE_TTL       = 55 * 60
+CACHE_TTL_STALE = 24 * 60 * 60
 
 SUBE_ALANLARI = [
     "MERKEZ_ADET", "MASLAK_ADET", "BOSTANCI_ADET", "LEVENT_ADET",
@@ -77,20 +74,19 @@ class LastikUrun:
 
 
 def _adet_parse(deger: str) -> float:
-    """'20+', '1.00', '0.00' → float. '+' işaretini temizler."""
+    """'20+', '1.00', '0.00' → float."""
     return float((deger or "0").replace("+", "").strip() or "0")
 
 
 def _mevsim_duzenle(ham: str) -> str:
-    ham = ham.strip().upper()
-    if "4" in ham or "ALL" in ham or "MEVSİM" in ham or "MEVSIM" in ham:
-        # "4 MEVSİM" kontrolü
-        if "4" in ham:
-            return "4 Mevsim"
-    if "KI" in ham or "WIN" in ham:
-        return "Kış"
-    if "4" in ham:
+    """YAZ → Yaz | KIŞ → Kış | 4 MEVSİM / 4 MEVSIM → 4 Mevsim"""
+    # Türkçe İ/I normalize et
+    tr_map = str.maketrans("İIŞĞÜÖÇ", "iışğüöç")
+    h = ham.strip().translate(tr_map).lower()
+    if "4" in h or "all" in h:
         return "4 Mevsim"
+    if "kış" in h or "kiş" in h or "kis" in h or "win" in h or "kıs" in h:
+        return "Kış"
     return "Yaz"
 
 
@@ -100,16 +96,12 @@ def _ebat_normalize(ebat: str) -> tuple[str, str]:
     "205/55/16" → slash="205/55/16", rakam="2055516"
     """
     temiz = ebat.strip().upper()
-    slash = re.sub(r'R(\d)', r'/\1', temiz)   # R→/
-    rakam = re.sub(r'[^0-9]', '', slash)       # sadece rakamlar
+    slash = re.sub(r'R(\d)', r'/\1', temiz)
+    rakam = re.sub(r'[^0-9]', '', slash)
     return slash, rakam
 
 
 def keskin_verileri_getir() -> list[LastikUrun]:
-    """
-    Keskin XML'ini çekip tüm ürün listesini döner.
-    Django DB cache'e yazar — rate limit nedeniyle 55 dk cache'lenir.
-    """
     cached = cache.get(CACHE_KEY)
     if cached is not None:
         return cached
@@ -117,7 +109,7 @@ def keskin_verileri_getir() -> list[LastikUrun]:
     try:
         resp = requests.get(KESKIN_XML_URL, timeout=25)
         resp.raise_for_status()
-        content = resp.content.lstrip(b'\xef\xbb\xbf')  # BOM temizle
+        content = resp.content.lstrip(b'\xef\xbb\xbf')
         root = ET.fromstring(content)
     except requests.RequestException as e:
         print(f"[Keskin Lastik] Bağlantı hatası: {e}")
@@ -126,7 +118,7 @@ def keskin_verileri_getir() -> list[LastikUrun]:
         print(f"[Keskin Lastik] XML parse hatası: {e}")
         return cache.get(CACHE_KEY_STALE) or []
 
-    # Rate limit yanıtı kontrolü
+    # Rate limit kontrolü
     if root.tag != "Stoklar":
         mesaj   = root.findtext(".//HataMesaj", "") or root.text or ""
         sonraki = root.findtext(".//SonrakiXmlTarihi", "")
@@ -140,26 +132,25 @@ def keskin_verileri_getir() -> list[LastikUrun]:
             if fiyat < 100:
                 continue
 
-            # Önce ADET, 0 ise şubeleri topla
+            # Stok: önce ADET, 0 ise şubeleri topla
             adet = _adet_parse(stok.findtext("ADET", "0") or "0")
             if adet <= 0:
                 for sube in SUBE_ALANLARI:
                     adet += _adet_parse(stok.findtext(sube, "0") or "0")
-
             if adet <= 0:
                 continue
 
             urunler.append(LastikUrun(
                 toptanci       = "Keskin Lastik",
-                stok_kodu      = (stok.findtext("PrcCode", "") or "").strip(),
-                marka          = (stok.findtext("Brand", "") or "").strip(),
-                urun_adi       = (stok.findtext("ACIKLAMA", "") or "").strip(),
+                stok_kodu      = (stok.findtext("PrcCode",       "") or "").strip(),
+                marka          = (stok.findtext("Brand",         "") or "").strip(),
+                urun_adi       = (stok.findtext("ACIKLAMA",      "") or "").strip(),
                 fiyat          = fiyat,
                 miktar         = int(adet),
-                dot            = (stok.findtext("DOT", "") or "").strip(),
+                dot            = (stok.findtext("DOT",           "") or "").strip(),
                 mevsim         = _mevsim_duzenle(stok.findtext("MEVSIM", "YAZ") or "YAZ"),
-                kategori       = (stok.findtext("KATEGORİ", "") or "").strip(),
-                searchkeywords = (stok.findtext("SEARCHKEYWORDS", "") or "").upper(),
+                kategori       = (stok.findtext("KATEGORİ",      "") or "").strip(),
+                searchkeywords = (stok.findtext("SEARCHKEYWORDS","") or "").upper(),
             ))
         except (ValueError, TypeError):
             continue
@@ -171,13 +162,6 @@ def keskin_verileri_getir() -> list[LastikUrun]:
 
 
 def keskin_ara(ebat: str, marka: str = "", mevsim: str = "") -> list[LastikUrun]:
-    """
-    Keskin verilerini filtreler.
-
-    ebat:   "205/55R16" → ACIKLAMA ve SEARCHKEYWORDS içinde arar
-    marka:  "Apollo"    → Brand alanında arar
-    mevsim: "Yaz" / "Kış" / "4 Mevsim"
-    """
     tum_urunler = keskin_verileri_getir()
 
     ebat_slash, ebat_rakam = _ebat_normalize(ebat)
@@ -187,13 +171,13 @@ def keskin_ara(ebat: str, marka: str = "", mevsim: str = "") -> list[LastikUrun]
     sonuclar = []
     for u in tum_urunler:
         if ebat.strip():
-            urun_upper     = u.urun_adi.upper()
-            urun_no_slash  = urun_upper.replace("/", "").replace(" ", "")
+            urun_upper    = u.urun_adi.upper()
+            urun_no_slash = urun_upper.replace("/", "").replace(" ", "")
 
             eslesti = (
-                ebat_slash  in urun_upper      or   # "205/55/16" in ACIKLAMA
-                ebat_rakam  in urun_no_slash   or   # "2055516" in ACIKLAMA (slash yok)
-                ebat_rakam  in u.searchkeywords     # "2055516" in SEARCHKEYWORDS
+                ebat_slash in urun_upper       or  # "205/55/16" in ACIKLAMA
+                ebat_rakam in urun_no_slash    or  # "2055516"   in ACIKLAMA
+                ebat_rakam in u.searchkeywords     # "2055516"   in SEARCHKEYWORDS
             )
             if not eslesti:
                 continue

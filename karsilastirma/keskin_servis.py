@@ -107,7 +107,7 @@ def keskin_verileri_getir() -> list[LastikUrun]:
         return cached
 
     try:
-        resp = requests.get(KESKIN_XML_URL, timeout=25)
+        resp = requests.get(KESKIN_XML_URL, timeout=60)
         resp.raise_for_status()
         content = resp.content.lstrip(b'\xef\xbb\xbf')
         root = ET.fromstring(content)

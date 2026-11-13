@@ -102,7 +102,9 @@ def halilyilmaz_verileri_getir() -> list[LastikUrun]:
     urunler = []
     for urun in root.findall("Urun"):
         try:
-            miktar = int(urun.findtext("Miktar", "0") or "0")
+            miktar_raw = (urun.findtext("Miktar", "0") or "0").strip()
+            # "8+" veya "1+" gibi değerleri de handle et
+            miktar = int(miktar_raw.rstrip("+").strip() or "0")
             if miktar <= 0:
                 continue
 

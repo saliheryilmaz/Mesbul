@@ -30,7 +30,7 @@ from django.core.cache import cache
 
 HALILYILMAZ_XML_URL = (
     "https://next.paflima.com/gw/StokXml.php"
-    "?t=halilyilmaz&k=8076548d0b0b4e8682881e488336eaf9"
+    "?t=halilyilmaz&k=8c1ae945a8e840e6aeb33bb1895d3db4"
 )
 CACHE_KEY       = "halilyilmaz_tum_urunler"
 CACHE_KEY_STALE = "halilyilmaz_tum_urunler_stale"

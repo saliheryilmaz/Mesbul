@@ -111,6 +111,8 @@ def halilyilmaz_verileri_getir() -> list[LastikUrun]:
             fiyat = float(urun.findtext("Fiyat", "0") or "0")
             if fiyat < 100:
                 continue
+            # Liste fiyatına %30 iskonto uygula
+            fiyat = round(fiyat * 0.70, 2)
 
             urun_adi   = (urun.findtext("UrunAdi", "") or "").strip()
             mevsim_raw = (urun.findtext("Mevsim", "") or "").strip()

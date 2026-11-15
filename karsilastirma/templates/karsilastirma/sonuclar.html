@@ -574,7 +574,9 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
           </td>
 
           <td class="fiyat-cell">
-            <div class="fiyat-ana {% if u.fiyat == en_ucuz_fiyat %}cheapest{% endif %}">
+            <div class="fiyat-ana {% if u.fiyat == en_ucuz_fiyat %}cheapest{% endif %}"
+                 data-toptanci-key="{{ u.toptanci }}"
+                 data-fiyat="{{ u.fiyat }}">
               {{ u.fiyat_str }}
             </div>
           </td>
@@ -858,12 +860,34 @@ document.body.appendChild(_tip);
 
 function _showTip(el, text) {
   if (!text) return;
-  _tip.textContent = text;
+
+  // İskonto metni varsa hesaplanmış tutarları göster
+  const fiyat = parseFloat(el.dataset.fiyat);
+  if (!isNaN(fiyat) && fiyat > 0) {
+    // "NAKİT:%8, K.K:%5" gibi metni parse et
+    const satirlar = text.split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
+    let tipContent = '';
+    satirlar.forEach(satir => {
+      // "NAKİT:%8" veya "NAKİT: %8" veya "nakit %8" formatlarını yakala
+      const m = satir.match(/^(.+?)\s*[:%]\s*%?(\d+(?:[.,]\d+)?)%?$/i);
+      if (m) {
+        const etiket = m[1].trim();
+        const oran   = parseFloat(m[2].replace(',', '.'));
+        const tutar  = fiyat * (1 - oran / 100);
+        tipContent += `${etiket}: ${tutar.toLocaleString('tr-TR', {minimumFractionDigits:2, maximumFractionDigits:2})} ₺  (-%${oran})\n`;
+      } else {
+        tipContent += satir + '\n';
+      }
+    });
+    _tip.textContent = tipContent.trim();
+  } else {
+    _tip.textContent = text;
+  }
+
   _tip.style.opacity = '1';
   const rect = el.getBoundingClientRect();
   let top = rect.bottom + 6;
   let left = rect.left;
-  // Sağ taşma kontrolü
   if (left + 270 > window.innerWidth) left = window.innerWidth - 274;
   _tip.style.top  = top  + 'px';
   _tip.style.left = left + 'px';

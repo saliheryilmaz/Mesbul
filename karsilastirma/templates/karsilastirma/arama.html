@@ -1111,12 +1111,6 @@
     <div class="partners-title">İş Ortaklarımız</div>
     <div class="carousel-track">
 
-      {% macro partner(url, img, name) %}
-      <a href="{{ url }}" target="_blank">
-        <img src="{% static img %}" alt="{{ name }}" onerror="this.style.display='none';this.parentNode.innerHTML='<span class=\'partner-text\'>{{ name }}</span>'">
-      </a>
-      {% endmacro %}
-
       <a href="https://www.uspalastik.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/uspa1.png' %}" alt="USPA Lastik" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>USPA Lastik</span>')"></a>
       <a href="https://keskinlastik.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/keskin0.png' %}" alt="Keskin Lastik" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>Keskin Lastik</span>')"></a>
       <a href="https://www.otosemih.com.tr" target="_blank"><img src="{% static 'karsilastirma/toptancilar/otosemih.png' %}" alt="OtoSemih" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>OtoSemih</span>')"></a>

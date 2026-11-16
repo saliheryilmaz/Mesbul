@@ -798,7 +798,7 @@
   /* PARTNERS SECTION */
   .partners-section {
     margin-top: 2.5rem;
-    padding: 2rem 0 2.25rem;
+    padding: 2.5rem 1.5rem 2.75rem;
     background: #fff;
     border-top: 1px solid #F1F5F9;
     border-bottom: 1px solid #F1F5F9;
@@ -811,14 +811,14 @@
     color: #CBD5E1;
     text-transform: uppercase;
     letter-spacing: .12em;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.75rem;
   }
   .carousel-track {
     display: flex;
     align-items: center;
-    gap: 2rem;
+    gap: 1rem;
     width: max-content;
-    animation: marquee 32s linear infinite;
+    animation: marquee 36s linear infinite;
   }
   .carousel-track:hover { animation-play-state: paused; }
   .carousel-track a {
@@ -827,34 +827,35 @@
     justify-content: center;
     flex-shrink: 0;
     text-decoration: none;
-    padding: .5rem 1.25rem;
-    border: 1px solid #E2E8F0;
-    border-radius: 10px;
-    background: #fff;
-    min-width: 110px;
-    height: 52px;
-    opacity: .6;
+    padding: .75rem 1.75rem;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 14px;
+    background: #FAFAFA;
+    min-width: 140px;
+    height: 64px;
+    opacity: .55;
     filter: grayscale(1);
-    transition: opacity .25s, filter .25s, border-color .25s, box-shadow .25s, transform .2s;
+    transition: opacity .25s, filter .25s, border-color .25s, box-shadow .25s, transform .2s, background .2s;
   }
   .carousel-track a:hover {
     opacity: 1;
     filter: grayscale(0);
     border-color: #FDDCC9;
-    box-shadow: 0 4px 16px rgba(232,93,38,.1);
-    transform: translateY(-2px);
+    background: #fff;
+    box-shadow: 0 6px 20px rgba(232,93,38,.12);
+    transform: translateY(-3px);
   }
   .carousel-track img {
-    height: 32px;
+    height: 36px;
     width: auto;
-    max-width: 120px;
+    max-width: 130px;
     object-fit: contain;
     display: block;
   }
   .carousel-track .partner-text {
-    font-size: .8125rem;
+    font-size: .875rem;
     font-weight: 700;
-    color: #334155;
+    color: #475569;
     letter-spacing: -.02em;
     white-space: nowrap;
   }

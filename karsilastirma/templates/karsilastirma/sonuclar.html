@@ -850,49 +850,61 @@ const ISKONTOLAR = {{ iskontolar|safe }};
 const _tip = document.createElement('div');
 _tip.id = 'iskonto-tooltip';
 _tip.style.cssText = `
-  position:fixed;z-index:9999;background:#1E293B;color:#F1F5F9;
-  font-size:.8125rem;font-family:'Inter',sans-serif;font-weight:500;
-  padding:.625rem .875rem;border-radius:8px;max-width:260px;line-height:1.5;
-  box-shadow:0 8px 24px rgba(0,0,0,.4);pointer-events:none;
-  opacity:0;transition:opacity .15s;white-space:pre-line;
+  position:fixed;z-index:9999;
+  background:linear-gradient(135deg,#0F172A 0%,#1E293B 100%);
+  border:1px solid rgba(255,255,255,.08);
+  color:#F1F5F9;
+  font-family:'Inter',sans-serif;
+  padding:.75rem 1rem;border-radius:12px;min-width:200px;
+  box-shadow:0 16px 40px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.04);
+  pointer-events:none;opacity:0;transition:opacity .18s,transform .18s;
+  transform:translateY(4px);
 `;
 document.body.appendChild(_tip);
 
 function _showTip(el, text) {
   if (!text) return;
 
-  // İskonto metni varsa hesaplanmış tutarları göster
   const fiyat = parseFloat(el.dataset.fiyat);
   if (!isNaN(fiyat) && fiyat > 0) {
-    // "NAKİT:%8, K.K:%5" gibi metni parse et
     const satirlar = text.split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
-    let tipContent = '';
+    let html = `<div style="font-size:.6875rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#64748B;margin-bottom:.5rem">İskontolu Fiyatlar</div>`;
     satirlar.forEach(satir => {
-      // "NAKİT:%8" veya "NAKİT: %8" veya "nakit %8" formatlarını yakala
       const m = satir.match(/^(.+?)\s*[:%]\s*%?(\d+(?:[.,]\d+)?)%?$/i);
       if (m) {
         const etiket = m[1].trim();
         const oran   = parseFloat(m[2].replace(',', '.'));
         const tutar  = fiyat * (1 - oran / 100);
-        tipContent += `${etiket}: ${tutar.toLocaleString('tr-TR', {minimumFractionDigits:2, maximumFractionDigits:2})} ₺  (-%${oran})\n`;
-      } else {
-        tipContent += satir + '\n';
+        const tutarStr = tutar.toLocaleString('tr-TR', {minimumFractionDigits:2, maximumFractionDigits:2});
+        html += `
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:1.5rem;padding:.3rem 0;border-bottom:1px solid rgba(255,255,255,.06)">
+            <span style="font-size:.8125rem;font-weight:600;color:#94A3B8">${etiket}</span>
+            <div style="text-align:right">
+              <span style="font-size:.9375rem;font-weight:700;color:#F1F5F9">${tutarStr} ₺</span>
+              <span style="font-size:.6875rem;color:#E85D26;margin-left:.375rem;font-weight:600">-%${oran}</span>
+            </div>
+          </div>`;
       }
     });
-    _tip.textContent = tipContent.trim();
+    _tip.innerHTML = html;
   } else {
-    _tip.textContent = text;
+    _tip.innerHTML = `<div style="font-size:.8125rem">${text}</div>`;
   }
 
   _tip.style.opacity = '1';
+  _tip.style.transform = 'translateY(0)';
   const rect = el.getBoundingClientRect();
-  let top = rect.bottom + 6;
-  let left = rect.left;
-  if (left + 270 > window.innerWidth) left = window.innerWidth - 274;
+  let top  = rect.bottom + 8;
+  let left = rect.right - 200;
+  if (left + 220 > window.innerWidth) left = window.innerWidth - 224;
+  if (left < 8) left = 8;
   _tip.style.top  = top  + 'px';
   _tip.style.left = left + 'px';
 }
-function _hideTip() { _tip.style.opacity = '0'; }
+function _hideTip() {
+  _tip.style.opacity = '0';
+  _tip.style.transform = 'translateY(4px)';
+}
 
 document.addEventListener('mouseover', function(e) {
   const el = e.target.closest('[data-toptanci-key]');

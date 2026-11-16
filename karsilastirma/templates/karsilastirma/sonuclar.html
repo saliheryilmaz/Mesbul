@@ -904,8 +904,7 @@ function _showTip(el, text) {
 function _hideTip() {
   _tip.style.opacity = '0';
   _tip.style.transform = 'translateY(4px)';
-}}
-function _hideTip() { _tip.style.opacity = '0'; }
+}
 
 document.addEventListener('mouseover', function(e) {
   const el = e.target.closest('[data-toptanci-key]');

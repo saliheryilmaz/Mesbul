@@ -867,24 +867,31 @@ function _showTip(el, text) {
 
   const fiyat = parseFloat(el.dataset.fiyat);
   if (!isNaN(fiyat) && fiyat > 0) {
+    // "NAKİT:%8 KK:5" veya "NAKİT:%8, KK:%5" veya "NAKİT: %8\nKK: %5" formatlarını destekle
     const satirlar = text.split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
-    let html = `<div style="font-size:.6875rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#64748B;margin-bottom:.5rem">İskontolu Fiyatlar</div>`;
+    let satirListesi = [];
     satirlar.forEach(satir => {
-      const m = satir.match(/^(.+?)\s*[:%]\s*%?(\d+(?:[.,]\d+)?)%?$/i);
-      if (m) {
-        const etiket = m[1].trim();
-        const oran   = parseFloat(m[2].replace(',', '.'));
-        const tutar  = fiyat * (1 - oran / 100);
-        const tutarStr = tutar.toLocaleString('tr-TR', {minimumFractionDigits:2, maximumFractionDigits:2});
-        html += `
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:1.5rem;padding:.3rem 0;border-bottom:1px solid rgba(255,255,255,.06)">
-            <span style="font-size:.8125rem;font-weight:600;color:#94A3B8">${etiket}</span>
-            <div style="text-align:right">
-              <span style="font-size:.9375rem;font-weight:700;color:#F1F5F9">${tutarStr} ₺</span>
-              <span style="font-size:.6875rem;color:#E85D26;margin-left:.375rem;font-weight:600">-%${oran}</span>
-            </div>
-          </div>`;
+      // Boşlukla ayrılmış birden fazla "ETIKET:%sayi" olabilir, önce bunları ayır
+      const parcalar = satir.split(/\s+/);
+      parcalar.forEach(parca => {
+        const m = parca.match(/^(.+?):(%?)(\d+(?:[.,]\d+)?)%?$/i);
+        if (m) satirListesi.push({ etiket: m[1].trim(), oran: parseFloat(m[3].replace(',', '.')) });
+      });
+      // Boşlukla ayrılmadıysa tüm satırı dene
+      if (satirListesi.length === 0) {
+        const m = satir.match(/^(.+?)\s*[:%]\s*%?(\d+(?:[.,]\d+)?)%?$/i);
+        if (m) satirListesi.push({ etiket: m[1].trim(), oran: parseFloat(m[2].replace(',', '.')) });
       }
+    });
+
+    let html = `<div style="font-size:.625rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#475569;margin-bottom:.5rem">İskontolu Fiyatlar</div>`;
+    satirListesi.forEach(({ etiket, oran }) => {
+      const tutar    = fiyat * (1 - oran / 100);
+      const tutarStr = tutar.toLocaleString('tr-TR', {minimumFractionDigits:2, maximumFractionDigits:2});
+      html += `<div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.25rem 0;border-bottom:1px solid rgba(255,255,255,.05);last-child:border:none">
+        <span style="font-size:.75rem;font-weight:600;color:#94A3B8;white-space:nowrap">${etiket}</span>
+        <span style="font-size:.875rem;font-weight:700;color:#F1F5F9;white-space:nowrap">${tutarStr} ₺ <span style="font-size:.625rem;color:#E85D26;font-weight:700">-%${oran}</span></span>
+      </div>`;
     });
     _tip.innerHTML = html;
   } else {
@@ -895,7 +902,7 @@ function _showTip(el, text) {
   _tip.style.transform = 'translateY(0)';
   const rect = el.getBoundingClientRect();
   let top  = rect.bottom + 8;
-  let left = rect.right - 200;
+  let left = rect.right - 210;
   if (left + 220 > window.innerWidth) left = window.innerWidth - 224;
   if (left < 8) left = 8;
   _tip.style.top  = top  + 'px';

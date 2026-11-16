@@ -797,11 +797,11 @@
 
   /* PARTNERS SECTION */
   .partners-section {
-    margin-top: 2.5rem;
-    padding: 2.5rem 1.5rem 2.75rem;
-    background: #fff;
-    border-top: 1px solid #F1F5F9;
-    border-bottom: 1px solid #F1F5F9;
+    margin-top: 3rem;
+    padding: 3rem 0 3.5rem;
+    background: linear-gradient(180deg, #F8FAFC 0%, #fff 100%);
+    border-top: 1px solid #E2E8F0;
+    border-bottom: 1px solid #E2E8F0;
     overflow: hidden;
   }
   .partners-title {
@@ -810,50 +810,67 @@
     font-weight: 700;
     color: #CBD5E1;
     text-transform: uppercase;
-    letter-spacing: .12em;
-    margin-bottom: 1.75rem;
+    letter-spacing: .14em;
+    margin-bottom: 2rem;
   }
+  .carousel-wrap {
+    position: relative;
+    overflow: hidden;
+  }
+  .carousel-wrap::before,
+  .carousel-wrap::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 80px;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .carousel-wrap::before { left: 0;  background: linear-gradient(to right, #F8FAFC, transparent); }
+  .carousel-wrap::after  { right: 0; background: linear-gradient(to left,  #fff, transparent); }
   .carousel-track {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 1.25rem;
     width: max-content;
-    animation: marquee 36s linear infinite;
+    animation: marquee 40s linear infinite;
+    padding: .5rem 0;
   }
   .carousel-track:hover { animation-play-state: paused; }
-  .carousel-track a {
+  .partner-card {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
     text-decoration: none;
-    padding: .75rem 1.75rem;
+    padding: 1rem 2rem;
     border: 1.5px solid #E2E8F0;
-    border-radius: 14px;
-    background: #FAFAFA;
-    min-width: 140px;
-    height: 64px;
-    opacity: .55;
+    border-radius: 16px;
+    background: #fff;
+    min-width: 150px;
+    height: 72px;
+    opacity: .5;
     filter: grayscale(1);
-    transition: opacity .25s, filter .25s, border-color .25s, box-shadow .25s, transform .2s, background .2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,.04);
+    transition: opacity .25s, filter .25s, border-color .25s, box-shadow .3s, transform .22s, background .2s;
   }
-  .carousel-track a:hover {
+  .partner-card:hover {
     opacity: 1;
     filter: grayscale(0);
     border-color: #FDDCC9;
-    background: #fff;
-    box-shadow: 0 6px 20px rgba(232,93,38,.12);
-    transform: translateY(-3px);
+    background: #FFFAF8;
+    box-shadow: 0 8px 24px rgba(232,93,38,.13);
+    transform: translateY(-4px);
   }
-  .carousel-track img {
-    height: 36px;
+  .partner-card img {
+    height: 38px;
     width: auto;
     max-width: 130px;
     object-fit: contain;
     display: block;
   }
-  .carousel-track .partner-text {
-    font-size: .875rem;
+  .partner-card .partner-text {
+    font-size: .9rem;
     font-weight: 700;
     color: #475569;
     letter-spacing: -.02em;
@@ -1110,45 +1127,44 @@
   <!-- İŞ ORTAKLARIMIZ -->
   <div class="partners-section">
     <div class="partners-title">İş Ortaklarımız</div>
-    <div class="carousel-track">
-
-      <a href="https://www.uspalastik.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/uspa1.png' %}" alt="USPA Lastik" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>USPA Lastik</span>')"></a>
-      <a href="https://keskinlastik.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/keskin0.png' %}" alt="Keskin Lastik" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>Keskin Lastik</span>')"></a>
-      <a href="https://www.otosemih.com.tr" target="_blank"><img src="{% static 'karsilastirma/toptancilar/otosemih.png' %}" alt="OtoSemih" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>OtoSemih</span>')"></a>
-      <a href="https://www.netlastik.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/eksililogo.avif' %}" alt="NetLastik" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>NetLastik</span>')"></a>
-      <a href="https://panel.lastsis.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/yocar0.png' %}" alt="Lastsis" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>Lastsis</span>')"></a>
-      <a href="http://95.13.23.154:9015" target="_blank"><img src="{% static 'karsilastirma/toptancilar/dincbaylogo.png' %}" alt="Dinçbay" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>Dinçbay</span>')"></a>
-      <a href="https://netclick-apis.degeras.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/degeras.png' %}" alt="Degeras" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>Degeras</span>')"></a>
-      <a href="https://xml1.xmlbankasi.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/art4.png' %}" alt="Art4" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>Art4</span>')"></a>
-      <a href="https://simetrilastik.com.tr/" target="_blank"><img src="{% static 'karsilastirma/toptancilar/simetri.png' %}" alt="Simetri" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>Simetri</span>')"></a>
-      <a href="https://b2b.yilkarlas.com/tr/giris" target="_blank"><img src="{% static 'karsilastirma/toptancilar/yilkarlas.jpeg' %}" alt="Yılkarlas" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>Yılkarlas</span>')"></a>
-      <a href="https://www.oltaylastik.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/oltayfoto.jpg' %}" alt="Oltay" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>Oltay</span>')"></a>
-      <a href="https://www.asotolastik.com/" target="_blank"><img src="{% static 'karsilastirma/toptancilar/asoto.jpg' %}" alt="AS Oto" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>AS Oto</span>')"></a>
-      <a href="https://www.b2bkaraoglulastik.com/auth/login" target="_blank"><img src="{% static 'karsilastirma/toptancilar/karaoglu-logo.png' %}" alt="Karaoğlu" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>Karaoğlu</span>')"></a>
-      <a href="https://b2b.cakirogluotomotiv.com/B2B_Stoklar.asp" target="_blank"><img src="{% static 'karsilastirma/toptancilar/cakiroglu.png' %}" alt="Çakıroğlu" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>Çakıroğlu</span>')"></a>
-      <a href="https://b2b.ayko.com.tr/index.asp#orta" target="_blank"><img src="{% static 'karsilastirma/toptancilar/ayko.png' %}" alt="Ayko" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>Ayko</span>')"></a>
-      <a href="https://bayi.mollaoglu.com.tr/tr/urunler" target="_blank"><img src="{% static 'karsilastirma/toptancilar/mollaoglu.png' %}" alt="Mollaoğlu" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>Mollaoğlu</span>')"></a>
-
-      <!-- duplicate for seamless loop -->
-      <a href="https://www.uspalastik.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/uspa1.png' %}" alt="USPA Lastik" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>USPA Lastik</span>')"></a>
-      <a href="https://keskinlastik.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/keskin0.png' %}" alt="Keskin Lastik" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>Keskin Lastik</span>')"></a>
-      <a href="https://www.otosemih.com.tr" target="_blank"><img src="{% static 'karsilastirma/toptancilar/otosemih.png' %}" alt="OtoSemih" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>OtoSemih</span>')"></a>
-      <a href="https://www.netlastik.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/eksililogo.avif' %}" alt="NetLastik" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>NetLastik</span>')"></a>
-      <a href="https://panel.lastsis.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/yocar0.png' %}" alt="Lastsis" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>Lastsis</span>')"></a>
-      <a href="http://95.13.23.154:9015" target="_blank"><img src="{% static 'karsilastirma/toptancilar/dincbaylogo.png' %}" alt="Dinçbay" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>Dinçbay</span>')"></a>
-      <a href="https://netclick-apis.degeras.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/degeras.png' %}" alt="Degeras" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>Degeras</span>')"></a>
-      <a href="https://xml1.xmlbankasi.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/art4.png' %}" alt="Art4" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>Art4</span>')"></a>
-      <a href="https://simetrilastik.com.tr/" target="_blank"><img src="{% static 'karsilastirma/toptancilar/simetri.png' %}" alt="Simetri" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>Simetri</span>')"></a>
-      <a href="https://b2b.yilkarlas.com/tr/giris" target="_blank"><img src="{% static 'karsilastirma/toptancilar/yilkarlas.jpeg' %}" alt="Yılkarlas" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>Yılkarlas</span>')"></a>
-      <a href="https://www.oltaylastik.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/oltayfoto.jpg' %}" alt="Oltay" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>Oltay</span>')"></a>
-      <a href="https://www.asotolastik.com/" target="_blank"><img src="{% static 'karsilastirma/toptancilar/asoto.jpg' %}" alt="AS Oto" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>AS Oto</span>')"></a>
-      <a href="https://www.b2bkaraoglulastik.com/auth/login" target="_blank"><img src="{% static 'karsilastirma/toptancilar/karaoglu-logo.png' %}" alt="Karaoğlu" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>Karaoğlu</span>')"></a>
-      <a href="https://b2b.cakirogluotomotiv.com/B2B_Stoklar.asp" target="_blank"><img src="{% static 'karsilastirma/toptancilar/cakiroglu.png' %}" alt="Çakıroğlu" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>Çakıroğlu</span>')"></a>
-      <a href="https://b2b.ayko.com.tr/index.asp#orta" target="_blank"><img src="{% static 'karsilastirma/toptancilar/ayko.png' %}" alt="Ayko" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>Ayko</span>')"></a>
-      <a href="https://bayi.mollaoglu.com.tr/tr/urunler" target="_blank"><img src="{% static 'karsilastirma/toptancilar/mollaoglu.png' %}" alt="Mollaoğlu" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\'partner-text\'>Mollaoğlu</span>')"></a>
-
+    <div class="carousel-wrap">
+      <div class="carousel-track" id="partnerTrack">
+        <a class="partner-card" href="https://www.uspalastik.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/uspa1.png' %}" alt="USPA Lastik" data-name="USPA Lastik"></a>
+        <a class="partner-card" href="https://keskinlastik.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/keskin0.png' %}" alt="Keskin Lastik" data-name="Keskin Lastik"></a>
+        <a class="partner-card" href="https://www.otosemih.com.tr" target="_blank"><img src="{% static 'karsilastirma/toptancilar/otosemih.png' %}" alt="OtoSemih" data-name="OtoSemih"></a>
+        <a class="partner-card" href="https://www.netlastik.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/eksililogo.avif' %}" alt="NetLastik" data-name="NetLastik"></a>
+        <a class="partner-card" href="https://panel.lastsis.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/yocar0.png' %}" alt="Lastsis" data-name="Lastsis"></a>
+        <a class="partner-card" href="http://95.13.23.154:9015" target="_blank"><img src="{% static 'karsilastirma/toptancilar/dincbaylogo.png' %}" alt="Dinçbay" data-name="Dinçbay"></a>
+        <a class="partner-card" href="https://netclick-apis.degeras.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/degeras.png' %}" alt="Degeras" data-name="Degeras"></a>
+        <a class="partner-card" href="https://xml1.xmlbankasi.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/art4.png' %}" alt="Art4" data-name="Art Jant Lastik"></a>
+        <a class="partner-card" href="https://simetrilastik.com.tr/" target="_blank"><img src="{% static 'karsilastirma/toptancilar/simetri.png' %}" alt="Simetri" data-name="Simetri"></a>
+        <a class="partner-card" href="https://b2b.yilkarlas.com/tr/giris" target="_blank"><img src="{% static 'karsilastirma/toptancilar/yilkarlas.jpeg' %}" alt="Yılkarlas" data-name="Yılkarlas"></a>
+        <a class="partner-card" href="https://www.oltaylastik.com" target="_blank"><img src="{% static 'karsilastirma/toptancilar/oltayfoto.jpg' %}" alt="Oltay" data-name="Oltay"></a>
+        <a class="partner-card" href="https://www.asotolastik.com/" target="_blank"><img src="{% static 'karsilastirma/toptancilar/asoto.jpg' %}" alt="AS Oto" data-name="AS Oto"></a>
+        <a class="partner-card" href="https://www.b2bkaraoglulastik.com/auth/login" target="_blank"><img src="{% static 'karsilastirma/toptancilar/karaoglu-logo.png' %}" alt="Karaoğlu" data-name="Karaoğlu"></a>
+        <a class="partner-card" href="https://b2b.cakirogluotomotiv.com/B2B_Stoklar.asp" target="_blank"><img src="{% static 'karsilastirma/toptancilar/cakiroglu.png' %}" alt="Çakıroğlu" data-name="Çakıroğlu"></a>
+        <a class="partner-card" href="https://b2b.ayko.com.tr/index.asp#orta" target="_blank"><img src="{% static 'karsilastirma/toptancilar/ayko.png' %}" alt="Ayko" data-name="Ayko"></a>
+        <a class="partner-card" href="https://bayi.mollaoglu.com.tr/tr/urunler" target="_blank"><img src="{% static 'karsilastirma/toptancilar/mollaoglu.png' %}" alt="Mollaoğlu" data-name="Mollaoğlu"></a>
+      </div>
     </div>
   </div>
+  <script>
+  (function() {
+    var track = document.getElementById('partnerTrack');
+    if (!track) return;
+    track.querySelectorAll('img').forEach(function(img) {
+      img.addEventListener('error', function() {
+        var name = this.dataset.name || this.alt;
+        this.style.display = 'none';
+        var span = document.createElement('span');
+        span.className = 'partner-text';
+        span.textContent = name;
+        this.parentNode.appendChild(span);
+      });
+    });
+    track.innerHTML += track.innerHTML;
+  })();
+  </script>
 
 </main>
 

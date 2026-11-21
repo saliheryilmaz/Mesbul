@@ -28,6 +28,8 @@ from dataclasses import dataclass
 
 from django.core.cache import cache
 
+from .katalog_onbellek import ToptanciAramaHatasi, katalog_onbellek
+
 AYKO_XML_URL = (
     "https://next.paflima.com/gw/StokXml.php"
     "?t=ayko&k=2744f0352c89416d82f9fb732ee304ab"
@@ -71,25 +73,20 @@ def _mevsim_normalize(mevsim_raw: str) -> str:
     return "Yaz"
 
 
+@katalog_onbellek(CACHE_KEY, CACHE_KEY_STALE)
 def ayko_verileri_getir() -> list[LastikUrun]:
     """
     Ayko XML'ini çekip tüm ürün listesini döner.
     Django DB cache'e yazar — tüm worker'lar aynı cache'i paylaşır.
     """
-    cached = cache.get(CACHE_KEY)
-    if cached is not None:
-        return cached
-
     try:
         resp = requests.get(AYKO_XML_URL, timeout=20)
         resp.raise_for_status()
         root = ET.fromstring(resp.content)
     except requests.RequestException as e:
-        print(f"[Ayko] Bağlantı hatası: {e}")
-        return cache.get(CACHE_KEY_STALE) or []
+        raise ToptanciAramaHatasi("Bağlantı hatası") from e
     except ET.ParseError as e:
-        print(f"[Ayko] XML parse hatası: {e}")
-        return cache.get(CACHE_KEY_STALE) or []
+        raise ToptanciAramaHatasi("XML parse hatası") from e
 
     urunler = []
     for urun in root.findall("Urun"):

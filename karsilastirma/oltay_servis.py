@@ -29,6 +29,8 @@ from dataclasses import dataclass
 
 from django.core.cache import cache
 
+from .katalog_onbellek import ToptanciAramaHatasi, katalog_onbellek
+
 OLTAY_XML_URL   = os.environ.get(
     'OLTAY_XML_URL',
     'https://www.oltaylastik.com/genel/xml/135F47A8-442E-4C19-8850-4F7809E6C907'
@@ -89,29 +91,21 @@ def _mevsim_cikar(name: str) -> str:
     return "Yaz"
 
 
+@katalog_onbellek(CACHE_KEY, CACHE_KEY_STALE)
 def oltay_verileri_getir() -> list[LastikUrun]:
-    cached = cache.get(CACHE_KEY)
-    if cached is not None:
-        return cached
-
     try:
         resp = requests.get(OLTAY_XML_URL, timeout=30)
         resp.raise_for_status()
         root = ET.fromstring(resp.content)
     except requests.RequestException as e:
-        print(f"[Oltay] Bağlantı hatası: {e}")
-        return cache.get(CACHE_KEY_STALE) or []
+        raise ToptanciAramaHatasi("Bağlantı hatası") from e
     except ET.ParseError as e:
-        print(f"[Oltay] XML parse hatası: {e}")
-        return cache.get(CACHE_KEY_STALE) or []
+        raise ToptanciAramaHatasi("XML parse hatası") from e
 
     # Rate limit kontrolü
     hata_el = root.find(".//HataMi")
     if hata_el is not None and hata_el.text == "True":
-        mesaj = root.findtext(".//HataMesaj", "")
-        sonraki = root.findtext(".//SonrakiXmlTarihi", "")
-        print(f"[Oltay] Rate limit: {mesaj} — Sonraki: {sonraki}")
-        return cache.get(CACHE_KEY_STALE) or []
+        raise ToptanciAramaHatasi("Beklenmeyen katalog yanıtı")
 
     urunler = []
     products = root.findall("Stok")

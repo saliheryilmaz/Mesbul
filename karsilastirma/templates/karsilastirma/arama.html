@@ -393,149 +393,11 @@
     padding: 3rem 1.5rem;
   }
 
-  /* Hero */
-  .hero {
-    text-align: center;
-    margin-bottom: 2rem;
-  }
-  .hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: .4rem;
-    background: #FFF4EE;
-    border: 1px solid #FDDCC9;
-    border-radius: 100px;
-    padding: .3rem .875rem;
-    font-size: .75rem;
-    font-weight: 600;
-    color: #E85D26;
-    letter-spacing: .04em;
-    text-transform: uppercase;
-    margin-bottom: .875rem;
-  }
-  .hero-badge::before {
-    content: '';
-    width: 6px; height: 6px;
-    background: #E85D26;
-    border-radius: 50%;
-    display: block;
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse {
-    0%,100%{opacity:1;transform:scale(1)}
-    50%{opacity:.4;transform:scale(.8)}
-  }
-  .hero-title {
-    font-size: 2.25rem;
-    font-weight: 800;
-    letter-spacing: -0.04em;
-    color: #0F172A;
-    margin-bottom: 0.5rem;
-    line-height: 1.15;
-  }
-  .hero-title span {
-    background: linear-gradient(135deg, #E85D26 0%, #F97316 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .hero-subtitle {
-    font-size: 1rem;
-    color: #64748B;
-    font-weight: 400;
-    max-width: 480px;
-    margin: 0 auto 1.5rem;
-    line-height: 1.6;
-  }
-  .hero-stats {
-    display: inline-flex;
-    align-items: center;
-    gap: 1.5rem;
-    background: #fff;
-    border: 1px solid #E2E8F0;
-    border-radius: 16px;
-    padding: .625rem 1.5rem;
-    margin-bottom: 1.75rem;
-    box-shadow: 0 1px 4px rgba(0,0,0,.04);
-  }
-  .hero-stat {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: .1rem;
-  }
-  .hero-stat-num {
-    font-size: 1.25rem;
-    font-weight: 800;
-    color: #0F172A;
-    letter-spacing: -0.03em;
-  }
-  .hero-stat-num span {
-    color: #E85D26;
-  }
-  .hero-stat-label {
-    font-size: .6875rem;
-    color: #94A3B8;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: .04em;
-  }
-  .hero-stat-sep {
-    width: 1px;
-    height: 2rem;
-    background: #E2E8F0;
-  }
-
-  /* Marquee toptancı şeridi */
-  .marquee-wrap {
-    overflow: hidden;
-    margin-bottom: 2rem;
-    position: relative;
-  }
-  .marquee-wrap::before,
-  .marquee-wrap::after {
-    content: '';
-    position: absolute;
-    top: 0; bottom: 0;
-    width: 60px;
-    z-index: 2;
-    pointer-events: none;
-  }
-  .marquee-wrap::before { left: 0;  background: linear-gradient(to right, #F8FAFC, transparent); }
-  .marquee-wrap::after  { right: 0; background: linear-gradient(to left,  #F8FAFC, transparent); }
-  .marquee-track {
-    display: flex;
-    gap: 0;
-    width: max-content;
-    animation: marquee 28s linear infinite;
-  }
-  .marquee-track:hover { animation-play-state: paused; }
-  @keyframes marquee {
-    from { transform: translateX(0); }
-    to   { transform: translateX(-50%); }
-  }
-  .marquee-item {
-    display: inline-flex;
-    align-items: center;
-    gap: .4rem;
-    background: #fff;
-    border: 1px solid #E2E8F0;
-    border-radius: 100px;
-    padding: .35rem 1rem;
-    font-size: .8125rem;
-    font-weight: 500;
-    color: #475569;
-    margin-right: .5rem;
-    white-space: nowrap;
-    transition: border-color .2s, color .2s;
-  }
-  .marquee-item::before {
-    content: '';
-    width: 6px; height: 6px;
-    background: #E85D26;
-    border-radius: 50%;
-    opacity: .5;
-    flex-shrink: 0;
+  .search-title {
+    margin: 0 0 1.4rem;
+    font-size: clamp(1.35rem, 3vw, 1.75rem);
+    letter-spacing: -.035em;
+    color: #0f172a;
   }
 
   /* Source badges (demo mod için) */
@@ -869,22 +731,6 @@
   }
 
   @media (max-width: 768px) {
-  .hero {
-    margin-bottom: 1.5rem;
-  }
-  .hero-title {
-    font-size: 1.375rem;
-  }
-  .hero-subtitle {
-    font-size: 0.875rem;
-  }
-  .hero-stats {
-    gap: 1rem;
-    padding: .5rem 1rem;
-  }
-  .hero-stat-num {
-    font-size: 1rem;
-  }
   .sources {
     gap: 0.375rem;
     margin-bottom: 1.25rem;
@@ -971,59 +817,7 @@
 
 <main class="main">
 
-  <div class="hero">
-    
-    
-    <h1 class="hero-title">Lastik Fiyat<br><span>Karşılaştırma</span></h1>
-    <p class="hero-subtitle">Toptancıların anlık fiyatlarını tek ekranda görün, en uygun teklifi anında bulun</p>
-
-    <div class="hero-stats">
-      <div class="hero-stat">
-        <div class="hero-stat-num">15</div>
-        <div class="hero-stat-label">Toptancı</div>
-      </div>
-    </div>
-  </div>
-
-  {% if not demo_mod %}
-  <div class="marquee-wrap">
-    <div class="marquee-track">
-      <span class="marquee-item">USPA Lastik</span>
-      <span class="marquee-item">Keskin Lastik</span>
-      
-      <span class="marquee-item">NetLastik</span>
-      <span class="marquee-item">Yocar (Lastsis)</span>
-      <span class="marquee-item">Dinçbay</span>
-      <span class="marquee-item">Degeras</span>
-      <span class="marquee-item">Art Jant Lastik</span>
-      <span class="marquee-item">Simetri</span>
-      <span class="marquee-item">Yılkarlas</span>
-      <span class="marquee-item">Oltay</span>
-      <span class="marquee-item">AS Oto</span>
-      <span class="marquee-item">Karaoğlu</span>
-      <span class="marquee-item">Çakıroğlu</span>
-      <span class="marquee-item">Ayko</span>
-      <span class="marquee-item">Mollaoğlu</span>
-      <!-- tekrar (sonsuz döngü için) -->
-      <span class="marquee-item">USPA Lastik</span>
-      <span class="marquee-item">Keskin Lastik</span>
-      
-      <span class="marquee-item">NetLastik</span>
-      <span class="marquee-item">Yocar (Lastsis)</span>
-      <span class="marquee-item">Dinçbay</span>
-      <span class="marquee-item">Degeras</span>
-      <span class="marquee-item">Art Jant Lastik</span>
-      <span class="marquee-item">Simetri</span>
-      <span class="marquee-item">Yılkarlas</span>
-      <span class="marquee-item">Oltay</span>
-      <span class="marquee-item">AS Oto</span>
-      <span class="marquee-item">Karaoğlu</span>
-      <span class="marquee-item">Çakıroğlu</span>
-      <span class="marquee-item">Ayko</span>
-      <span class="marquee-item">Mollaoğlu</span>
-    </div>
-  </div>
-  {% else %}
+  {% if demo_mod %}
   <div class="sources">
     <span class="source-chip" style="background:#FFF7F4;border-color:#FECACA;color:#E85D26;cursor:pointer" onclick="uyelikModalAc()">
       🔒 Toptancıları görmek için üyelik alın
@@ -1032,11 +826,12 @@
   {% endif %}
 
   <div class="card">
+    <h1 class="search-title">Lastik fiyatı ara</h1>
     {% if hata %}
       <div class="error">⚠️ {{ hata }}</div>
     {% endif %}
 
-    <form method="POST" action="{% url 'sonuclar' %}" id="arama-form">
+    <form method="POST" action="{% url 'sonuclar' %}" data-ebat-arama id="arama-form">
       {% csrf_token %}
 
       <div class="field">
@@ -1395,5 +1190,6 @@ function toggleModalSifre() {
 {% include "karsilastirma/_not_widget.html" %}
 {% include "karsilastirma/_uyelik_modal.html" %}
 {% if request.user.is_authenticated %}{% include "karsilastirma/_iskonto_yonetim.html" %}{% endif %}
+{% include "karsilastirma/_arama_durumu.html" %}
 </body>
 </html>

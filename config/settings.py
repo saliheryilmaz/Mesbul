@@ -99,5 +99,10 @@ CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
         'LOCATION': 'django_cache',
+    },
+    'arama_sonuclari': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'arama_sonuclari_cache',
+        'OPTIONS': {'MAX_ENTRIES': 2048},
     }
 }

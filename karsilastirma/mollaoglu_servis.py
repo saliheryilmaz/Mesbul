@@ -29,6 +29,8 @@ from dataclasses import dataclass
 
 from django.core.cache import cache
 
+from .katalog_onbellek import ToptanciAramaHatasi, katalog_onbellek
+
 MOLLAOGLU_XML_URL = (
     "https://connect.b2bstore.com/Export/xml/Export.asmx/ExportProductXmlV2"
     "?Token=af8c883a-aa96-48ed-8341-7a776ccb37e1=eb8ea6de-6ae8-4529-8d9a-97533ebbce5c&type=1"
@@ -84,25 +86,20 @@ def _fiyat_parse(fiyat_raw: str) -> float:
         return 0.0
 
 
+@katalog_onbellek(CACHE_KEY, CACHE_KEY_STALE)
 def mollaoglu_verileri_getir() -> list[LastikUrun]:
     """
     Mollaoğlu XML'ini çekip tüm ürün listesini döner.
     Django DB cache'e yazar — tüm worker'lar aynı cache'i paylaşır.
     """
-    cached = cache.get(CACHE_KEY)
-    if cached is not None:
-        return cached
-
     try:
         resp = requests.get(MOLLAOGLU_XML_URL, timeout=30)
         resp.raise_for_status()
         root = ET.fromstring(resp.content)
     except requests.RequestException as e:
-        print(f"[Mollaoğlu] Bağlantı hatası: {e}")
-        return cache.get(CACHE_KEY_STALE) or []
+        raise ToptanciAramaHatasi("Bağlantı hatası") from e
     except ET.ParseError as e:
-        print(f"[Mollaoğlu] XML parse hatası: {e}")
-        return cache.get(CACHE_KEY_STALE) or []
+        raise ToptanciAramaHatasi("XML parse hatası") from e
 
     urunler = []
     for urun in root.findall(".//ProductShared"):

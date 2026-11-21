@@ -30,6 +30,8 @@ from dataclasses import dataclass
 
 from django.core.cache import cache
 
+from .katalog_onbellek import ToptanciAramaHatasi, katalog_onbellek
+
 YILKARLAS_XML_URL = (
     "https://connect.b2bstore.com/Export/xml/Export.asmx/ExportProductXmlV2"
     f"?Token={os.environ.get('YILKARLAS_TOKEN', '8e7a0dae-a435-4868-af15-642be1b3d180=e6e64388-04fd-4bed-97c8-2b11305b6874')}"
@@ -99,22 +101,17 @@ def _txt(el, tag: str) -> str:
     return val.strip()
 
 
+@katalog_onbellek(CACHE_KEY, CACHE_KEY_STALE)
 def yilkarlas_verileri_getir() -> list[LastikUrun]:
     """Yılkarlas XML'ini çekip tüm ürün listesini döner. Cache'e yazar."""
-    cached = cache.get(CACHE_KEY)
-    if cached is not None:
-        return cached
-
     try:
         resp = requests.get(YILKARLAS_XML_URL, timeout=40)
         resp.raise_for_status()
         root = ET.fromstring(resp.content)
     except requests.RequestException as e:
-        print(f"[Yılkarlas] Bağlantı hatası: {e}")
-        return cache.get(CACHE_KEY_STALE) or []
+        raise ToptanciAramaHatasi("Bağlantı hatası") from e
     except ET.ParseError as e:
-        print(f"[Yılkarlas] XML parse hatası: {e}")
-        return cache.get(CACHE_KEY_STALE) or []
+        raise ToptanciAramaHatasi("XML parse hatası") from e
 
     urunler = []
 

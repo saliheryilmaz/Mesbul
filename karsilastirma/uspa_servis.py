@@ -11,6 +11,8 @@ from dataclasses import dataclass
 
 from django.core.cache import cache
 
+from .katalog_onbellek import ToptanciAramaHatasi, katalog_onbellek
+
 USPA_XML_URL    = "https://www.uspalastik.com/index.php?url=xml_export/uspa4"
 CACHE_KEY       = "uspa_tum_urunler"
 CACHE_KEY_STALE = "uspa_tum_urunler_stale"
@@ -42,25 +44,20 @@ class LastikUrun:
         return f"{self.miktar} adet"
 
 
+@katalog_onbellek(CACHE_KEY, CACHE_KEY_STALE)
 def uspa_verileri_getir() -> list[LastikUrun]:
     """
     USPA XML'ini çekip tüm ürün listesini döner.
     Django DB cache'e yazar — tüm worker'lar aynı cache'i paylaşır.
     """
-    cached = cache.get(CACHE_KEY)
-    if cached is not None:
-        return cached
-
     try:
         resp = requests.get(USPA_XML_URL, timeout=20)
         resp.raise_for_status()
         root = ET.fromstring(resp.content)
     except requests.RequestException as e:
-        print(f"[USPA] Bağlantı hatası: {e}")
-        return cache.get(CACHE_KEY_STALE) or []
+        raise ToptanciAramaHatasi("Bağlantı hatası") from e
     except ET.ParseError as e:
-        print(f"[USPA] XML parse hatası: {e}")
-        return cache.get(CACHE_KEY_STALE) or []
+        raise ToptanciAramaHatasi("XML parse hatası") from e
 
     urunler = []
     for urun in root.findall("Urun"):

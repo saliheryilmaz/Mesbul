@@ -32,6 +32,8 @@ from dataclasses import dataclass
 
 from django.core.cache import cache
 
+from .katalog_onbellek import ToptanciAramaHatasi, katalog_onbellek
+
 SIMETRI_XML_URL = (
     "https://xml.continentaldas.com/Service.asmx/UrunListesi"
     f"?kullaniciAdi={os.environ.get('SIMETRI_KULLANICI', 'Simetri-Lastikcim')}"
@@ -93,22 +95,17 @@ def _dot_cikar(dot_alan: str, name: str) -> str:
     return m.group() if m else ""
 
 
+@katalog_onbellek(CACHE_KEY, CACHE_KEY_STALE)
 def simetri_verileri_getir() -> list[LastikUrun]:
     """Simetri XML'ini çekip tüm ürün listesini döner. Cache'e yazar."""
-    cached = cache.get(CACHE_KEY)
-    if cached is not None:
-        return cached
-
     try:
         resp = requests.get(SIMETRI_XML_URL, timeout=40)
         resp.raise_for_status()
         root = ET.fromstring(resp.content)
     except requests.RequestException as e:
-        print(f"[Simetri] Bağlantı hatası: {e}")
-        return cache.get(CACHE_KEY_STALE) or []
+        raise ToptanciAramaHatasi("Bağlantı hatası") from e
     except ET.ParseError as e:
-        print(f"[Simetri] XML parse hatası: {e}")
-        return cache.get(CACHE_KEY_STALE) or []
+        raise ToptanciAramaHatasi("XML parse hatası") from e
 
     urunler = []
 

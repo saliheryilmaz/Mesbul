@@ -30,6 +30,8 @@ from dataclasses import dataclass
 
 from django.core.cache import cache
 
+from .katalog_onbellek import ToptanciAramaHatasi, katalog_onbellek
+
 KESKIN_XML_URL = (
     "https://keskinlastik.com/genel/xml/"
     "1F3821F1-D8E4-452A-9E4B-9EFA312C6202"
@@ -101,29 +103,21 @@ def _ebat_normalize(ebat: str) -> tuple[str, str]:
     return slash, rakam
 
 
+@katalog_onbellek(CACHE_KEY, CACHE_KEY_STALE)
 def keskin_verileri_getir() -> list[LastikUrun]:
-    cached = cache.get(CACHE_KEY)
-    if cached is not None:
-        return cached
-
     try:
         resp = requests.get(KESKIN_XML_URL, timeout=60)
         resp.raise_for_status()
         content = resp.content.lstrip(b'\xef\xbb\xbf')
         root = ET.fromstring(content)
     except requests.RequestException as e:
-        print(f"[Keskin Lastik] Bağlantı hatası: {e}")
-        return cache.get(CACHE_KEY_STALE) or []
+        raise ToptanciAramaHatasi("Bağlantı hatası") from e
     except ET.ParseError as e:
-        print(f"[Keskin Lastik] XML parse hatası: {e}")
-        return cache.get(CACHE_KEY_STALE) or []
+        raise ToptanciAramaHatasi("XML parse hatası") from e
 
     # Rate limit kontrolü
     if root.tag != "Stoklar":
-        mesaj   = root.findtext(".//HataMesaj", "") or root.text or ""
-        sonraki = root.findtext(".//SonrakiXmlTarihi", "")
-        print(f"[Keskin Lastik] Rate limit: {mesaj} — Sonraki: {sonraki}")
-        return cache.get(CACHE_KEY_STALE) or []
+        raise ToptanciAramaHatasi("Beklenmeyen katalog yanıtı")
 
     urunler = []
     for stok in root.findall("Stok"):

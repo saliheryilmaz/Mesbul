@@ -28,6 +28,8 @@ from dataclasses import dataclass
 
 from django.core.cache import cache
 
+from .katalog_onbellek import ToptanciAramaHatasi, katalog_onbellek
+
 CAKIROGLU_XML_URL = (
     "https://next.paflima.com/gw/StokXml.php"
     "?t=cakiroglu&k=2640feaad880454ca8a7290494bf413b"
@@ -79,25 +81,20 @@ def _mevsim_cikar(mevsim_alan: str, urun_adi: str) -> str:
     return "Yaz"
 
 
+@katalog_onbellek(CACHE_KEY, CACHE_KEY_STALE)
 def cakiroglu_verileri_getir() -> list[LastikUrun]:
     """
     Çakıroğlu XML'ini çekip tüm ürün listesini döner.
     Django DB cache'e yazar — tüm worker'lar aynı cache'i paylaşır.
     """
-    cached = cache.get(CACHE_KEY)
-    if cached is not None:
-        return cached
-
     try:
         resp = requests.get(CAKIROGLU_XML_URL, timeout=20)
         resp.raise_for_status()
         root = ET.fromstring(resp.content)
     except requests.RequestException as e:
-        print(f"[Çakıroğlu] Bağlantı hatası: {e}")
-        return cache.get(CACHE_KEY_STALE) or []
+        raise ToptanciAramaHatasi("Bağlantı hatası") from e
     except ET.ParseError as e:
-        print(f"[Çakıroğlu] XML parse hatası: {e}")
-        return cache.get(CACHE_KEY_STALE) or []
+        raise ToptanciAramaHatasi("XML parse hatası") from e
 
     urunler = []
     for urun in root.findall("Urun"):

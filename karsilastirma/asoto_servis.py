@@ -35,6 +35,8 @@ from dataclasses import dataclass
 
 from django.core.cache import cache
 
+from .katalog_onbellek import ToptanciAramaHatasi, katalog_onbellek
+
 ASOTO_XML_URL = os.environ.get(
     'ASOTO_XML_URL',
     'https://connect.b2bstore.com/Export/xml/Export.asmx/ExportProduct'
@@ -117,21 +119,16 @@ def _mevsim_cikar(season: str, name: str, category: str) -> str:
     return "Yaz"
 
 
+@katalog_onbellek(CACHE_KEY, CACHE_KEY_STALE)
 def asoto_verileri_getir() -> list[LastikUrun]:
-    cached = cache.get(CACHE_KEY)
-    if cached is not None:
-        return cached
-
     try:
         resp = requests.get(ASOTO_XML_URL, timeout=40)
         resp.raise_for_status()
         root = ET.fromstring(resp.content)
     except requests.RequestException as e:
-        print(f"[AS Oto] Bağlantı hatası: {e}")
-        return cache.get(CACHE_KEY_STALE) or []
+        raise ToptanciAramaHatasi("Bağlantı hatası") from e
     except ET.ParseError as e:
-        print(f"[AS Oto] XML parse hatası: {e}")
-        return cache.get(CACHE_KEY_STALE) or []
+        raise ToptanciAramaHatasi("XML parse hatası") from e
 
     urunler = []
     products = root.findall("Product")

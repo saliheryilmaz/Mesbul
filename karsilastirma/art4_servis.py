@@ -28,6 +28,8 @@ from dataclasses import dataclass
 
 from django.core.cache import cache
 
+from .katalog_onbellek import ToptanciAramaHatasi, katalog_onbellek
+
 ART4_XML_URL    = "https://xml1.xmlbankasi.com/p1/uizeabactjye/image/data/xml/art4.xml"
 CACHE_KEY       = "art4_tum_urunler"
 CACHE_KEY_STALE = "art4_tum_urunler_stale"
@@ -94,26 +96,21 @@ def _dot_cikar(tarihi_alan: str, name: str) -> str:
     return m.group(1) if m else ""
 
 
+@katalog_onbellek(CACHE_KEY, CACHE_KEY_STALE)
 def art4_verileri_getir() -> list[LastikUrun]:
     """
     Art4 XML'ini çekip tüm ürün listesini döner.
     Django DB cache'e yazar.
     """
-    cached = cache.get(CACHE_KEY)
-    if cached is not None:
-        return cached
-
     try:
         resp = requests.get(ART4_XML_URL, timeout=20)
         resp.raise_for_status()
         # XML encoding sorunu olmaması için bytes üzerinden parse
         root = ET.fromstring(resp.content)
     except requests.RequestException as e:
-        print(f"[Art4] Bağlantı hatası: {e}")
-        return cache.get(CACHE_KEY_STALE) or []
+        raise ToptanciAramaHatasi("Bağlantı hatası") from e
     except ET.ParseError as e:
-        print(f"[Art4] XML parse hatası: {e}")
-        return cache.get(CACHE_KEY_STALE) or []
+        raise ToptanciAramaHatasi("XML parse hatası") from e
 
     urunler = []
     for urun in root.findall("Product"):

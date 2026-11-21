@@ -34,6 +34,8 @@ from dataclasses import dataclass
 
 from django.core.cache import cache
 
+from .katalog_onbellek import ToptanciAramaHatasi, katalog_onbellek
+
 KARAOGLU_XML_URL = os.environ.get(
     'KARAOGLU_XML_URL',
     'https://www.b2bkaraoglulastik.com/TWVyaGFiYSBEw7ZueWE'
@@ -104,21 +106,16 @@ class LastikUrun:
         return f"{self.miktar} adet"
 
 
+@katalog_onbellek(CACHE_KEY, CACHE_KEY_STALE)
 def karaoglu_verileri_getir() -> list[LastikUrun]:
-    cached = cache.get(CACHE_KEY)
-    if cached is not None:
-        return cached
-
     try:
         resp = requests.get(KARAOGLU_XML_URL, timeout=30)
         resp.raise_for_status()
         root = ET.fromstring(resp.content)
     except requests.RequestException as e:
-        print(f"[Karaoğlu] Bağlantı hatası: {e}")
-        return cache.get(CACHE_KEY_STALE) or []
+        raise ToptanciAramaHatasi("Bağlantı hatası") from e
     except ET.ParseError as e:
-        print(f"[Karaoğlu] XML parse hatası: {e}")
-        return cache.get(CACHE_KEY_STALE) or []
+        raise ToptanciAramaHatasi("XML parse hatası") from e
 
     urunler = []
     products = root.findall("Product")

@@ -1,0 +1,46 @@
+<style>
+  .arama-durumu:not(:empty) {
+    position: fixed;
+    z-index: 1100;
+    left: 50%;
+    bottom: calc(1.25rem + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    width: max-content;
+    max-width: calc(100% - 2rem);
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: .85rem 1.15rem;
+    border-radius: .9rem;
+    background: #172033;
+    color: white;
+    font-size: .95rem;
+    overflow-wrap: anywhere;
+    box-shadow: 0 6px 24px #0f172a33;
+  }
+  .arama-durumu:not(:empty)::before {
+    content: '';
+    flex: 0 0 1rem;
+    height: 1rem;
+    border: 2px solid #ffffff55;
+    border-top-color: #ff9254;
+    border-radius: 50%;
+    animation: arama-don .8s linear infinite;
+  }
+  @keyframes arama-don { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) {
+    .arama-durumu:not(:empty)::before { animation: none; }
+  }
+</style>
+<div class="arama-durumu" role="status" aria-atomic="true"></div>
+<script>
+(() => {
+  const form = document.querySelector('[data-ebat-arama]');
+  const durum = document.querySelector('.arama-durumu');
+  form.addEventListener('submit', () => {
+    durum.textContent = form.elements.ebat.value.trim() + ' için fiyatlar aranıyor…';
+  });
+  window.addEventListener('pageshow', () => { durum.textContent = ''; });
+  form.addEventListener('input', () => { durum.textContent = ''; });
+})();
+</script>

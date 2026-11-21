@@ -29,6 +29,8 @@ from dataclasses import dataclass
 
 from django.core.cache import cache
 
+from .katalog_onbellek import ToptanciAramaHatasi, katalog_onbellek
+
 DINCBAY_XML_URL  = "http://95.13.23.154:9015/api/Product/a1fd1a49-5123-44c2-b84a-0d3550fc26ba"
 CACHE_KEY        = "dincbay_tum_urunler"
 CACHE_KEY_STALE  = "dincbay_tum_urunler_stale"
@@ -72,15 +74,12 @@ def _mevsim_duzenle(ham: str) -> str:
     return "Yaz"
 
 
+@katalog_onbellek(CACHE_KEY, CACHE_KEY_STALE)
 def dincbay_verileri_getir() -> list[LastikUrun]:
     """
     Dinçbay XML'ini çekip tüm ürün listesini döner.
     Django DB cache'e yazar — tüm worker'lar aynı cache'i paylaşır.
     """
-    cached = cache.get(CACHE_KEY)
-    if cached is not None:
-        return cached
-
     try:
         resp = requests.get(DINCBAY_XML_URL, timeout=20)
         resp.raise_for_status()
@@ -88,11 +87,9 @@ def dincbay_verileri_getir() -> list[LastikUrun]:
         content = resp.content.lstrip(b'\xef\xbb\xbf')
         root = ET.fromstring(content)
     except requests.RequestException as e:
-        print(f"[Dinçbay] Bağlantı hatası: {e}")
-        return cache.get(CACHE_KEY_STALE) or []
+        raise ToptanciAramaHatasi("Bağlantı hatası") from e
     except ET.ParseError as e:
-        print(f"[Dinçbay] XML parse hatası: {e}")
-        return cache.get(CACHE_KEY_STALE) or []
+        raise ToptanciAramaHatasi("XML parse hatası") from e
 
     urunler = []
     for urun in root.findall("Product"):

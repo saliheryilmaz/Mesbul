@@ -27,6 +27,8 @@ from dataclasses import dataclass
 
 from django.core.cache import cache
 
+from .katalog_onbellek import ToptanciAramaHatasi, katalog_onbellek
+
 OTOSEMIH_XML_URL = "https://www.otosemih.com.tr/outputxml/index.php?xml_service_id=4"
 CACHE_KEY        = "otosemih_tum_urunler"
 CACHE_KEY_STALE  = "otosemih_tum_urunler_stale"
@@ -114,22 +116,17 @@ def _mevsim_cikar(urun_adi: str, aciklama: str) -> str:
 
 # ── Ana servis fonksiyonları ───────────────────────────────────────────────
 
+@katalog_onbellek(CACHE_KEY, CACHE_KEY_STALE)
 def otosemih_verileri_getir() -> list[LastikUrun]:
     """OtoSemih XML'ini çekip tüm ürün listesini döner. Django DB cache kullanır."""
-    cached = cache.get(CACHE_KEY)
-    if cached is not None:
-        return cached
-
     try:
         resp = requests.get(OTOSEMIH_XML_URL, timeout=20)
         resp.raise_for_status()
         root = ET.fromstring(resp.content)
     except requests.RequestException as e:
-        print(f"[OtoSemih] Bağlantı hatası: {e}")
-        return cache.get(CACHE_KEY_STALE) or []
+        raise ToptanciAramaHatasi("Bağlantı hatası") from e
     except ET.ParseError as e:
-        print(f"[OtoSemih] XML parse hatası: {e}")
-        return cache.get(CACHE_KEY_STALE) or []
+        raise ToptanciAramaHatasi("XML parse hatası") from e
 
     urunler = []
     for urun in root.findall("urun"):

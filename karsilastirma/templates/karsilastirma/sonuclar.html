@@ -1,3 +1,4 @@
+{% load l10n %}
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -70,14 +71,9 @@ body{background:#F4F6F9;color:#0F172A;font-family:'Inter',sans-serif;min-height:
 /* MAIN */
 .main{flex:1;padding:1rem;overflow-x:auto;min-width:0}
 
-/* STATS */
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem}
-.stat{background:#fff;border:1px solid #E2E8F0;border-radius:14px;padding:1.25rem 1.5rem;box-shadow:0 2px 8px rgba(15,23,42,.05);transition:box-shadow .2s,border-color .2s}
-.stat:hover{box-shadow:0 4px 16px rgba(15,23,42,.09);border-color:#FDDCC9}
-.stat .lbl{font-size:.6875rem;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem}
-.stat .val{font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:700;color:#0F172A}
-.val.green{color:#059669} .val.blue{color:#2563EB}
-
+.results-title{margin:0 0 .8rem;font-size:clamp(1.3rem,2.2vw,1.85rem);letter-spacing:-.035em;color:#172033}
+.table-toolbar{background:white;padding:.75rem;border:1px solid #e2e8f0;border-radius:12px}
+@media(min-width:769px){.filter-fab-close{display:none!important}.tablo-wrap{overflow-x:auto}}
 /* TABLE TOOLBAR */
 .table-toolbar{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem}
 .model-search{flex:1;background:#fff;border:1.5px solid #E2E8F0;border-radius:8px;padding:.5625rem .875rem;color:#0F172A;font-size:.875rem;font-weight:500;outline:none;transition:border-color .2s,box-shadow .2s;box-shadow:0 1px 3px rgba(15,23,42,.05)}
@@ -194,6 +190,11 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
   white-space:nowrap;
   letter-spacing:-.02em;
 }
+button.m-card-fiyat{
+  background:transparent;border:0;padding:0 .125rem;min-height:44px;
+  margin:-.5rem 0;cursor:pointer;text-decoration:underline dotted;
+  text-underline-offset:.24em;text-decoration-color:#94a3b8
+}
 .m-card-fiyat.cheapest{color:#059669}
 
 /* Kart orta satır: Model */
@@ -241,70 +242,33 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
 .mb-b2b{background:#EFF6FF;color:#1D4ED8;border:1px solid #BFDBFE;font-weight:700}
 .mb-cheapest{background:#D1FAE5;color:#065F46;border:1px solid #A7F3D0}
 
-/* MOBİL STAT BAR */
-.m-stats{display:none;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:.75rem}
-.m-stat{background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:.625rem .75rem}
-.m-stat-label{font-size:.5625rem;font-weight:600;color:#94A3B8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.25rem;font-family:'DM Sans',sans-serif}
-.m-stat-val{font-family:'JetBrains Mono',monospace;font-size:.9375rem;font-weight:700;color:#0F172A}
-.m-stat-val.green{color:#059669}
-.m-stat-val.blue{color:#2563EB}
-
-/* MOBİL TOOLBAR (sticky) */
-.m-toolbar{
-  display:none;
-  position:sticky;
-  top:72px;
-  z-index:90;
-  background:#F8FAFC;
-  border-bottom:1px solid #E2E8F0;
-  padding:.5rem .75rem;
-  gap:.5rem;
-  flex-wrap:nowrap;
-  overflow-x:auto;
-  -webkit-overflow-scrolling:touch;
-  scrollbar-width:none;
-}
-.m-toolbar::-webkit-scrollbar{display:none}
-.m-toolbar-search{
-  flex:1;
-  min-width:120px;
-  background:#FFFFFF;
-  border:1px solid #E2E8F0;
-  border-radius:8px;
-  padding:.625rem .875rem;
-  font-size:1rem;
-  font-family:'DM Sans',sans-serif;
-  color:#0F172A;
-  outline:none;
-  height:44px;
-}
-.m-toolbar-search:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(232,93,38,.1)}
-.m-toolbar-btn{
-  background:#FFFFFF;
-  border:1px solid #E2E8F0;
-  border-radius:8px;
-  padding:0 1rem;
-  font-size:.8125rem;
-  font-weight:600;
-  font-family:'DM Sans',sans-serif;
-  color:#475569;
-  cursor:pointer;
-  white-space:nowrap;
-  height:44px;
-  display:inline-flex;
-  align-items:center;
-  gap:.3rem;
-  transition:all .2s;
-  flex-shrink:0;
-}
-.m-toolbar-btn:hover,.m-toolbar-btn.active{border-color:var(--orange);color:var(--orange);background:#FFF7F4}
 .filter-fab-close{display:flex;width:100%;background:var(--orange);color:#fff;border:none;border-radius:8px;padding:.875rem;font-size:.9375rem;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;justify-content:center;margin-top:1rem;letter-spacing:.01em}
 
 @media(max-width:768px){
   .topbar{padding:0 1rem;gap:.5rem}
   .logo-name{display:none}
   .topbar-sep{display:none}
-  .topbar-center{display:none}
+  .topbar{height:auto;position:relative;display:grid;grid-template-columns:1fr auto;padding:.65rem .9rem .85rem}
+  .topbar-right{grid-column:2;grid-row:1}
+  .topbar-center{grid-column:1/-1;grid-row:2;padding:0}
+  .topbar-search{max-width:none}
+  .topbar-search input{min-width:0;font-size:1rem}
+  .topbar-search button{min-height:44px}
+  .table-toolbar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}
+  .model-search{grid-column:1/-1;width:100%;font-size:1rem}
+  .table-toolbar button,.model-search{min-height:44px}
+  .table-toolbar .filter-fab{position:static;border-radius:8px;justify-content:center;padding:.5rem;box-shadow:none}
+  .filter-fab::before{content:none}
+  .m-card-model{white-space:normal;overflow-wrap:anywhere;color:#475569;font-size:.9rem}
+  .m-card-details{display:flex;flex-wrap:wrap;gap:.5rem}
+  .m-card-details .mb{font-size:1rem;font-weight:700;line-height:1.35;padding:.35rem .7rem;border-radius:8px;margin-bottom:.7rem;white-space:normal;overflow-wrap:anywhere}
+  .m-card-details .mb-seller{background:#eef2ff;border-color:#d7dffa;color:#334572}
+  .m-card-badges{border-top:1px solid #edf0f4;padding-top:.65rem}
+  .m-card-badges a,.m-card-badges button{min-height:44px;min-width:44px;justify-content:center}
+  .sidebar:not(.open){visibility:hidden}
+  .sidebar{height:100dvh}
+  .filter-item{min-height:44px}
+
   .topbar-right .meta-pill{font-size:.75rem;padding:.25rem .625rem}
   .btn-logout-sm span{display:none}
 
@@ -314,21 +278,13 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
     width:85vw;max-width:320px;
     z-index:250;
     transform:translateX(-100%);
-    height:100vh;
+    height:100dvh;
     padding-top:1rem;
     overflow-y:auto;
   }
   .sidebar.open{transform:translateX(0)}
 
   .filter-fab{display:inline-flex}
-
-  /* Stats: masaüstü gizle, mobil stat göster */
-  .stats{display:none}
-  .m-stats{display:grid}
-
-  /* Toolbar */
-  .m-toolbar{display:flex}
-  .table-toolbar{display:none}
 
   /* Tablo gizle, kart göster */
   .tablo-wrap{display:none}
@@ -355,7 +311,7 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
     </a>
   </div>
   <div class="topbar-center">
-    <form method="POST" action="{% url 'sonuclar' %}" class="topbar-search">
+    <form method="POST" action="{% url 'sonuclar' %}" data-ebat-arama class="topbar-search">
       {% csrf_token %}
       <input type="text" name="ebat" value="{{ ebat }}" placeholder="205/55R16" required>
       <button type="submit">Ara</button>
@@ -479,27 +435,13 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
   </div>
   {% endif %}
 
-  <div class="stats">
-    <div class="stat">
-      <div class="lbl">En Ucuz</div>
-      <div class="val green" id="stat-min">{% if sonuclar %}{{ sonuclar.0.fiyat_str }}{% else %}—{% endif %}</div>
-    </div>
-    <div class="stat">
-      <div class="lbl">En Pahalı</div>
-      <div class="val" id="stat-max">{% if sonuclar %}{% with sonuclar|last as son %}{{ son.fiyat_str }}{% endwith %}{% else %}—{% endif %}</div>
-    </div>
-    <div class="stat">
-      <div class="lbl">Toplam Ürün</div>
-      <div class="val blue" id="stat-count">{{ sonuc_sayisi }}</div>
-    </div>
-  </div>
-
   {% if sonuclar %}
 
+  <h1 class="results-title">Lastik teklifleri</h1>
   <div class="table-toolbar">
-    <input type="text" class="model-search" placeholder="Model içerisinde ara..." oninput="applyFilters()" id="model-search">
-    <button class="sort-btn active" id="sort-fiyat" onclick="sortBy('fiyat')">Fiyat ↕</button>
-    <button class="sort-btn" id="sort-marka" onclick="sortBy('marka')">Marka ↕</button>
+    <input type="text" class="model-search" aria-label="Tekliflerde model ara" placeholder="Model ara…" oninput="applyFilters()" id="model-search">
+    <button class="filter-fab" id="filter-fab" onclick="openFilters()">Filtreler</button>
+    <button class="sort-btn active" id="sort-fiyat" onclick="sortByPrice()">Fiyat ↑</button>
   </div>
 
   <div class="tablo-wrap">
@@ -529,7 +471,7 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
             data-marka="{{ u.marka }}"
             data-mevsim="{{ u.mevsim }}"
             data-model="{{ u.urun_adi|lower }}"
-            data-fiyat="{{ u.fiyat }}"
+            data-fiyat="{{ u.fiyat|unlocalize }}"
             data-dot="{{ u.dot }}"
             data-idx="{{ forloop.counter }}">
 
@@ -576,7 +518,7 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
           <td class="fiyat-cell">
             <div class="fiyat-ana {% if u.fiyat == en_ucuz_fiyat %}cheapest{% endif %}"
                  data-toptanci-key="{{ u.toptanci }}"
-                 data-fiyat="{{ u.fiyat }}">
+                 data-fiyat="{{ u.fiyat|unlocalize }}">
               {{ u.fiyat_str }}
             </div>
           </td>
@@ -607,29 +549,6 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
     </table>
   </div>
 
-  <!-- MOBİL STAT BAR -->
-  <div class="m-stats">
-    <div class="m-stat">
-      <div class="m-stat-label">En Ucuz</div>
-      <div class="m-stat-val green">{% if sonuclar %}{{ sonuclar.0.fiyat_str }}{% else %}—{% endif %}</div>
-    </div>
-    <div class="m-stat">
-      <div class="m-stat-label">En Pahalı</div>
-      <div class="m-stat-val">{% if sonuclar %}{% with sonuclar|last as son %}{{ son.fiyat_str }}{% endwith %}{% else %}—{% endif %}</div>
-    </div>
-    <div class="m-stat">
-      <div class="m-stat-label">Toplam</div>
-      <div class="m-stat-val blue" id="m-stat-count">{{ sonuc_sayisi }}</div>
-    </div>
-  </div>
-
-  <!-- MOBİL TOOLBAR -->
-  <div class="m-toolbar" id="m-toolbar">
-    <input type="text" class="m-toolbar-search" placeholder="Model ara..." oninput="applyFilters()" id="m-model-search">
-    <button class="m-toolbar-btn active" id="m-sort-fiyat" onclick="sortBy('fiyat')">↕ Fiyat</button>
-    <button class="m-toolbar-btn" id="m-sort-marka" onclick="sortBy('marka')">↕ Marka</button>
-  </div>
-
   <!-- MOBİL KART LİSTESİ -->
   <div class="mobile-cards" id="mobile-cards">
     {% for u in sonuclar %}
@@ -638,23 +557,44 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
          data-marka="{{ u.marka }}"
          data-mevsim="{{ u.mevsim }}"
          data-model="{{ u.urun_adi|lower }}"
-         data-fiyat="{{ u.fiyat }}"
+         data-fiyat="{{ u.fiyat|unlocalize }}"
          data-dot="{{ u.dot }}"
          id="mc-{{ forloop.counter }}">
 
       <!-- Üst satır: Marka + Fiyat -->
       <div class="m-card-row1">
         <span class="m-card-marka">{{ u.marka }}</span>
+        {% if u.toptanci in iskontolar %}
+        <button type="button" class="m-card-fiyat {% if u.fiyat == en_ucuz_fiyat %}cheapest{% endif %}"
+                data-iskonto-kaynak="{{ u.toptanci }}" data-fiyat="{{ u.fiyat|unlocalize }}"
+                aria-label="{{ u.fiyat_str }} için iskontolu fiyatları göster">{{ u.fiyat_str }}</button>
+        {% else %}
         <span class="m-card-fiyat {% if u.fiyat == en_ucuz_fiyat %}cheapest{% endif %}">{{ u.fiyat_str }}</span>
+        {% endif %}
       </div>
 
       <!-- Orta satır: Model -->
       <div class="m-card-model">{{ u.urun_adi }}</div>
 
+      <div class="m-card-details">
+        {% if not demo_mod %}
+          <span class="mb mb-seller" data-toptanci-key="{{ u.toptanci }}">{{ u.toptanci }}</span>
+        {% endif %}
+        {% if u.miktar > 0 and u.miktar <= 4 %}
+          <span class="mb mb-stock-low">Son {{ u.miktar }} adet</span>
+        {% elif u.miktar > 4 %}
+          <span class="mb mb-stock">{{ u.miktar }} adet</span>
+        {% elif u.miktar == 0 %}
+          <span class="mb mb-stock">Stok yok</span>
+        {% endif %}
+      </div>
+
       <!-- Alt satır: Badge'ler -->
       <div class="m-card-badges">
-        {% if not demo_mod %}<span class="mb mb-seller" data-toptanci-key="{{ u.toptanci }}">{{ u.toptanci }}</span>
-        {% else %}
+        {% if u.dot and u.dot != "0" %}
+          <span class="mb mb-dot">DOT {{ u.dot }}</span>
+        {% endif %}
+        {% if demo_mod %}
           <a href="/" onclick="uyelikModalAc();return false;"
             class="mb" style="background:#FFF7F4;color:#E85D26;border:1px solid #FECACA;font-weight:700;text-decoration:none">🔒 Üyelik Al</a>
         {% endif %}
@@ -665,16 +605,6 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
           <span class="mb mb-season">🌤 4 Mev.</span>
         {% else %}
           <span class="mb mb-season">☀️ Yaz</span>
-        {% endif %}
-
-        {% if u.dot and u.dot != "0" %}
-          <span class="mb mb-dot">{{ u.dot }}</span>
-        {% endif %}
-
-        {% if u.miktar > 0 and u.miktar <= 4 %}
-          <span class="mb mb-stock-low">Son {{ u.miktar }}</span>
-        {% elif u.miktar > 4 %}
-          <span class="mb mb-stock">{{ u.miktar }} adet</span>
         {% endif %}
 
         {% if u.fiyat == en_ucuz_fiyat %}
@@ -718,8 +648,9 @@ td{padding:.875rem 1rem;font-size:.875rem;vertical-align:middle}
 </main>
 </div>
 
+{{ iskontolar|json_script:"iskonto-verileri" }}
 <script>
-let sortField = 'fiyat', sortDir = 1;
+let sortDir = 1;
 
 function getActiveValues(filterName) {
   return [...document.querySelectorAll(`.filter-cb[data-filter="${filterName}"]:checked`)]
@@ -741,8 +672,7 @@ function applyFilters() {
   const markaAktif    = activeMarka.length > 0;
   const mevsimAktif   = activeMevsim.length > 0;
 
-  const mSearchEl = document.getElementById('m-model-search');
-  const modelQ = (document.getElementById('model-search')?.value || mSearchEl?.value || '').toLowerCase().trim();
+  const modelQ = (document.getElementById('model-search')?.value || '').toLowerCase().trim();
   const minDot = parseInt(document.getElementById('dot-filter').value) || 0;
 
   const rows = document.querySelectorAll('.data-row');
@@ -768,10 +698,7 @@ function applyFilters() {
   });
 
   document.getElementById('visible-count').textContent = visible;
-  document.getElementById('stat-count').textContent = visible;
-  const msc = document.getElementById('m-stat-count');
-  if (msc) msc.textContent = visible;
-  document.getElementById('empty-state').classList.toggle('hidden', visible > 0);
+  document.getElementById('empty-state')?.classList.toggle('hidden', visible > 0);
   const tw = document.querySelector('.tablo-wrap');
   if (tw) tw.classList.toggle('hidden', visible === 0);
 
@@ -799,18 +726,17 @@ function filterMarkalar(q) {
   });
 }
 
-function sortBy(field) {
-  if (sortField === field) sortDir *= -1; else { sortField = field; sortDir = 1; }
-  document.querySelectorAll('.sort-btn,.m-toolbar-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('sort-' + field)?.classList.add('active');
-  document.getElementById('m-sort-' + field)?.classList.add('active');
+function sortByPrice() {
+  sortDir *= -1;
   const tbody = document.getElementById('table-body');
   const rows = [...tbody.querySelectorAll('.data-row')];
-  rows.sort((a, b) => {
-    if (field === 'fiyat') return (parseFloat(a.dataset.fiyat) - parseFloat(b.dataset.fiyat)) * sortDir;
-    return a.dataset[field].localeCompare(b.dataset[field], 'tr') * sortDir;
+  rows.sort((a, b) => (Number(a.dataset.fiyat) - Number(b.dataset.fiyat)) * sortDir);
+  const cards = document.getElementById('mobile-cards');
+  rows.forEach(row => {
+    tbody.appendChild(row);
+    cards.appendChild(document.getElementById('mc-' + row.dataset.idx));
   });
-  rows.forEach(r => tbody.appendChild(r));
+  document.getElementById('sort-fiyat').textContent = sortDir > 0 ? 'Fiyat ↑' : 'Fiyat ↓';
   applyFilters();
 }
 
@@ -844,7 +770,7 @@ function closeFilters() {
 }
 
 // ── İskonto Tooltip ──────────────────────────────────────────────────────────
-const ISKONTOLAR = {{ iskontolar|safe }};
+const ISKONTOLAR = JSON.parse(document.getElementById('iskonto-verileri').textContent);
 
 // Tooltip elementi oluştur
 const _tip = document.createElement('div');
@@ -901,10 +827,9 @@ function _showTip(el, text) {
   _tip.style.opacity = '1';
   _tip.style.transform = 'translateY(0)';
   const rect = el.getBoundingClientRect();
-  let top  = rect.bottom + 8;
-  let left = rect.right - 210;
-  if (left + 220 > window.innerWidth) left = window.innerWidth - 224;
-  if (left < 8) left = 8;
+  const top = rect.bottom + 8 + _tip.offsetHeight <= window.innerHeight
+    ? rect.bottom + 8 : Math.max(8, rect.top - _tip.offsetHeight - 8);
+  const left = Math.max(8, Math.min(rect.right - _tip.offsetWidth, window.innerWidth - _tip.offsetWidth - 8));
   _tip.style.top  = top  + 'px';
   _tip.style.left = left + 'px';
 }
@@ -922,6 +847,15 @@ document.addEventListener('mouseover', function(e) {
 document.addEventListener('mouseout', function(e) {
   if (e.target.closest('[data-toptanci-key]')) _hideTip();
 });
+document.addEventListener('click', function(e) {
+  const fiyat = e.target.closest('[data-iskonto-kaynak]');
+  if (fiyat) {
+    _showTip(fiyat, ISKONTOLAR[fiyat.dataset.iskontoKaynak]);
+  } else if (!e.target.closest('[data-toptanci-key]')) {
+    _hideTip();
+  }
+});
+window.addEventListener('scroll', _hideTip, {passive:true});
 // Mobil: dokunuşta
 document.addEventListener('touchstart', function(e) {
   const el = e.target.closest('[data-toptanci-key]');
@@ -963,11 +897,10 @@ function satirNotAc(toptanci, marka, model, dot) {
   }, 100);
 }
 </script>
-<button class="filter-fab" id="filter-fab" onclick="openFilters()">
-   Filtrele
-</button>
+
 
 {% include "karsilastirma/_not_widget.html" %}
 {% if demo_mod %}{% include "karsilastirma/_uyelik_modal.html" %}{% endif %}
+{% include "karsilastirma/_arama_durumu.html" %}
 </body>
 </html>

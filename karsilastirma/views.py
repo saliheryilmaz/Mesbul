@@ -1,11 +1,14 @@
-import re
 import json
+import logging
+import re
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from hashlib import sha256
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.http import JsonResponse
+from django.core.cache import caches
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
@@ -13,6 +16,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.utils import timezone
+from django.views.decorators.gzip import gzip_page
 from django.views.decorators.http import require_POST
 
 from .uspa_servis        import uspa_ara
@@ -32,7 +36,12 @@ from .cakiroglu_servis   import cakiroglu_ara
 from .ayko_servis        import ayko_ara
 from .halilyilmaz_servis import halilyilmaz_ara
 from .mollaoglu_servis   import mollaoglu_ara
+from .katalog_onbellek import toptanci_sorgula
 from .models import AramaGecmisi, Abonelik, Odeme, Notlar, ToptanciIskonto
+
+
+logger = logging.getLogger(__name__)
+ARAMA_CACHE_TTL = 120
 
 
 class AbonelikGerekli(LoginRequiredMixin):
@@ -310,72 +319,64 @@ B2B_LINKLER = {
 }
 
 
-def _tum_toptancilarda_ara(ebat: str, marka: str, mevsim: str) -> tuple[list, list]:
-    """
-    Tüm XML toptancılarını paralel çalıştırır.
-    Döner: (sonuclar, hatali_toptancilar)
-    Hatalı toptancı listesi kullanıcıya gösterilir.
-    """
-    GOREVLER = [
-        uspa_ara,
-        keskin_ara,
-        otosemih_ara,
-        netlastik_ara,
-        lastsis_ara,
-        dincbay_ara,
-        degeras_ara,
-        art4_ara,
-        simetri_ara,
-        yilkarlas_ara,
-        oltay_ara,
-        asoto_ara,
-        karaoglu_ara,
-        cakiroglu_ara,
-        ayko_ara,
-        halilyilmaz_ara,
-        mollaoglu_ara,
-    ]
+TOPTANCI_ARAMALARI = {
+    "USPA Lastik": uspa_ara,
+    "Keskin Lastik": keskin_ara,
+    "OtoSemih": otosemih_ara,
+    "NetLastik": netlastik_ara,
+    "Lastsis": lastsis_ara,
+    "Dinçbay": dincbay_ara,
+    "Degeras": degeras_ara,
+    "Art4": art4_ara,
+    "Simetri": simetri_ara,
+    "Yılkarlas": yilkarlas_ara,
+    "Oltay": oltay_ara,
+    "AS Oto": asoto_ara,
+    "Karaoğlu": karaoglu_ara,
+    "Çakıroğlu": cakiroglu_ara,
+    "Ayko": ayko_ara,
+    "Halil Yılmaz": halilyilmaz_ara,
+    "Mollaoğlu": mollaoglu_ara,
+}
 
-    # Modül adı → görünen toptancı adı
-    MODUL_ISIM = {
-        "karsilastirma.uspa_servis":       "USPA Lastik",
-        "karsilastirma.keskin_servis":     "Keskin Lastik",
-        "karsilastirma.otosemih_servis":   "OtoSemih",
-        "karsilastirma.netlastik_servis":  "NetLastik",
-        "karsilastirma.lastsis_servis":    "Lastsis",
-        "karsilastirma.dincbay_servis":    "Dinçbay",
-        "karsilastirma.degeras_servis":    "Degeras",
-        "karsilastirma.art4_servis":       "Art4",
-        "karsilastirma.simetri_servis":    "Simetri",
-        "karsilastirma.yilkarlas_servis":  "Yılkarlas",
-        "karsilastirma.oltay_servis":      "Oltay",
-        "karsilastirma.asoto_servis":      "AS Oto",
-        "karsilastirma.karaoglu_servis":   "Karaoğlu",
-        "karsilastirma.cakiroglu_servis":  "Çakıroğlu",
-        "karsilastirma.ayko_servis":       "Ayko",
-        "karsilastirma.halilyilmaz_servis": "Halil Yılmaz",
-        "karsilastirma.mollaoglu_servis":   "Mollaoğlu",
+
+def _tum_toptancilarda_ara(ebat: str) -> tuple[list, list]:
+    anahtarlar = {
+        isim: f"arama:v1:{sha256(f'{isim}:{ebat}'.encode()).hexdigest()}"
+        for isim in TOPTANCI_ARAMALARI
     }
-
-    tum_sonuclar = []
+    arama_cache = caches["arama_sonuclari"]
+    gruplar = arama_cache.get_many(anahtarlar.values())
+    eksikler = [isim for isim, anahtar in anahtarlar.items() if anahtar not in gruplar]
     hatali_toptancilar = []
 
-    with ThreadPoolExecutor(max_workers=len(GOREVLER)) as executor:
-        futures = {
-            executor.submit(fn, ebat, marka, mevsim): fn.__module__
-            for fn in GOREVLER
-        }
-        for future in as_completed(futures):
-            modul = futures[future]
-            try:
-                sonuc = future.result()
-                tum_sonuclar.extend(sonuc)
-            except Exception as e:
-                isim = MODUL_ISIM.get(modul, modul)
-                print(f"[{isim}] Hata: {e}")
-                hatali_toptancilar.append(isim)
+    if eksikler:
+        guncel_gruplar = {}
+        with ThreadPoolExecutor(max_workers=len(eksikler)) as executor:
+            futures = {
+                executor.submit(toptanci_sorgula, TOPTANCI_ARAMALARI[isim], ebat): isim
+                for isim in eksikler
+            }
+            for future in as_completed(futures):
+                isim = futures[future]
+                try:
+                    urunler, yedek_kullanildi = future.result()
+                except Exception as hata:
+                    logger.warning("%s araması başarısız: %s", isim, type(hata).__name__)
+                    hatali_toptancilar.append(isim)
+                    continue
 
-    tum_sonuclar.sort(key=lambda x: x.fiyat)
+                anahtar = anahtarlar[isim]
+                gruplar[anahtar] = urunler
+                if not yedek_kullanildi:
+                    guncel_gruplar[anahtar] = urunler
+
+        # Eksikleri eklerken başarılı kaynakların önceki süresini uzatma.
+        for anahtar, urunler in guncel_gruplar.items():
+            arama_cache.add(anahtar, urunler, timeout=ARAMA_CACHE_TTL)
+
+    tum_sonuclar = [urun for grup in gruplar.values() for urun in grup]
+    tum_sonuclar.sort(key=lambda urun: urun.fiyat)
     return tum_sonuclar, hatali_toptancilar
 
 
@@ -432,6 +433,7 @@ class AramaView(View):
 class SonuclarView(AbonelikGerekli, View):
     template_name = "karsilastirma/sonuclar.html"
 
+    @method_decorator(gzip_page)
     def post(self, request):
         ebat    = request.POST.get("ebat",    "").strip()
         marka   = request.POST.get("marka",   "").strip()
@@ -442,8 +444,8 @@ class SonuclarView(AbonelikGerekli, View):
             return render(request, "karsilastirma/arama.html",
                           {"hata": "Lütfen lastik ebatını girin."})
 
-        # Tüm mevsimleri çek — filtreleme tamamen frontend'de (sidebar) yapılır
-        sonuclar, hatali_toptancilar = _tum_toptancilarda_ara(ebat, marka, "")
+        # Marka, mevsim ve DOT seçimleri ham toptancı sonuçlarından uygulanır.
+        sonuclar, hatali_toptancilar = _tum_toptancilarda_ara(ebat)
 
         # Marka adlarını normalize et (CONTINENTAL, Continenta → Continental)
         for u in sonuclar:

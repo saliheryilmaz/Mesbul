@@ -17,11 +17,12 @@ Yanıt alanları:
 """
 
 import os
-import time
 import logging
 import requests
 from dataclasses import dataclass
 from dotenv import load_dotenv
+
+from .katalog_onbellek import ToptanciAramaHatasi
 
 load_dotenv()
 
@@ -30,10 +31,6 @@ logger = logging.getLogger(__name__)
 NETLASTIK_API_URL = "https://api.netlastik.com/api/v1/partner/products"
 NETLASTIK_API_KEY = os.getenv("NETLASTIK_API_KEY", "")
 NETLASTIK_SITE_URL = "https://www.netlastik.com"
-
-# Bellek cache — 30 dk (API rate limit'e göre)
-_cache: dict = {}          # ebat+marka+mevsim → (timestamp, list)
-_CACHE_TTL = 30 * 60
 
 # Mevsim dönüşüm tabloları
 _MEVSIM_TO_API = {
@@ -95,14 +92,6 @@ def netlastik_ara(ebat: str, marka: str = "", mevsim: str = "") -> list[LastikUr
         logger.warning("[NetLastik] API key eksik — NETLASTIK_API_KEY .env'de tanımlı değil")
         return []
 
-    # Cache kontrolü
-    cache_key = f"{ebat}|{marka}|{mevsim}"
-    if cache_key in _cache:
-        ts, data = _cache[cache_key]
-        if time.time() - ts < _CACHE_TTL:
-            logger.info(f"[NetLastik] Cache'den {len(data)} ürün döndürüldü")
-            return data
-
     season_api = _mevsim_api_kodu(mevsim)
 
     params = {
@@ -124,13 +113,6 @@ def netlastik_ara(ebat: str, marka: str = "", mevsim: str = "") -> list[LastikUr
         while True:
             resp = requests.get(NETLASTIK_API_URL, params=params, headers=headers, timeout=20)
 
-            if resp.status_code == 401:
-                logger.error("[NetLastik] Geçersiz API key (401)")
-                break
-            if resp.status_code == 429:
-                retry_after = resp.headers.get("Retry-After", "?")
-                logger.warning(f"[NetLastik] Rate limit (429) — Retry-After: {retry_after}s")
-                break
             resp.raise_for_status()
 
             data = resp.json()
@@ -170,11 +152,9 @@ def netlastik_ara(ebat: str, marka: str = "", mevsim: str = "") -> list[LastikUr
                 break
 
     except requests.RequestException as e:
-        logger.error(f"[NetLastik] Bağlantı hatası: {e}")
+        raise ToptanciAramaHatasi("NetLastik API isteği başarısız") from e
 
     tum_urunler.sort(key=lambda x: x.fiyat)
     logger.info(f"[NetLastik] {len(tum_urunler)} ürün döndürüldü (ebat={ebat})")
 
-    # Cache'e yaz
-    _cache[cache_key] = (time.time(), tum_urunler)
     return tum_urunler

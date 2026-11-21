@@ -10,6 +10,8 @@ from dataclasses import dataclass
 
 from django.core.cache import cache
 
+from .katalog_onbellek import ToptanciAramaHatasi, katalog_onbellek
+
 import os
 
 DEGERAS_API_URL  = (
@@ -72,25 +74,20 @@ def _dot_normalize(dot_raw: str) -> str:
     return m.group(1) if m else dot_raw.strip()
 
 
+@katalog_onbellek(CACHE_KEY, CACHE_KEY_STALE)
 def degeras_verileri_getir() -> list[LastikUrun]:
     """
     Degeras API'sinden tüm ürün listesini çekip döner.
     Django DB cache'e yazar — tüm worker'lar aynı cache'i paylaşır.
     """
-    cached = cache.get(CACHE_KEY)
-    if cached is not None:
-        return cached
-
     try:
         resp = requests.get(DEGERAS_API_URL, timeout=20)
         resp.raise_for_status()
         json_data = resp.json()
     except requests.RequestException as e:
-        print(f"[Degeras] Bağlantı hatası: {e}")
-        return cache.get(CACHE_KEY_STALE) or []
+        raise ToptanciAramaHatasi("Bağlantı hatası") from e
     except ValueError as e:
-        print(f"[Degeras] JSON parse hatası: {e}")
-        return cache.get(CACHE_KEY_STALE) or []
+        raise ToptanciAramaHatasi("JSON parse hatası") from e
 
     items = json_data.get("data", [])
     urunler = []
